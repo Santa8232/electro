@@ -1,0 +1,96 @@
+{
+  "id": "resistor",
+  "name": "Resistor",
+  "symbol": "R",
+  "desc": "Passive Resistance",
+  "category": "passive",
+  "terminals": 2,
+  "defaultVal": 220,
+  "unit": "Ω",
+  "datasheet": {
+    "partNumber": "MFR-25FTE52 (Yageo / Vishay)",
+    "title": "1/4-Watt Standard Precision Metal Film Resistor",
+    "category": "Passive Components / Fixed Resistor",
+    "package": "Axial Leaded (Body 6.3mm × 2.4mm, 0.6mm tinned copper leads)",
+    "description": "High stability metal film resistors featuring vacuum-deposited nickel-chromium film on high thermal conductivity ceramic rods. Offers ultra-low noise, low temperature coefficient, and high precision.",
+    "pinout": [
+      {
+        "pin": 0,
+        "name": "Lead 1 (Terminal A)",
+        "desc": "Bilateral non-polarized terminal"
+      },
+      {
+        "pin": 1,
+        "name": "Lead 2 (Terminal B)",
+        "desc": "Bilateral non-polarized terminal"
+      }
+    ],
+    "maxRatings": [
+      {
+        "param": "Rated Power Dissipation (@ 70°C)",
+        "symbol": "P_max",
+        "max": "0.25 (250)",
+        "unit": "W (mW)"
+      },
+      {
+        "param": "Max Continuous Working Voltage",
+        "symbol": "V_max",
+        "max": "250",
+        "unit": "V"
+      },
+      {
+        "param": "Maximum Overload Voltage",
+        "symbol": "V_over",
+        "max": "500",
+        "unit": "V"
+      },
+      {
+        "param": "Dielectric Withstanding Voltage",
+        "symbol": "V_iso",
+        "max": "500",
+        "unit": "V"
+      },
+      {
+        "param": "Operating Temperature Range",
+        "symbol": "T_OP",
+        "max": "-55 to +155",
+        "unit": "°C"
+      }
+    ],
+    "characteristics": [
+      {
+        "param": "Resistance Tolerance",
+        "symbol": "Tol",
+        "min": "-1.0",
+        "typ": "±1.0",
+        "max": "+1.0",
+        "unit": "%"
+      },
+      {
+        "param": "Temperature Coefficient",
+        "symbol": "TCR",
+        "min": "-50",
+        "typ": "±50",
+        "max": "+50",
+        "unit": "ppm/°C"
+      },
+      {
+        "param": "Insulation Resistance",
+        "symbol": "R_ins",
+        "min": "10,000",
+        "typ": "-",
+        "max": "-",
+        "unit": "MΩ"
+      },
+      {
+        "param": "Current Noise Index",
+        "symbol": "Noise",
+        "min": "-",
+        "typ": "< 0.1",
+        "max": "0.2",
+        "unit": "µV/V"
+      }
+    ],
+    "appNotes": "Ensure operating power P = I²·R = V² / R does not exceed 250mW at ambient temperature. For pulse applications, derate operating power according to standard IEC 60115-1 curve."
+  }
+}

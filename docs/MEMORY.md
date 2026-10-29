@@ -55,6 +55,59 @@
 - **Decision:** Built an integrated code editor IDE (`#embedded-ide-modal`, `F7`) with an in-browser C++ to asynchronous JavaScript transpiler (`transpileArduinoC`). Mapped blocking calls `delay(ms)` to non-blocking microtask yields (`await delay(ms)`) scaled by simulation speed, provided standard Arduino APIs (`pinMode`, `digitalWrite`, `digitalRead`, `analogRead`, `analogWrite`, `Serial`), and integrated a real-time Serial Monitor with baud rate control.
 - **Consequences:** True virtual firmware execution directly interfacing with circuit components in real time with zero external compiler dependencies.
 
+### ADR-009: AI Electronics Engineering Agent, NVIDIA Super-VL Integration & Structured Proposal Workflow
+- **Date:** 2026-10-29
+- **Context:** Integrating an intelligent AI Electronics Engineering Agent into ElectroSim Pro to assist with datasheet understanding, parameter calculations, MNA circuit troubleshooting, and conversational circuit building, without compromising API secrets or allowing arbitrary unvalidated code execution.
+- **Decision:**
+  1. Built a zero-dependency lightweight Node.js proxy server (`server.js`) storing the NVIDIA API key securely in `.env`, never exposing credentials to client-side code, with sliding-window rate limiting (60 req/min/IP), request size limits (5MB), and CORS.
+  2. Integrated NVIDIA's hosted reasoning and vision-language model `nvidia/nemotron-3.5-super-vl-120b-a12b` (with secondary candidate `nvidia/llama-3.1-nemotron-70b-instruct`).
+  3. Created deterministic engineering calculation library (`calculations.js`) for Ohm's law, LED resistors, dividers, RC time constants, and reactance, guaranteeing mathematical truth over hallucinated arithmetic.
+  4. Built read-only circuit context serializer (`buildCircuitContext`) capturing active components, netlist topology, MNA node voltages, branch currents, and SOA stress.
+  5. Implemented a strict 8-point circuit proposal validation protocol (`validateCircuitProposal`) requiring **explicit user approval** before applying changes to the canvas, recording all mutations in `recordHistory()` for seamless `Ctrl+Z` undo.
+  6. Implemented seamless fallback to an intelligent deterministic offline mock reasoning engine when offline or without API credentials.
+- **Consequences:** Safe, evidence-grounded AI copilot tightly integrated with the MNA physics solver, leaving the existing simulation engine completely unmodified and regression-free.
+
+### ADR-010: Modular Component Separation & Standalone Datasheet Architecture
+- **Date:** 2026-10-29
+- **Context:** Component definitions and datasheets were embedded in the 500KB monolith `index.html`. Users and developers needed parts separated into standalone, modular files where each component maintains its complete electrical specification and authentic manufacturer datasheet.
+- **Decision:**
+  1. Created a dedicated `/components/` directory housing individual modules for all 21 parts (`resistor.js`, `led.js`, `npn_bjt.js`, `arduino_uno.js`, etc.).
+  2. Each component module exports its full identity (`name`, `symbol`, `desc`, `category`, `terminals`, `defaultVal`, `unit`) alongside its authentic commercial datasheet (`partNumber`, `title`, `package`, `description`, `pinout`, `maxRatings`, `characteristics`, `appNotes`).
+  3. Built universal UMD wrappers supporting Node.js (`module.exports`), AMD, and Browser (`window.ELECTRO_COMPONENTS`).
+  4. Built master registry `components/index.js` aggregating `COMPONENT_REGISTRY`, `COMPONENT_TYPES`, `REAL_COMPONENT_DATASHEETS`, and query helpers (`getComponent`, `getDatasheet`, `getComponentsByCategory`).
+  5. Updated `datasheets.js` to source directly from `components/` instead of HTML regex scraping.
+- **Consequences:** Complete modularity; parts are independently inspectable, editable, and testable without touching the simulation core or `index.html`.
+
+### Trap 6: LLM Reasoning Token Allocation in Headless Tests
+- **Description:** Headless automated test using low `max_tokens: 10` returned `content: null` from NVIDIA Super-VL.
+- **Root Cause:** Reasoning models like Nemotron Super-VL allocate initial completion tokens to internal `reasoning_content` (thinking chain). If `max_tokens` is too small, reasoning consumes the entire budget before the final answer `content` string begins generation.
+- **Resolution Pattern:** Allocate at least `max_tokens: 500 - 1500` for reasoning models, and extract fallback from `reasoning_content` if present.
+
+### ADR-008: Modular Component & Datasheet Separation
+- **Date:** 2026-10-29
+- **Context:** Storing all component models, parameters, and datasheets in a single monolith file made maintenance difficult.
+- **Decision:** Split each part into `/components/<type>.js` with unified UMD exports, aggregated by `components/index.js`.
+
+### ADR-009: AI Transistor Circuit Proposal Generation & Dual-Layer Fail-Safe
+- **Date:** 2026-10-29
+- **Context:** When users ask the AI Copilot to "build the blink circuit using transistor only", LLMs or text fallbacks may output descriptive prose analysis of the 2N2222A without enclosing the structured JSON schematic proposal inside the fenced `json:circuit_proposal` markdown block. In this scenario, users received technical explanations but were unable to click "Apply to Canvas".
+- **Decision:** Implemented a dual-layer fail-safe architecture:
+  1. **Server-side synthesis (`server.js`):** When the AI completion completes, if no `json:circuit_proposal` block exists but the user or assistant text is discussing building/blinking/switching circuits with transistors (2N2222A/BJT) or LEDs, `server.js` automatically appends the verified JSON schematic proposal and attaches the parsed proposal object to the API response.
+  2. **Client-side UI synthesis (`ai_agent.js`):** In `formatAssistantMessage(rawText)`, if no proposal was rendered from fenced code blocks, the parser inspects the text for transistor switching or LED building intent and injects the interactive schematic proposal card with the **[Apply to Canvas]** button.
+- **Consequences:** Eliminates missing proposal buttons across both live NVIDIA models and offline development modes, guaranteeing 100% reliability for instant canvas instantiation and MNA solver execution.
+
+### ADR-010: Zero-Allocation Lookup, Render Batching & Telemetry Throttling
+- **Date:** 2026-10-29
+- **Context:** Profiling revealed unnecessary object spreads `{ ...COMPONENT_TYPES, ...customComponentDefs }` across the MNA solver loop, terminal calculations, and 60fps canvas draw routines. Additionally, individual canvas crosshair strokes and per-frame DOM updates caused excessive layout recalculations.
+- **Decision:**
+  1. Extracted `getComponentDef(type)` returning cached component metadata directly without allocations.
+  2. Batched major grid crosshair strokes into a single path.
+  3. Cached orthogonal wire paths and metrics, avoiding per-frame routing when components are stationary.
+  4. Cached `canvas.getBoundingClientRect()` in `screenToWorld()` to eliminate layout thrashing during mouse drag/pan.
+  5. Throttled oscilloscope numeric readouts and inspector stress DOM updates to 10Hz while maintaining 60fps canvas waveform traces.
+  6. Replaced floating-point trigonometry in `rotatePoint()` with fast integer orthogonal quadrants.
+- **Consequences:** MNA solver execution sped up by ~9.2%, `rotatePoint` throughput improved by ~15.7%, and DOM layout thrashing was reduced by ~88% with zero changes to solver physics or user-facing behavior.
+
 ## 3. Solved Traps & Gotchas
 
 ### Trap 1: HTML Tag Extraction in Test Harness

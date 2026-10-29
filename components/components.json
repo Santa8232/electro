@@ -1,0 +1,2164 @@
+{
+  "dc_voltage": {
+    "id": "dc_voltage",
+    "name": "DC Voltage",
+    "symbol": "V_DC",
+    "desc": "Direct Current Source",
+    "category": "power",
+    "terminals": 2,
+    "defaultVal": 9,
+    "unit": "V",
+    "datasheet": {
+      "partNumber": "6LR61 / MN1604 / 522 (Energizer / Duracell)",
+      "title": "9-Volt Industrial Alkaline Manganese Dioxide Battery",
+      "category": "Power Sources / Primary Electrochemical Cell",
+      "package": "PP3 Rectangular Prismatic (48.5mm × 26.5mm × 17.5mm)",
+      "description": "Standard 9V multi-cell alkaline primary battery consisting of 6 series-connected 1.5V LR61 cells. Delivers consistent voltage discharge profiles across wide thermal operating regimes.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Negative (-)",
+          "desc": "Large octagonal snap female socket terminal"
+        },
+        {
+          "pin": 1,
+          "name": "Positive (+)",
+          "desc": "Small circular stud male plug terminal"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Nominal Open-Circuit Voltage",
+          "symbol": "V_OC",
+          "max": "9.6",
+          "unit": "V"
+        },
+        {
+          "param": "Rated Energy Capacity (@ 25mA discharge)",
+          "symbol": "C_nom",
+          "max": "550 - 625",
+          "unit": "mAh"
+        },
+        {
+          "param": "Maximum Continuous Discharge Current",
+          "symbol": "I_max",
+          "max": "250",
+          "unit": "mA"
+        },
+        {
+          "param": "Recommended Operating Temp",
+          "symbol": "T_OP",
+          "max": "-18 to +55",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Nominal Operating Voltage",
+          "symbol": "V_nom",
+          "min": "7.2",
+          "typ": "9.0",
+          "max": "9.6",
+          "unit": "V"
+        },
+        {
+          "param": "End-of-Life Cutoff Voltage",
+          "symbol": "V_cutoff",
+          "min": "4.8",
+          "typ": "5.4",
+          "max": "6.0",
+          "unit": "V"
+        },
+        {
+          "param": "Internal Series Resistance (Fresh @ 1kHz)",
+          "symbol": "R_int",
+          "min": "1.2",
+          "typ": "1.7",
+          "max": "2.5",
+          "unit": "Ω"
+        },
+        {
+          "param": "Self-Discharge Rate (20°C)",
+          "symbol": "Self-Dis",
+          "min": "-",
+          "typ": "< 2.0",
+          "max": "3.0",
+          "unit": "% / year"
+        }
+      ],
+      "appNotes": "Primary cell (non-rechargeable). Do not short-circuit terminals: short-circuit current can exceed 4A, causing excessive Joule heating and thermal rupture."
+    }
+  },
+  "ac_voltage": {
+    "id": "ac_voltage",
+    "name": "AC Voltage",
+    "symbol": "V_AC",
+    "desc": "Alternating Sine Source",
+    "category": "power",
+    "terminals": 2,
+    "defaultVal": 12,
+    "unit": "V",
+    "datasheet": {
+      "partNumber": "LAB-AC-500 (Rigol / BK Precision)",
+      "title": "Laboratory Precision AC Sinusoidal Signal Source",
+      "category": "Instrumentation / AC Power Generation",
+      "package": "BNC / Dual Binding Post Instrument Output Interface",
+      "description": "Benchtop AC sinusoidal waveform generator providing calibrated RMS AC excitation voltages with low harmonic distortion and calibrated internal 50Ω output impedance.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Return / Low (0V Neutral)",
+          "desc": "Reference return terminal or common"
+        },
+        {
+          "pin": 1,
+          "name": "Line / High (AC Signal)",
+          "desc": "Sinusoidal AC excitation potential (V_pk = V_rms · √2)"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Peak Output Voltage",
+          "symbol": "V_peak",
+          "max": "35",
+          "unit": "V pk"
+        },
+        {
+          "param": "Max Continuous Output Current",
+          "symbol": "I_out_max",
+          "max": "500",
+          "unit": "mA rms"
+        },
+        {
+          "param": "Frequency Range",
+          "symbol": "f_range",
+          "max": "100",
+          "unit": "kHz"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Output Voltage Accuracy (1kHz)",
+          "symbol": "V_acc",
+          "min": "-1.0",
+          "typ": "±0.5",
+          "max": "+1.0",
+          "unit": "%"
+        },
+        {
+          "param": "Total Harmonic Distortion (THD)",
+          "symbol": "THD",
+          "min": "-",
+          "typ": "< 0.08",
+          "max": "0.2",
+          "unit": "%"
+        },
+        {
+          "param": "Output Impedance",
+          "symbol": "Z_out",
+          "min": "49.5",
+          "typ": "50.0",
+          "max": "50.5",
+          "unit": "Ω"
+        },
+        {
+          "param": "Frequency Stability",
+          "symbol": "f_stab",
+          "min": "-",
+          "typ": "±2.0",
+          "max": "5.0",
+          "unit": "ppm"
+        }
+      ],
+      "appNotes": "Sinusoidal signal: V(t) = V_pk · sin(2πft). For an AC source with V_rms = 12V, peak amplitude is V_pk = 12 · 1.414 = 16.97V."
+    }
+  },
+  "resistor": {
+    "id": "resistor",
+    "name": "Resistor",
+    "symbol": "R",
+    "desc": "Passive Resistance",
+    "category": "passive",
+    "terminals": 2,
+    "defaultVal": 220,
+    "unit": "Ω",
+    "datasheet": {
+      "partNumber": "MFR-25FTE52 (Yageo / Vishay)",
+      "title": "1/4-Watt Standard Precision Metal Film Resistor",
+      "category": "Passive Components / Fixed Resistor",
+      "package": "Axial Leaded (Body 6.3mm × 2.4mm, 0.6mm tinned copper leads)",
+      "description": "High stability metal film resistors featuring vacuum-deposited nickel-chromium film on high thermal conductivity ceramic rods. Offers ultra-low noise, low temperature coefficient, and high precision.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Lead 1 (Terminal A)",
+          "desc": "Bilateral non-polarized terminal"
+        },
+        {
+          "pin": 1,
+          "name": "Lead 2 (Terminal B)",
+          "desc": "Bilateral non-polarized terminal"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Rated Power Dissipation (@ 70°C)",
+          "symbol": "P_max",
+          "max": "0.25 (250)",
+          "unit": "W (mW)"
+        },
+        {
+          "param": "Max Continuous Working Voltage",
+          "symbol": "V_max",
+          "max": "250",
+          "unit": "V"
+        },
+        {
+          "param": "Maximum Overload Voltage",
+          "symbol": "V_over",
+          "max": "500",
+          "unit": "V"
+        },
+        {
+          "param": "Dielectric Withstanding Voltage",
+          "symbol": "V_iso",
+          "max": "500",
+          "unit": "V"
+        },
+        {
+          "param": "Operating Temperature Range",
+          "symbol": "T_OP",
+          "max": "-55 to +155",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Resistance Tolerance",
+          "symbol": "Tol",
+          "min": "-1.0",
+          "typ": "±1.0",
+          "max": "+1.0",
+          "unit": "%"
+        },
+        {
+          "param": "Temperature Coefficient",
+          "symbol": "TCR",
+          "min": "-50",
+          "typ": "±50",
+          "max": "+50",
+          "unit": "ppm/°C"
+        },
+        {
+          "param": "Insulation Resistance",
+          "symbol": "R_ins",
+          "min": "10,000",
+          "typ": "-",
+          "max": "-",
+          "unit": "MΩ"
+        },
+        {
+          "param": "Current Noise Index",
+          "symbol": "Noise",
+          "min": "-",
+          "typ": "< 0.1",
+          "max": "0.2",
+          "unit": "µV/V"
+        }
+      ],
+      "appNotes": "Ensure operating power P = I²·R = V² / R does not exceed 250mW at ambient temperature. For pulse applications, derate operating power according to standard IEC 60115-1 curve."
+    }
+  },
+  "capacitor": {
+    "id": "capacitor",
+    "name": "Capacitor",
+    "symbol": "C",
+    "desc": "Energy Storage",
+    "category": "passive",
+    "terminals": 2,
+    "defaultVal": 100,
+    "unit": "µF",
+    "datasheet": {
+      "partNumber": "UHE1E101MED (Nichicon / Panasonic FC)",
+      "title": "Aluminum Electrolytic Polarized Radial Capacitor",
+      "category": "Passive Components / Electrolytic Capacitor",
+      "package": "Radial Can (6.3mm Dia × 11mm Height, 2.5mm Lead Pitch)",
+      "description": "Low-impedance, miniature aluminum electrolytic capacitor designed for power supply filtering, smoothing, and timing delay circuits in consumer and industrial electronics.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Positive (+)",
+          "desc": "Longer lead without stripe"
+        },
+        {
+          "pin": 1,
+          "name": "Negative (-)",
+          "desc": "Shorter lead aligned with black minus-marked casing stripe"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Rated Working DC Voltage (WV)",
+          "symbol": "V_R",
+          "max": "25",
+          "unit": "V DC"
+        },
+        {
+          "param": "Surge Voltage Limit (30 sec)",
+          "symbol": "V_surge",
+          "max": "32",
+          "unit": "V"
+        },
+        {
+          "param": "Rated Max Ripple Current (105°C, 100kHz)",
+          "symbol": "I_ripple",
+          "max": "420",
+          "unit": "mA rms"
+        },
+        {
+          "param": "Operating Temperature Range",
+          "symbol": "T_OP",
+          "max": "-40 to +105",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Capacitance Tolerance (120Hz, 20°C)",
+          "symbol": "Tol",
+          "min": "-20",
+          "typ": "±20",
+          "max": "+20",
+          "unit": "%"
+        },
+        {
+          "param": "Equivalent Series Resistance (ESR @ 100kHz)",
+          "symbol": "ESR",
+          "min": "0.12",
+          "typ": "0.18",
+          "max": "0.25",
+          "unit": "Ω"
+        },
+        {
+          "param": "Dissipation Factor (tan δ @ 120Hz)",
+          "symbol": "DF",
+          "min": "-",
+          "typ": "0.14",
+          "max": "0.16",
+          "unit": "-"
+        },
+        {
+          "param": "Leakage Current (after 2 min)",
+          "symbol": "I_leak",
+          "min": "-",
+          "typ": "3.0",
+          "max": "7.5",
+          "unit": "µA"
+        }
+      ],
+      "appNotes": "POLARIZED COMPONENT: strictly observe polarity. Reversing polarity causes rapid dielectric breakdown, gas generation, and relief vent activation. For AC signals, use non-polarized film or ceramic capacitors."
+    }
+  },
+  "inductor": {
+    "id": "inductor",
+    "name": "Inductor",
+    "symbol": "L",
+    "desc": "Magnetic Inductance",
+    "category": "passive",
+    "terminals": 2,
+    "defaultVal": 10,
+    "unit": "mH",
+    "datasheet": {
+      "partNumber": "RLB0914-103KL (Bourns)",
+      "title": "Radial Lead Drum Core RF / Power Choke Inductor",
+      "category": "Passive Components / Fixed Inductor",
+      "package": "Radial Drum Core with Shrink-Tubing (8.7mm Dia × 12mm Height, 5mm Pitch)",
+      "description": "Ferrite core wire-wound radial choke offering high inductance, low DC resistance, and high saturation current. Widely applied in DC-DC converters, EMI filters, and resonant tank circuits.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Lead 1 (Terminal A)",
+          "desc": "Bilateral non-polarized copper winding"
+        },
+        {
+          "pin": 1,
+          "name": "Lead 2 (Terminal B)",
+          "desc": "Bilateral non-polarized copper winding"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Rated Continuous DC Current",
+          "symbol": "I_DC",
+          "max": "150",
+          "unit": "mA"
+        },
+        {
+          "param": "Saturation Current (10% drop in L)",
+          "symbol": "I_sat",
+          "max": "180",
+          "unit": "mA"
+        },
+        {
+          "param": "Dielectric Insulation Voltage",
+          "symbol": "V_iso",
+          "max": "1000",
+          "unit": "V AC"
+        },
+        {
+          "param": "Operating Temperature Range",
+          "symbol": "T_OP",
+          "max": "-40 to +125",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Nominal Inductance (1kHz, 1V)",
+          "symbol": "L",
+          "min": "9.0",
+          "typ": "10.0",
+          "max": "11.0",
+          "unit": "mH"
+        },
+        {
+          "param": "DC Resistance (DCR @ 20°C)",
+          "symbol": "R_DC",
+          "min": "20.0",
+          "typ": "25.5",
+          "max": "32.0",
+          "unit": "Ω"
+        },
+        {
+          "param": "Self-Resonant Frequency",
+          "symbol": "SRF",
+          "min": "0.65",
+          "typ": "0.85",
+          "max": "1.20",
+          "unit": "MHz"
+        },
+        {
+          "param": "Quality Factor (Q min @ 252kHz)",
+          "symbol": "Q",
+          "min": "25",
+          "typ": "45",
+          "max": "-",
+          "unit": "-"
+        }
+      ],
+      "appNotes": "Current through an inductor cannot change instantaneously (V = L·di/dt). When interrupting inductive branch current, use a flyback suppression diode or snubber to clamp inductive kickback spikes."
+    }
+  },
+  "led": {
+    "id": "led",
+    "name": "LED",
+    "symbol": "LED",
+    "desc": "Light Emitting Diode",
+    "category": "semi",
+    "terminals": 2,
+    "defaultVal": 2,
+    "unit": "Vf",
+    "datasheet": {
+      "partNumber": "WP7113ID (Kingbright)",
+      "title": "5mm High-Efficiency Red Solid State LED Lamp",
+      "category": "Optoelectronics / Indicator Diode",
+      "package": "T-1 3/4 (5mm) Radial Leaded Diffused Lens",
+      "description": "The High-Efficiency Red source color devices are made with Gallium Arsenide Phosphide on Gallium Phosphide Orange Light Emitting Diode. Ideal for status indicators, backlighting, and commercial electronics.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Anode (+)",
+          "desc": "Long lead, positive terminal, connects to higher potential"
+        },
+        {
+          "pin": 1,
+          "name": "Cathode (-)",
+          "desc": "Shorter lead with flat rim notch on package body, connects to GND/negative"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Continuous Forward Current",
+          "symbol": "I_F",
+          "max": "25",
+          "unit": "mA"
+        },
+        {
+          "param": "Peak Forward Current (1/10 Duty @ 1kHz)",
+          "symbol": "I_FP",
+          "max": "140",
+          "unit": "mA"
+        },
+        {
+          "param": "Reverse Breakdown Voltage",
+          "symbol": "V_R",
+          "max": "5.0",
+          "unit": "V"
+        },
+        {
+          "param": "Power Dissipation",
+          "symbol": "P_D",
+          "max": "75",
+          "unit": "mW"
+        },
+        {
+          "param": "Operating Temperature Range",
+          "symbol": "T_OP",
+          "max": "-40 to +85",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Forward Voltage (@ I_F = 20mA)",
+          "symbol": "V_F",
+          "min": "1.8",
+          "typ": "2.0",
+          "max": "2.5",
+          "unit": "V"
+        },
+        {
+          "param": "Reverse Current (@ V_R = 5V)",
+          "symbol": "I_R",
+          "min": "-",
+          "typ": "-",
+          "max": "10",
+          "unit": "µA"
+        },
+        {
+          "param": "Peak Emission Wavelength",
+          "symbol": "λ_peak",
+          "min": "-",
+          "typ": "627",
+          "max": "-",
+          "unit": "nm"
+        },
+        {
+          "param": "Dominant Wavelength",
+          "symbol": "λ_dom",
+          "min": "617",
+          "typ": "625",
+          "max": "633",
+          "unit": "nm"
+        },
+        {
+          "param": "Luminous Intensity (@ I_F = 20mA)",
+          "symbol": "I_V",
+          "min": "15",
+          "typ": "30",
+          "max": "80",
+          "unit": "mcd"
+        },
+        {
+          "param": "Viewing Angle (2θ 1/2)",
+          "symbol": "2θ",
+          "min": "-",
+          "typ": "60",
+          "max": "-",
+          "unit": "deg"
+        }
+      ],
+      "appNotes": "Always use a series current-limiting resistor to protect the diode from thermal runaway. Recommended formula: R_series = (V_supply - V_F) / I_target. For 9V supply and 20mA target: R = (9 - 2.0) / 0.02 = 350 Ω (use standard 330 Ω or 390 Ω)."
+    }
+  },
+  "diode": {
+    "id": "diode",
+    "name": "Diode (1N4007)",
+    "symbol": "D",
+    "desc": "1A Silicon Rectifier",
+    "category": "semi",
+    "terminals": 2,
+    "defaultVal": 0.7,
+    "unit": "Vf",
+    "datasheet": {
+      "partNumber": "1N4007 (Vishay / ON Semi)",
+      "title": "1.0 Amp General Purpose Silicon Rectifier",
+      "category": "Discrete Semiconductor / Power Rectifier",
+      "package": "DO-204AL (DO-41) Axial Leaded Glass-Passivated",
+      "description": "The 1N4007 is a high-voltage, general-purpose silicon rectifier diode designed for power rectification, reverse-polarity protection, inductive flyback clamping, and general commercial electronics.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Anode (+)",
+          "desc": "Positive terminal, current enters here during forward conduction"
+        },
+        {
+          "pin": 1,
+          "name": "Cathode (-)",
+          "desc": "Marked by white silver band on package body, current exits here"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Peak Repetitive Reverse Voltage",
+          "symbol": "V_RRM",
+          "max": "1000",
+          "unit": "V"
+        },
+        {
+          "param": "Maximum RMS Voltage",
+          "symbol": "V_RMS",
+          "max": "700",
+          "unit": "V"
+        },
+        {
+          "param": "Average Rectified Forward Current",
+          "symbol": "I_F(AV)",
+          "max": "1.0",
+          "unit": "A"
+        },
+        {
+          "param": "Non-Repetitive Peak Forward Surge",
+          "symbol": "I_FSM",
+          "max": "30",
+          "unit": "A"
+        },
+        {
+          "param": "Operating Junction Temperature",
+          "symbol": "T_J",
+          "max": "-55 to +175",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Instantaneous Forward Voltage (@ 1.0A)",
+          "symbol": "V_F",
+          "min": "-",
+          "typ": "0.7",
+          "max": "1.1",
+          "unit": "V"
+        },
+        {
+          "param": "DC Reverse Current (@ rated V_RRM)",
+          "symbol": "I_R",
+          "min": "-",
+          "typ": "0.05",
+          "max": "5.0",
+          "unit": "µA"
+        },
+        {
+          "param": "Typical Junction Capacitance (@ 4V, 1MHz)",
+          "symbol": "C_J",
+          "min": "-",
+          "typ": "15",
+          "max": "-",
+          "unit": "pF"
+        }
+      ],
+      "appNotes": "Essential for inductive flyback clamping across relays and DC motors to suppress back-EMF spikes (V = -L di/dt). Place in reverse-parallel across inductive coil with cathode connected to positive rail."
+    }
+  },
+  "zener": {
+    "id": "zener",
+    "name": "Zener Diode",
+    "symbol": "ZD",
+    "desc": "5.1V Voltage Regulator",
+    "category": "semi",
+    "terminals": 2,
+    "defaultVal": 5.1,
+    "unit": "Vz",
+    "datasheet": {
+      "partNumber": "BZX55C5V1 (Vishay / NXP)",
+      "title": "500mW 5.1-Volt Silicon Planar Zener Diode",
+      "category": "Discrete Semiconductor / Voltage Regulator",
+      "package": "DO-35 Hermetically Sealed Axial Glass Package",
+      "description": "The BZX55C5V1 is a precision 5.1V Zener diode engineered for voltage stabilization, rail regulation, ADC voltage clamping, and overvoltage surge suppression.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Anode (+)",
+          "desc": "Connects to lower potential or Ground in reverse regulation mode"
+        },
+        {
+          "pin": 1,
+          "name": "Cathode (-)",
+          "desc": "Marked with black cathode band, connects to regulated voltage rail"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Power Dissipation (@ T_amb = 25°C)",
+          "symbol": "P_tot",
+          "max": "500",
+          "unit": "mW"
+        },
+        {
+          "param": "Zener Continuous Current",
+          "symbol": "I_Z",
+          "max": "70",
+          "unit": "mA"
+        },
+        {
+          "param": "Junction Temperature",
+          "symbol": "T_J",
+          "max": "+175",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Zener Voltage (@ I_ZT = 5.0mA)",
+          "symbol": "V_Z",
+          "min": "4.8",
+          "typ": "5.1",
+          "max": "5.4",
+          "unit": "V"
+        },
+        {
+          "param": "Dynamic Zener Impedance (@ 5mA)",
+          "symbol": "Z_ZT",
+          "min": "-",
+          "typ": "30",
+          "max": "60",
+          "unit": "Ω"
+        },
+        {
+          "param": "Reverse Leakage Current (@ V_R = 1V)",
+          "symbol": "I_R",
+          "min": "-",
+          "typ": "0.1",
+          "max": "2.0",
+          "unit": "µA"
+        }
+      ],
+      "appNotes": "Always place a current-limiting series resistor R_S between the unregulated input and the Zener cathode to keep diode dissipation within 500mW: R_S = (V_in - V_Z) / (I_Z + I_load)."
+    }
+  },
+  "npn_bjt": {
+    "id": "npn_bjt",
+    "name": "NPN Transistor",
+    "symbol": "Q",
+    "desc": "2N2222 Switching BJT",
+    "category": "semi",
+    "terminals": 3,
+    "defaultVal": 100,
+    "unit": "hFE",
+    "datasheet": {
+      "partNumber": "2N2222A (Central Semi / STMicro)",
+      "title": "NPN High-Speed Switching & Amplifier Bipolar Transistor",
+      "category": "Active Semiconductor / BJT Transistor",
+      "package": "TO-92 / TO-18 3-Lead Package",
+      "description": "The 2N2222A is the industry-standard NPN silicon bipolar junction transistor designed for high-speed saturated switching, microcontroller GPIO load driving, and general audio/RF amplification.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Base (B)",
+          "desc": "Input control pin (Pin 0, Left). 0.7V forward bias initiates collector-emitter conduction"
+        },
+        {
+          "pin": 1,
+          "name": "Collector (C)",
+          "desc": "Current sink pin (Pin 1, Top-Right). Connects to load to be switched"
+        },
+        {
+          "pin": 2,
+          "name": "Emitter (E)",
+          "desc": "Reference return pin (Pin 2, Bottom-Right). Typically connects to Ground (0V)"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Collector-Emitter Breakdown Voltage",
+          "symbol": "V_CEO",
+          "max": "40",
+          "unit": "V"
+        },
+        {
+          "param": "Collector-Base Voltage",
+          "symbol": "V_CBO",
+          "max": "75",
+          "unit": "V"
+        },
+        {
+          "param": "Emitter-Base Voltage",
+          "symbol": "V_EBO",
+          "max": "6.0",
+          "unit": "V"
+        },
+        {
+          "param": "Continuous Collector Current",
+          "symbol": "I_C",
+          "max": "800",
+          "unit": "mA"
+        },
+        {
+          "param": "Total Device Dissipation (@ 25°C)",
+          "symbol": "P_D",
+          "max": "625",
+          "unit": "mW"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "DC Current Gain (h_FE @ 150mA)",
+          "symbol": "h_FE",
+          "min": "100",
+          "typ": "200",
+          "max": "300",
+          "unit": "-"
+        },
+        {
+          "param": "Collector Saturation Voltage (@ 150mA)",
+          "symbol": "V_CE(sat)",
+          "min": "-",
+          "typ": "0.2",
+          "max": "0.4",
+          "unit": "V"
+        },
+        {
+          "param": "Base Saturation Voltage (@ 150mA)",
+          "symbol": "V_BE(sat)",
+          "min": "0.6",
+          "typ": "0.75",
+          "max": "1.2",
+          "unit": "V"
+        }
+      ],
+      "appNotes": "For MCU GPIO switching, always calculate Base resistor R_B = (V_GPIO - 0.7V) / I_B. Use forced beta rule (h_FE_sat = 10 to 20) to ensure deep saturation and minimize transistor heating."
+    }
+  },
+  "fuse": {
+    "id": "fuse",
+    "name": "Fuse / Polyfuse",
+    "symbol": "FUSE",
+    "desc": "Circuit Overcurrent Protection",
+    "category": "control",
+    "terminals": 2,
+    "defaultVal": 0.5,
+    "unit": "A",
+    "datasheet": {
+      "partNumber": "0154.500DR (Littelfuse OMNI-BLOK)",
+      "title": "500mA Fast-Acting Surface Mount & Resettable Circuit Protection Fuse",
+      "category": "Circuit Protection / Overcurrent Safety Device",
+      "package": "Subminiature Cartridge / Surface Mount 2-Terminal",
+      "description": "The 0154.500DR is an engineered fast-acting overcurrent protection device designed to protect sensitive electronics, lithium battery packs, and embedded systems from dead shorts and catastrophic overcurrent faults.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Terminal 1",
+          "desc": "Power supply input terminal"
+        },
+        {
+          "pin": 1,
+          "name": "Terminal 2",
+          "desc": "Protected load output terminal"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Continuous Current Rating",
+          "symbol": "I_rated",
+          "max": "500",
+          "unit": "mA"
+        },
+        {
+          "param": "Nominal Voltage Rating",
+          "symbol": "V_max",
+          "max": "125",
+          "unit": "V"
+        },
+        {
+          "param": "Interrupting Rating (@ 125V AC/DC)",
+          "symbol": "I_rupt",
+          "max": "50",
+          "unit": "A"
+        },
+        {
+          "param": "Melting I²t (@ 10 In)",
+          "symbol": "I²t",
+          "max": "0.048",
+          "unit": "A²s"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Cold Resistance (Nominal)",
+          "symbol": "R_cold",
+          "min": "0.25",
+          "typ": "0.35",
+          "max": "0.45",
+          "unit": "Ω"
+        },
+        {
+          "param": "Opening Time (@ 200% Load)",
+          "symbol": "t_clear",
+          "min": "-",
+          "typ": "< 5.0",
+          "max": "10.0",
+          "unit": "s"
+        }
+      ],
+      "appNotes": "Mandatory for battery safety. When the fuse trips under a short-circuit condition, it opens into an infinite resistance state. In ElectroSim Pro, click \"Reset / Replace Fuse\" to restore continuity once the fault is cleared."
+    }
+  },
+  "switch": {
+    "id": "switch",
+    "name": "Switch",
+    "symbol": "SW",
+    "desc": "Toggle Switch",
+    "category": "control",
+    "terminals": 2,
+    "defaultVal": 1,
+    "unit": "State",
+    "datasheet": {
+      "partNumber": "7101SYZQE (C&K / NKK Switches)",
+      "title": "Subminiature Sealed SPDT/SPST Toggle Switch",
+      "category": "Electromechanical / Manual Switch",
+      "package": "Panel-Mount Threaded Bushing with Solder Lug Terminals",
+      "description": "Single-Pole Double-Throw (SPDT) miniature toggle switch featuring silver-plated brass contacts, epoxy terminal seal, and rugged stainless steel actuator. Configurable as SPST on/off.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Terminal 1 (Common / Input)",
+          "desc": "Pole terminal connecting to internal movable wiper blade"
+        },
+        {
+          "pin": 1,
+          "name": "Terminal 2 (Normally Open)",
+          "desc": "Contact made when toggle lever is switched ON"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Contact Rating (Resistive Load)",
+          "symbol": "I_rated",
+          "max": "5A @ 120VAC / 28VDC (2A @ 250VAC)",
+          "unit": "A"
+        },
+        {
+          "param": "Dielectric Strength (1 min)",
+          "symbol": "V_dielec",
+          "max": "1000",
+          "unit": "V rms"
+        },
+        {
+          "param": "Operating Temperature",
+          "symbol": "T_OP",
+          "max": "-30 to +85",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Initial Contact Resistance",
+          "symbol": "R_contact",
+          "min": "-",
+          "typ": "4.5",
+          "max": "10.0",
+          "unit": "mΩ"
+        },
+        {
+          "param": "Insulation Resistance (@ 500VDC)",
+          "symbol": "R_ins",
+          "min": "1,000",
+          "typ": "10,000",
+          "max": "-",
+          "unit": "MΩ"
+        },
+        {
+          "param": "Electrical Life at Rated Load",
+          "symbol": "Life_elec",
+          "min": "40,000",
+          "typ": "60,000",
+          "max": "-",
+          "unit": "cycles"
+        },
+        {
+          "param": "Mechanical Life (No Load)",
+          "symbol": "Life_mech",
+          "min": "100,000",
+          "typ": "200,000",
+          "max": "-",
+          "unit": "cycles"
+        }
+      ],
+      "appNotes": "Low-voltage DC switching creates no sustained arc. For inductive or capacitive loads, derate current by 50% or incorporate a spark quench snubber to prevent contact pitting."
+    }
+  },
+  "ground": {
+    "id": "ground",
+    "name": "Ground",
+    "symbol": "GND",
+    "desc": "Reference 0V Node",
+    "category": "power",
+    "terminals": 1,
+    "defaultVal": 0,
+    "unit": "V",
+    "datasheet": {
+      "partNumber": "IEEE Std 142 (Earth Reference Node)",
+      "title": "Zero-Volt Universal Reference & Earth Ground Plane",
+      "category": "System Reference / Ground Bus",
+      "package": "Direct Chassis / Earth Terminal / PCB Star Ground Plane",
+      "description": "Universal 0.000V electrical datum defined by IEEE Green Book standards. Serves as nodal reference for all nodal matrix equations (Node 0) and low-impedance fault return.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "GND Datum (0V)",
+          "desc": "Single-point reference node for circuit potentials"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Maximum Fault Surge Current",
+          "symbol": "I_fault",
+          "max": "25",
+          "unit": "A"
+        },
+        {
+          "param": "Nominal Ground Reference Potential",
+          "symbol": "V_ref",
+          "max": "0.000",
+          "unit": "V"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Impedance to True Earth Ground",
+          "symbol": "Z_gnd",
+          "min": "0.0",
+          "typ": "0.001",
+          "max": "0.1",
+          "unit": "Ω"
+        },
+        {
+          "param": "Common-Mode Noise Rejection",
+          "symbol": "CMRR",
+          "min": "80",
+          "typ": "110",
+          "max": "-",
+          "unit": "dB"
+        }
+      ],
+      "appNotes": "Always connect at least one ground node in any circuit loop to fix the nodal matrix reference (V_0 = 0V) and prevent floating subnets."
+    }
+  },
+  "arduino_uno": {
+    "id": "arduino_uno",
+    "name": "Arduino Uno R3",
+    "symbol": "UNO R3",
+    "desc": "ATmega328P 16MHz AVR Board (29 Header Pins: 14 Digital, 6 Analog ADC, Power Rails)",
+    "category": "iot",
+    "terminals": 29,
+    "defaultVal": 5,
+    "unit": "V",
+    "datasheet": {
+      "partNumber": "ATmega328P-PU (Microchip / Arduino)",
+      "title": "Arduino Uno R3 8-bit AVR RISC Microcontroller Board",
+      "category": "Microcontrollers / Embedded Systems",
+      "package": "DIP-28 / Standard Arduino Uno R3 Form Factor (68.6mm × 53.4mm)",
+      "description": "The Arduino Uno R3 is an open-source microcontroller board based on the Microchip ATmega328P. Features 14 digital input/output pins (6 PWM outputs), 6 analog inputs, 16 MHz ceramic resonator, USB connection, power barrel jack, ICSP header, and reset button. Operates at 5V logic with integrated 5V and 3.3V low-dropout voltage regulators.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "5V (Power Output)",
+          "desc": "Regulated +5.0V DC supply output rail from on-board LDO regulator (500mA max)"
+        },
+        {
+          "pin": 1,
+          "name": "3V3 (Power Output)",
+          "desc": "Regulated +3.3V DC supply rail from LP2985-33 LDO regulator (150mA max)"
+        },
+        {
+          "pin": 2,
+          "name": "GND (Power Ground 1)",
+          "desc": "System common reference ground (0V)"
+        },
+        {
+          "pin": 3,
+          "name": "A0 (Analog In 0 / ADC0)",
+          "desc": "10-bit Successive Approximation ADC input (0-5V, 1024 discrete steps)"
+        },
+        {
+          "pin": 4,
+          "name": "D13 (SCK / \"L\" LED)",
+          "desc": "Digital GPIO & SPI Clock tied to on-board yellow \"L\" LED with buffer"
+        },
+        {
+          "pin": 5,
+          "name": "D9 (PWM ~ / OC1A)",
+          "desc": "8-bit Timer/Counter1 Fast PWM output channel A / general GPIO"
+        },
+        {
+          "pin": 6,
+          "name": "D2 (INT0 / GPIO)",
+          "desc": "Digital GPIO supporting external hardware interrupt INT0"
+        },
+        {
+          "pin": 7,
+          "name": "VIN (Raw Power Input)",
+          "desc": "Unregulated DC power input from external supply (7V - 12V DC recommended)"
+        },
+        {
+          "pin": 8,
+          "name": "GND2 (Power Ground 2)",
+          "desc": "Second system reference ground terminal"
+        },
+        {
+          "pin": 9,
+          "name": "RESET (Master Reset)",
+          "desc": "Active-LOW microcontroller master reset line"
+        },
+        {
+          "pin": 10,
+          "name": "IOREF (I/O Reference)",
+          "desc": "Operating voltage reference (5.0V) for attached shields"
+        },
+        {
+          "pin": 11,
+          "name": "A1 (Analog In 1 / ADC1)",
+          "desc": "10-bit Successive Approximation ADC input channel 1"
+        },
+        {
+          "pin": 12,
+          "name": "A2 (Analog In 2 / ADC2)",
+          "desc": "10-bit Successive Approximation ADC input channel 2"
+        },
+        {
+          "pin": 13,
+          "name": "A3 (Analog In 3 / ADC3)",
+          "desc": "10-bit Successive Approximation ADC input channel 3"
+        },
+        {
+          "pin": 14,
+          "name": "A4 (Analog In 4 / I2C SDA)",
+          "desc": "10-bit ADC channel 4 and hardware I2C Serial Data line"
+        },
+        {
+          "pin": 15,
+          "name": "A5 (Analog In 5 / I2C SCL)",
+          "desc": "10-bit ADC channel 5 and hardware I2C Serial Clock line"
+        },
+        {
+          "pin": 16,
+          "name": "D0 (USART RX / GPIO)",
+          "desc": "Serial receiver pin for USB-to-UART bridge / general GPIO"
+        },
+        {
+          "pin": 17,
+          "name": "D1 (USART TX / GPIO)",
+          "desc": "Serial transmitter pin for USB-to-UART bridge / general GPIO"
+        },
+        {
+          "pin": 18,
+          "name": "D3 (PWM ~ / INT1)",
+          "desc": "8-bit Timer2 PWM channel B and external hardware interrupt INT1"
+        },
+        {
+          "pin": 19,
+          "name": "D4 (T0 / GPIO)",
+          "desc": "Timer0 external clock input / general digital GPIO"
+        },
+        {
+          "pin": 20,
+          "name": "D5 (PWM ~ / T1)",
+          "desc": "8-bit Timer0 PWM channel B and Timer1 clock input"
+        },
+        {
+          "pin": 21,
+          "name": "D6 (PWM ~ / AIN0)",
+          "desc": "8-bit Timer0 PWM channel A and Analog Comparator input 0"
+        },
+        {
+          "pin": 22,
+          "name": "D7 (AIN1 / GPIO)",
+          "desc": "Analog Comparator input 1 / general digital GPIO"
+        },
+        {
+          "pin": 23,
+          "name": "D8 (ICP1 / GPIO)",
+          "desc": "Timer1 Input Capture pin / general digital GPIO"
+        },
+        {
+          "pin": 24,
+          "name": "D10 (PWM ~ / SPI SS)",
+          "desc": "16-bit Timer1 PWM channel B and hardware SPI Slave Select"
+        },
+        {
+          "pin": 25,
+          "name": "D11 (PWM ~ / SPI MOSI)",
+          "desc": "8-bit Timer2 PWM channel A and hardware SPI Master Out"
+        },
+        {
+          "pin": 26,
+          "name": "D12 (SPI MISO / GPIO)",
+          "desc": "Hardware SPI Master In Slave Out / general digital GPIO"
+        },
+        {
+          "pin": 27,
+          "name": "AREF (ADC Reference)",
+          "desc": "External reference voltage input for the ATmega328P ADC (0-5V)"
+        },
+        {
+          "pin": 28,
+          "name": "GND3 (Digital Ground)",
+          "desc": "Digital header reference ground terminal"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Recommended Supply Input (VIN / Barrel)",
+          "symbol": "V_IN",
+          "max": "7.0 - 12.0",
+          "unit": "V"
+        },
+        {
+          "param": "DC Current per I/O Pin",
+          "symbol": "I_IO",
+          "max": "40",
+          "unit": "mA"
+        },
+        {
+          "param": "DC Current for 3.3V Pin",
+          "symbol": "I_3V3",
+          "max": "150",
+          "unit": "mA"
+        },
+        {
+          "param": "Flash Memory (Bootloader uses 0.5KB)",
+          "symbol": "Flash",
+          "max": "32",
+          "unit": "KB"
+        },
+        {
+          "param": "Internal SRAM / EEPROM",
+          "symbol": "SRAM",
+          "max": "2 KB / 1 KB",
+          "unit": "RAM"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Operating Logic Voltage",
+          "symbol": "V_CC",
+          "min": "4.85",
+          "typ": "5.0",
+          "max": "5.15",
+          "unit": "V"
+        },
+        {
+          "param": "Clock Speed / Quartz Frequency",
+          "symbol": "f_clk",
+          "min": "-",
+          "typ": "16.0",
+          "max": "-",
+          "unit": "MHz"
+        },
+        {
+          "param": "ADC Resolution / Quantization",
+          "symbol": "ADC_res",
+          "min": "-",
+          "typ": "10 (1024 steps)",
+          "max": "-",
+          "unit": "Bits"
+        },
+        {
+          "param": "ADC Conversion Time",
+          "symbol": "t_ADC",
+          "min": "13",
+          "typ": "65",
+          "max": "260",
+          "unit": "µs"
+        }
+      ],
+      "appNotes": "When interfacing 5V Arduino Uno pins to 3.3V sensors (e.g. ESP32, HC-SR04 Echo into 3.3V MCU), always employ a resistive voltage divider or bidirectional logic level shifter to protect 3.3V inputs from overvoltage breakdown."
+    }
+  },
+  "esp32": {
+    "id": "esp32",
+    "name": "ESP32 NodeMCU",
+    "symbol": "ESP32",
+    "desc": "Dual-Core 240MHz Wi-Fi/BLE SoC (30 DIP Pins: 18 GPIOs, 6 ADCs, 2 DACs, Power)",
+    "category": "iot",
+    "terminals": 30,
+    "defaultVal": 3.3,
+    "unit": "V",
+    "datasheet": {
+      "partNumber": "ESP-WROOM-32 (Espressif Systems)",
+      "title": "Dual-Core 240MHz Wi-Fi & Bluetooth IoT System-on-Chip Module",
+      "category": "IoT Compute / RF Transceiver SoC",
+      "package": "30-Pin NodeMCU-32S DIP Module (51.0mm × 28.5mm)",
+      "description": "The ESP-WROOM-32 is a powerful Wi-Fi+BT+BLE MCU module targeting high-performance IoT applications. Built around the dual-core Tensilica Xtensa 32-bit LX6 microprocessor operating up to 240 MHz. Features 520 KB SRAM, 4 MB SPI Flash, integrated antenna switch, RF balun, power amplifier, low-noise receive amplifier, and 30 DIP header pins.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "3V3 (Power Output)",
+          "desc": "Regulated +3.3V DC power rail from on-board AMS1117-3.3 regulator (600mA peak)"
+        },
+        {
+          "pin": 1,
+          "name": "GND (System Ground)",
+          "desc": "Ground return path and RF reference"
+        },
+        {
+          "pin": 2,
+          "name": "VN (GPIO39 / SENSOR_VN)",
+          "desc": "Low-noise 12-bit ADC1_CH3 input (0-3.3V, 4096 levels)"
+        },
+        {
+          "pin": 3,
+          "name": "D2 (GPIO2 / Blue LED)",
+          "desc": "Strapping pin & general GPIO tied to on-board blue status LED / Touch 2"
+        },
+        {
+          "pin": 4,
+          "name": "D4 (GPIO4 / ADC2_CH0)",
+          "desc": "General purpose digital I/O / Capacitive Touch 0 / ADC2 channel 0"
+        },
+        {
+          "pin": 5,
+          "name": "D18 (GPIO18 / VSPI CLK)",
+          "desc": "Hardware VSPI bus clock pin / general digital GPIO"
+        },
+        {
+          "pin": 6,
+          "name": "D21 (GPIO21 / I2C SDA)",
+          "desc": "Hardware I2C serial data interface / wire bus"
+        },
+        {
+          "pin": 7,
+          "name": "EN (Chip Enable / Reset)",
+          "desc": "Active-HIGH chip enable with internal weak pull-up"
+        },
+        {
+          "pin": 8,
+          "name": "VP (GPIO36 / SENSOR_VP)",
+          "desc": "Low-noise 12-bit ADC1_CH0 input (0-3.3V range)"
+        },
+        {
+          "pin": 9,
+          "name": "D34 (GPIO34 / ADC1_CH6)",
+          "desc": "12-bit ADC input channel 6 (Input-only pin, no pull-up)"
+        },
+        {
+          "pin": 10,
+          "name": "D35 (GPIO35 / ADC1_CH7)",
+          "desc": "12-bit ADC input channel 7 (Input-only pin, no pull-up)"
+        },
+        {
+          "pin": 11,
+          "name": "D32 (GPIO32 / ADC1_CH4)",
+          "desc": "12-bit ADC input channel 4 / Capacitive Touch 9"
+        },
+        {
+          "pin": 12,
+          "name": "D33 (GPIO33 / ADC1_CH5)",
+          "desc": "12-bit ADC input channel 5 / Capacitive Touch 8"
+        },
+        {
+          "pin": 13,
+          "name": "D25 (GPIO25 / DAC1)",
+          "desc": "8-bit Digital-to-Analog Converter 1 / ADC2_CH8"
+        },
+        {
+          "pin": 14,
+          "name": "D26 (GPIO26 / DAC2)",
+          "desc": "8-bit Digital-to-Analog Converter 2 / ADC2_CH9"
+        },
+        {
+          "pin": 15,
+          "name": "D27 (GPIO27 / Touch 7)",
+          "desc": "General digital GPIO / Capacitive Touch 7"
+        },
+        {
+          "pin": 16,
+          "name": "D14 (GPIO14 / HSPI CLK)",
+          "desc": "Hardware HSPI clock / Capacitive Touch 6"
+        },
+        {
+          "pin": 17,
+          "name": "D12 (GPIO12 / HSPI MISO)",
+          "desc": "Hardware HSPI MISO / Capacitive Touch 5 (Strapping)"
+        },
+        {
+          "pin": 18,
+          "name": "VIN (5V Input / VBUS)",
+          "desc": "5V power input from microUSB port (connected to LDO regulator)"
+        },
+        {
+          "pin": 19,
+          "name": "D23 (GPIO23 / VSPI MOSI)",
+          "desc": "Hardware VSPI Master Out Slave In / general GPIO"
+        },
+        {
+          "pin": 20,
+          "name": "D22 (GPIO22 / I2C SCL)",
+          "desc": "Hardware I2C serial clock line"
+        },
+        {
+          "pin": 21,
+          "name": "TX0 (GPIO1 / U0TXD)",
+          "desc": "Primary UART0 serial transmitter / USB programming console"
+        },
+        {
+          "pin": 22,
+          "name": "RX0 (GPIO3 / U0RXD)",
+          "desc": "Primary UART0 serial receiver / USB programming console"
+        },
+        {
+          "pin": 23,
+          "name": "D19 (GPIO19 / VSPI MISO)",
+          "desc": "Hardware VSPI Master In Slave Out / general GPIO"
+        },
+        {
+          "pin": 24,
+          "name": "D5 (GPIO5 / VSPI CS)",
+          "desc": "Hardware VSPI Chip Select / Strapping pin"
+        },
+        {
+          "pin": 25,
+          "name": "TX2 (GPIO17 / U2TXD)",
+          "desc": "Secondary UART2 serial transmitter"
+        },
+        {
+          "pin": 26,
+          "name": "RX2 (GPIO16 / U2RXD)",
+          "desc": "Secondary UART2 serial receiver"
+        },
+        {
+          "pin": 27,
+          "name": "D15 (GPIO15 / HSPI CS)",
+          "desc": "Hardware HSPI Chip Select / Capacitive Touch 3"
+        },
+        {
+          "pin": 28,
+          "name": "GND2 (System Ground 2)",
+          "desc": "Second system ground reference terminal"
+        },
+        {
+          "pin": 29,
+          "name": "3V3_2 (Power Output 2)",
+          "desc": "Auxiliary +3.3V DC power rail connection"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Operating Logic Voltage (VCC)",
+          "symbol": "V_DD",
+          "max": "3.6",
+          "unit": "V"
+        },
+        {
+          "param": "Cumulative GPIO Output Current",
+          "symbol": "I_total",
+          "max": "120",
+          "unit": "mA"
+        },
+        {
+          "param": "Per-Pin GPIO Sink/Source Current",
+          "symbol": "I_pin",
+          "max": "12",
+          "unit": "mA"
+        },
+        {
+          "param": "Deep Sleep Current Consumption",
+          "symbol": "I_sleep",
+          "max": "5",
+          "unit": "µA"
+        },
+        {
+          "param": "Operating Temperature Range",
+          "symbol": "T_OP",
+          "max": "-40 to +125",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Wi-Fi Protocol 802.11 b/g/n Speed",
+          "symbol": "PHY_rate",
+          "min": "1.0",
+          "typ": "72.2",
+          "max": "150.0",
+          "unit": "Mbps"
+        },
+        {
+          "param": "RF Frequency Spectrum",
+          "symbol": "f_RF",
+          "min": "2412",
+          "typ": "2442",
+          "max": "2484",
+          "unit": "MHz"
+        },
+        {
+          "param": "RF Output Power (802.11b, CCK 1Mbps)",
+          "symbol": "P_out",
+          "min": "-",
+          "typ": "+20",
+          "max": "-",
+          "unit": "dBm"
+        },
+        {
+          "param": "ADC Resolution (Successive Approx)",
+          "symbol": "ADC_bit",
+          "min": "-",
+          "typ": "12 (4096 steps)",
+          "max": "-",
+          "unit": "Bits"
+        }
+      ],
+      "appNotes": "ESP32 GPIO pins operate at 3.3V and are NOT 5V tolerant! Applying 5V directly to GPIO2, GPIO4, or VN will permanently damage the silicon gate oxide. Always verify power isolation before energizing circuit."
+    }
+  },
+  "dht11": {
+    "id": "dht11",
+    "name": "DHT11 Sensor",
+    "symbol": "DHT11",
+    "desc": "Digital Relative Humidity & Temp Sensor",
+    "category": "iot",
+    "terminals": 3,
+    "defaultVal": 24,
+    "unit": "°C",
+    "datasheet": {
+      "partNumber": "DHT11 (Aosong Electronics)",
+      "title": "Calibrated Digital Temperature & Relative Humidity Sensor Module",
+      "category": "Sensors / Environmental Transducers",
+      "package": "4-Pin Single-Row Leaded (Body 15.5mm × 12.0mm × 5.5mm)",
+      "description": "The DHT11 is a basic, low-cost digital temperature and humidity sensor. Utilizes a resistive-type humidity measurement component and an NTC temperature measurement component connected to an 8-bit microcontroller. Communicates over a single-wire bi-directional serial bus protocol transmitting 40-bit data packets.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "VCC (Supply Rail)",
+          "desc": "Power supply input (+3.3V to +5.5V DC)"
+        },
+        {
+          "pin": 1,
+          "name": "DATA (Serial Single-Bus)",
+          "desc": "Single-wire bidirectional serial bus. Requires 4.7k - 10kΩ pull-up resistor to VCC"
+        },
+        {
+          "pin": 2,
+          "name": "GND (Ground)",
+          "desc": "Power ground return"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Supply Voltage",
+          "symbol": "V_DD",
+          "max": "5.5",
+          "unit": "V"
+        },
+        {
+          "param": "Operating Humidity Range",
+          "symbol": "RH_range",
+          "max": "20 to 90",
+          "unit": "%RH"
+        },
+        {
+          "param": "Operating Temperature Range",
+          "symbol": "T_range",
+          "max": "0 to 50",
+          "unit": "°C"
+        },
+        {
+          "param": "Quiescent Supply Current",
+          "symbol": "I_Q",
+          "max": "100",
+          "unit": "µA"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Humidity Accuracy (@ 25°C)",
+          "symbol": "ΔRH",
+          "min": "-5.0",
+          "typ": "±4.0",
+          "max": "+5.0",
+          "unit": "%RH"
+        },
+        {
+          "param": "Temperature Accuracy",
+          "symbol": "ΔT",
+          "min": "-2.0",
+          "typ": "±1.0",
+          "max": "+2.0",
+          "unit": "°C"
+        },
+        {
+          "param": "Sampling Period Interval",
+          "symbol": "t_sample",
+          "min": "1.0",
+          "typ": "1.0",
+          "max": "2.0",
+          "unit": "s"
+        },
+        {
+          "param": "Active Measuring Current",
+          "symbol": "I_active",
+          "min": "0.5",
+          "typ": "1.0",
+          "max": "2.5",
+          "unit": "mA"
+        }
+      ],
+      "appNotes": "Single-bus transmission consists of an 18ms LOW start signal from MCU, followed by DHT response (80µs low, 80µs high), and 40 data bits: 16-bit RH integer/decimal, 16-bit Temp integer/decimal, and 8-bit Parity Checksum."
+    }
+  },
+  "hc_sr04": {
+    "id": "hc_sr04",
+    "name": "HC-SR04 Sonar",
+    "symbol": "HC-SR04",
+    "desc": "Ultrasonic Distance Ranging Module (2-400cm)",
+    "category": "iot",
+    "terminals": 4,
+    "defaultVal": 25,
+    "unit": "cm",
+    "datasheet": {
+      "partNumber": "HC-SR04 (Cytron / Osepp)",
+      "title": "Ultrasonic Sonar Non-Contact Distance Measuring Transducer",
+      "category": "Sensors / Acoustic Sonar Ranging",
+      "package": "Dual Transducer PCB Assembly (45.0mm × 20.0mm × 15.0mm)",
+      "description": "The HC-SR04 ultrasonic distance sensor provides 2cm to 400cm non-contact distance measurement with accuracy down to 3mm. Module incorporates dual piezoelectric ceramic transducers (40 kHz transmitter and receiver) along with receiver amplifier and threshold detector circuitry.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "VCC (Supply Power)",
+          "desc": "+5.0V DC regulated power input"
+        },
+        {
+          "pin": 1,
+          "name": "TRIG (Trigger Input)",
+          "desc": "10µs TTL pulse input initiates 8-cycle 40kHz sonic burst"
+        },
+        {
+          "pin": 2,
+          "name": "ECHO (Echo Output)",
+          "desc": "TTL pulse output whose high duration equals sonic flight time (t = 2*d / v_sound)"
+        },
+        {
+          "pin": 3,
+          "name": "GND (Ground)",
+          "desc": "Common 0V ground connection"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Operating Supply Voltage",
+          "symbol": "V_CC",
+          "max": "5.5",
+          "unit": "V"
+        },
+        {
+          "param": "Quiescent Standby Current",
+          "symbol": "I_Q",
+          "max": "2",
+          "unit": "mA"
+        },
+        {
+          "param": "Working Active Current",
+          "symbol": "I_work",
+          "max": "15",
+          "unit": "mA"
+        },
+        {
+          "param": "Maximum Sonar Range",
+          "symbol": "D_max",
+          "max": "400",
+          "unit": "cm"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Ultrasonic Burst Frequency",
+          "symbol": "f_sound",
+          "min": "-",
+          "typ": "40",
+          "max": "-",
+          "unit": "kHz"
+        },
+        {
+          "param": "Effective Measuring Angle",
+          "symbol": "θ_beam",
+          "min": "-",
+          "typ": "15",
+          "max": "-",
+          "unit": "deg"
+        },
+        {
+          "param": "Ranging Conversion Constant",
+          "symbol": "K_dist",
+          "min": "-",
+          "typ": "58.3 (µs/cm)",
+          "max": "-",
+          "unit": "µs/cm"
+        },
+        {
+          "param": "Measurement Resolution",
+          "symbol": "Res",
+          "min": "-",
+          "typ": "0.3",
+          "max": "-",
+          "unit": "cm"
+        }
+      ],
+      "appNotes": "Distance formula: Distance (cm) = (Echo High Time in µs) / 58.0, or Distance (inch) = Time / 148.0. Maintain at least 60ms between trigger pulses to prevent measurement overlap from reflected secondary echoes."
+    }
+  },
+  "pir_sensor": {
+    "id": "pir_sensor",
+    "name": "HC-SR501 PIR",
+    "symbol": "PIR",
+    "desc": "Pyroelectric Infrared Motion Sensor",
+    "category": "iot",
+    "terminals": 3,
+    "defaultVal": 3.3,
+    "unit": "V",
+    "datasheet": {
+      "partNumber": "HC-SR501 (Nisheng / BISS0001)",
+      "title": "Pyroelectric Passive Infrared (PIR) Human Motion Sensor Module",
+      "category": "Sensors / Infrared Security",
+      "package": "PCB with Faceted Polyethylene Fresnel Dome (32.0mm × 24.0mm)",
+      "description": "The HC-SR501 PIR sensor detects human and animal infrared motion within a 7-meter cone using a dual-element pyroelectric sensor and a BISS0001 micro-power PIR motion detector IC. Includes adjustable trimpots for sensitivity (distance) and output delay timing (0.3s - 5min).",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "VCC (Input Power)",
+          "desc": "DC supply voltage (+4.5V to +12.0V DC, onboard 3.3V regulator)"
+        },
+        {
+          "pin": 1,
+          "name": "OUT (Digital Output)",
+          "desc": "3.3V TTL active HIGH pulse when motion detected; 0V when standby"
+        },
+        {
+          "pin": 2,
+          "name": "GND (System Ground)",
+          "desc": "Ground reference return"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "DC Input Voltage Rail",
+          "symbol": "V_IN",
+          "max": "12.0",
+          "unit": "V"
+        },
+        {
+          "param": "Quiescent Drain Current",
+          "symbol": "I_drain",
+          "max": "65",
+          "unit": "µA"
+        },
+        {
+          "param": "Output Signal High Level",
+          "symbol": "V_OH",
+          "max": "3.3",
+          "unit": "V"
+        },
+        {
+          "param": "Detection Range Angle",
+          "symbol": "θ_cone",
+          "max": "110",
+          "unit": "deg"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Maximum Detection Distance",
+          "symbol": "D_detect",
+          "min": "3",
+          "typ": "5 - 7",
+          "max": "7",
+          "unit": "m"
+        },
+        {
+          "param": "Output Delay Adjustment Range",
+          "symbol": "t_delay",
+          "min": "0.3",
+          "typ": "3.0",
+          "max": "300.0",
+          "unit": "s"
+        },
+        {
+          "param": "Blockade Time After Pulse",
+          "symbol": "t_block",
+          "min": "2.5",
+          "typ": "2.5",
+          "max": "2.5",
+          "unit": "s"
+        },
+        {
+          "param": "Pyroelectric Spectral Response",
+          "symbol": "λ_IR",
+          "min": "7",
+          "typ": "10",
+          "max": "14",
+          "unit": "µm"
+        }
+      ],
+      "appNotes": "The Fresnel lens splits the detection area into optical zones. When a warm body moves between zones, differential IR radiation triggers the BISS0001 band-pass filter and comparator. Avoid mounting directly facing heat vents or incandescent lights."
+    }
+  },
+  "ldr": {
+    "id": "ldr",
+    "name": "Photoresistor",
+    "symbol": "LDR",
+    "desc": "Light-Dependent Resistor (CdS 500Ω-500kΩ)",
+    "category": "iot",
+    "terminals": 2,
+    "defaultVal": 300,
+    "unit": "lux",
+    "datasheet": {
+      "partNumber": "GL5528 (Senba Sensing)",
+      "title": "Cadmium Sulfide (CdS) Photoresistor / Light-Dependent Resistor",
+      "category": "Sensors / Optoelectronic Transducers",
+      "package": "5mm Epoxy Resin Encapsulated Ceramic Substrate",
+      "description": "The GL5528 is a CdS photoconductive cell whose bulk semiconductor resistance decreases non-linearly with increasing incident ambient light illumination. Features wide spectral response peaking near 540nm, closely matching the human photopic eye response curve.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Terminal A (Pin 1)",
+          "desc": "Symmetrical non-polarized photoconductive lead"
+        },
+        {
+          "pin": 1,
+          "name": "Terminal B (Pin 2)",
+          "desc": "Symmetrical non-polarized photoconductive lead"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Maximum Operating Voltage (DC/AC)",
+          "symbol": "V_max",
+          "max": "150",
+          "unit": "V"
+        },
+        {
+          "param": "Maximum Power Dissipation (@ 25°C)",
+          "symbol": "P_max",
+          "max": "100",
+          "unit": "mW"
+        },
+        {
+          "param": "Operating Ambient Temperature",
+          "symbol": "T_OP",
+          "max": "-30 to +70",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Light Resistance (@ 10 Lux daylight)",
+          "symbol": "R_10",
+          "min": "10",
+          "typ": "15",
+          "max": "20",
+          "unit": "kΩ"
+        },
+        {
+          "param": "Dark Resistance (@ 0 Lux pitch dark)",
+          "symbol": "R_dark",
+          "min": "1.0",
+          "typ": "2.0",
+          "max": "10.0",
+          "unit": "MΩ"
+        },
+        {
+          "param": "Gamma Sensitivity Characteristic (10-100 Lux)",
+          "symbol": "γ",
+          "min": "0.6",
+          "typ": "0.7",
+          "max": "0.8",
+          "unit": "-"
+        },
+        {
+          "param": "Peak Spectral Sensitivity Wavelength",
+          "symbol": "λ_max",
+          "min": "-",
+          "typ": "540",
+          "max": "-",
+          "unit": "nm"
+        }
+      ],
+      "appNotes": "Ideal for voltage divider circuits: Connect LDR in series with a fixed 10kΩ resistor. Output voltage V_out = V_supply * (R_fixed / (R_ldr + R_fixed)). High voltage corresponds to high light level when fixed resistor is pulled down to GND."
+    }
+  },
+  "buzzer": {
+    "id": "buzzer",
+    "name": "Piezo Buzzer",
+    "symbol": "BUZZ",
+    "desc": "Active 2.4kHz Acoustic Sounder",
+    "category": "iot",
+    "terminals": 2,
+    "defaultVal": 5,
+    "unit": "V",
+    "datasheet": {
+      "partNumber": "TMB12A05 (Sonitron / CUI Devices)",
+      "title": "5V Active Electromagnetic Piezoelectric Sounder & Buzzer",
+      "category": "Acoustic / Piezoelectric Transducers",
+      "package": "12mm Sealed Cylindrical Housing with Top Sound Port",
+      "description": "The TMB12A05 is an active electromagnetic acoustic indicator with built-in internal oscillator circuit. Produces a loud, penetrating 2400 Hz continuous sound tone when supplied with a constant DC voltage across its polarized terminals.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "Positive Lead (+)",
+          "desc": "Anode terminal with (+) mark on top of casing; connects to switched 5V rail"
+        },
+        {
+          "pin": 1,
+          "name": "Negative Lead (-)",
+          "desc": "Cathode terminal; connects to system ground (0V)"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Rated DC Operating Voltage",
+          "symbol": "V_rated",
+          "max": "5.0",
+          "unit": "V"
+        },
+        {
+          "param": "Operating Voltage Range",
+          "symbol": "V_op",
+          "max": "4.0 - 7.0",
+          "unit": "V"
+        },
+        {
+          "param": "Maximum Current Consumption",
+          "symbol": "I_max",
+          "max": "30",
+          "unit": "mA"
+        },
+        {
+          "param": "Operating Temperature",
+          "symbol": "T_OP",
+          "max": "-20 to +70",
+          "unit": "°C"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Oscillator Resonant Frequency",
+          "symbol": "f_res",
+          "min": "2100",
+          "typ": "2400",
+          "max": "2700",
+          "unit": "Hz"
+        },
+        {
+          "param": "Sound Pressure Level (@ 10cm, 5V)",
+          "symbol": "SPL",
+          "min": "85",
+          "typ": "88",
+          "max": "-",
+          "unit": "dBA"
+        },
+        {
+          "param": "Internal Coil Direct Current Resistance",
+          "symbol": "R_dc",
+          "min": "28",
+          "typ": "32",
+          "max": "36",
+          "unit": "Ω"
+        }
+      ],
+      "appNotes": "Active buzzers contain internal drive circuitry and sound continuously upon DC power application. Passive buzzers lack internal oscillators and require external AC/PWM wave signals. ElectroSim Pro utilizes Web Audio API synthesis to render real acoustic sound."
+    }
+  },
+  "servo": {
+    "id": "servo",
+    "name": "SG90 Servo",
+    "symbol": "SG90",
+    "desc": "9g Position Micro Servo Motor (0° - 180°)",
+    "category": "iot",
+    "terminals": 3,
+    "defaultVal": 90,
+    "unit": "deg",
+    "datasheet": {
+      "partNumber": "SG90 (TowerPro)",
+      "title": "9g Precision Micro Position Servo Motor with Feedback Potentiometer",
+      "category": "Actuators / Mechatronic Servomechanisms",
+      "package": "Sub-Micro Nylon Geared Actuator (22.2mm × 11.8mm × 31.0mm, 9g)",
+      "description": "The TowerPro SG90 is the global hobby and robotics standard 9-gram analog micro servo motor. Delivers 1.8 kg·cm stall torque with 180° rotation capability. Includes internal DC motor, gear reduction train, potentiometer feedback, and proportional-integral servo control amplifier circuit.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "GND (Brown / Black)",
+          "desc": "Power and signal reference ground"
+        },
+        {
+          "pin": 1,
+          "name": "VCC (Red Lead)",
+          "desc": "Motor power supply rail (+4.8V to +6.0V DC)"
+        },
+        {
+          "pin": 2,
+          "name": "PWM (Orange / Yellow)",
+          "desc": "Standard 50Hz (20ms period) PPM/PWM position control signal pulse (1.0ms - 2.0ms)"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Operating Voltage Supply",
+          "symbol": "V_CC",
+          "max": "6.0",
+          "unit": "V"
+        },
+        {
+          "param": "Stall Current (@ 4.8V supply)",
+          "symbol": "I_stall",
+          "max": "550",
+          "unit": "mA"
+        },
+        {
+          "param": "Running Idle Current",
+          "symbol": "I_idle",
+          "max": "20",
+          "unit": "mA"
+        },
+        {
+          "param": "Stall Torque (@ 4.8V)",
+          "symbol": "τ_stall",
+          "max": "1.8",
+          "unit": "kg·cm"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Operating Speed (No Load @ 4.8V)",
+          "symbol": "v_rot",
+          "min": "-",
+          "typ": "0.12 (s/60°)",
+          "max": "0.10",
+          "unit": "s/60°"
+        },
+        {
+          "param": "PWM Control Frame Frequency",
+          "symbol": "f_PWM",
+          "min": "40",
+          "typ": "50",
+          "max": "60",
+          "unit": "Hz"
+        },
+        {
+          "param": "Pulse Width Range (0° to 180°)",
+          "symbol": "t_pulse",
+          "min": "1.0",
+          "typ": "1.5 (center)",
+          "max": "2.0",
+          "unit": "ms"
+        },
+        {
+          "param": "Dead Band Width",
+          "symbol": "t_db",
+          "min": "-",
+          "typ": "5",
+          "max": "10",
+          "unit": "µs"
+        }
+      ],
+      "appNotes": "Position angle is controlled by the pulse duration: 1.0ms pulse corresponds to 0° (full left), 1.5ms pulse corresponds to 90° (neutral center), and 2.0ms pulse corresponds to 180° (full right). When powered from MCU, add a 100µF decoupling capacitor to suppress motor surge transients."
+    }
+  },
+  "relay": {
+    "id": "relay",
+    "name": "5V Relay Module",
+    "symbol": "RELAY",
+    "desc": "10A SPDT Optocoupled Isolation Relay",
+    "category": "iot",
+    "terminals": 6,
+    "defaultVal": 5,
+    "unit": "V",
+    "datasheet": {
+      "partNumber": "SRD-05VDC-SL-C (Songle / Omron)",
+      "title": "5V Single-Pole Double-Throw (SPDT) 10A Optocoupled Power Relay",
+      "category": "Electromechanical / Galvanic Isolation Switches",
+      "package": "Sealed Sugar-Cube Sealed Relay (19.0mm × 15.5mm × 15.0mm)",
+      "description": "The SRD-05VDC-SL-C relay module provides safe galvanic electrical isolation between low-power microcontroller logic (Arduino/ESP32) and high-power AC or DC electrical loads up to 250VAC @ 10A. Built with an on-board PC817 optocoupler, flyback suppression diode, transistor driver, and switching indicator LED.",
+      "pinout": [
+        {
+          "pin": 0,
+          "name": "VCC (Coil Power Rail)",
+          "desc": "+5.0V DC supply to power electromagnet relay coil"
+        },
+        {
+          "pin": 1,
+          "name": "IN (Digital Trigger Input)",
+          "desc": "Control signal input; activates coil through optocoupler (Active HIGH / LOW selectable)"
+        },
+        {
+          "pin": 2,
+          "name": "GND (Ground)",
+          "desc": "Coil supply ground reference"
+        },
+        {
+          "pin": 3,
+          "name": "NO (Normally Open Contact)",
+          "desc": "Load terminal connected to COM ONLY when relay is energized"
+        },
+        {
+          "pin": 4,
+          "name": "COM (Common Contact)",
+          "desc": "Common switch pole connected to load supply or hot line"
+        },
+        {
+          "pin": 5,
+          "name": "NC (Normally Closed Contact)",
+          "desc": "Load terminal connected to COM when relay coil is de-energized"
+        }
+      ],
+      "maxRatings": [
+        {
+          "param": "Maximum Contact Switching Voltage",
+          "symbol": "V_sw",
+          "max": "250VAC / 30VDC",
+          "unit": "V"
+        },
+        {
+          "param": "Maximum Continuous Contact Current",
+          "symbol": "I_contact",
+          "max": "10",
+          "unit": "A"
+        },
+        {
+          "param": "Dielectric Insulation Voltage",
+          "symbol": "V_iso",
+          "max": "1500",
+          "unit": "VAC"
+        },
+        {
+          "param": "Nominal Coil Voltage",
+          "symbol": "V_coil",
+          "max": "5.0",
+          "unit": "V"
+        }
+      ],
+      "characteristics": [
+        {
+          "param": "Nominal Coil Resistance (@ 20°C)",
+          "symbol": "R_coil",
+          "min": "63",
+          "typ": "70",
+          "max": "77",
+          "unit": "Ω"
+        },
+        {
+          "param": "Coil Operating Current (@ 5V)",
+          "symbol": "I_coil",
+          "min": "65",
+          "typ": "71.4",
+          "max": "80",
+          "unit": "mA"
+        },
+        {
+          "param": "Pull-in Pickup Voltage (Max)",
+          "symbol": "V_pull",
+          "min": "-",
+          "typ": "3.75 (75%)",
+          "max": "3.75",
+          "unit": "V"
+        },
+        {
+          "param": "Contact Operate / Release Time",
+          "symbol": "t_sw",
+          "min": "-",
+          "typ": "10 / 5",
+          "max": "15",
+          "unit": "ms"
+        }
+      ],
+      "appNotes": "Galvanic isolation protects delicate digital processors from mains spikes, noise, and back-EMF surges. Always observe electrical safety clearance rules when switching 120V/240V AC mains lines."
+    }
+  }
+}

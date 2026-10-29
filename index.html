@@ -29,15 +29,43 @@
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
+        <!-- Modular Electronic Components & Authentic Datasheets -->
+    <script src="components/dc_voltage.js"></script>
+    <script src="components/ac_voltage.js"></script>
+    <script src="components/resistor.js"></script>
+    <script src="components/capacitor.js"></script>
+    <script src="components/inductor.js"></script>
+    <script src="components/led.js"></script>
+    <script src="components/diode.js"></script>
+    <script src="components/zener.js"></script>
+    <script src="components/npn_bjt.js"></script>
+    <script src="components/fuse.js"></script>
+    <script src="components/switch.js"></script>
+    <script src="components/ground.js"></script>
+    <script src="components/arduino_uno.js"></script>
+    <script src="components/esp32.js"></script>
+    <script src="components/dht11.js"></script>
+    <script src="components/hc_sr04.js"></script>
+    <script src="components/pir_sensor.js"></script>
+    <script src="components/ldr.js"></script>
+    <script src="components/buzzer.js"></script>
+    <script src="components/servo.js"></script>
+    <script src="components/relay.js"></script>
+    <script src="components/index.js"></script>
+    <script src="calculations.js"></script>
+    <script src="datasheets.js"></script>
+    <script src="ai_agent.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 h-full flex flex-col overflow-hidden select-none">
 
     <!-- Top Navigation Bar -->
-    <header class="bg-slate-900 border-b border-slate-800 px-3.5 py-2 flex items-center justify-between z-20 shadow-md">
+    <header class="bg-slate-900 border-b border-slate-800 px-3.5 py-2 flex items-center justify-between z-20 shadow-md gap-2 min-w-0 overflow-x-auto no-scrollbar">
         <!-- Brand & Workspace Toggles -->
-        <div class="flex items-center space-x-2.5">
-            <button onclick="toggleSidebar('left')" id="btn-toggle-palette" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 text-xs transition-all shadow-sm" title="Toggle Components Palette ([)">
+        <div class="flex items-center space-x-2.5 shrink-0">
+            <button onclick="toggleSidebar('left')" id="btn-toggle-palette" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 text-xs transition-all shadow-sm shrink-0" title="Toggle Components Palette ([)">
                 <i class="fa-solid fa-bars-staggered"></i>
             </button>
             <div class="flex items-center space-x-2.5">
@@ -46,30 +74,30 @@
                 </div>
                 <div>
                     <div class="flex items-center space-x-2">
-                        <h1 class="font-bold text-sm tracking-wide bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">ElectroSim Pro</h1>
-                        <span class="text-[9px] font-mono font-bold bg-indigo-950/80 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-800/50">EDA v2.1</span>
+                        <h1 class="font-bold text-sm tracking-wide bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent whitespace-nowrap">ElectroSim Pro</h1>
+                        <span class="text-[9px] font-mono font-bold bg-indigo-950/80 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-800/50 whitespace-nowrap">EDA v2.1</span>
                     </div>
-                    <p class="text-[11px] text-slate-400 hidden lg:block">MNA Circuit Simulation & Semiconductor Workbench</p>
+                    <p class="text-[11px] text-slate-400 hidden 2xl:block whitespace-nowrap">MNA Circuit Simulation & Semiconductor Workbench</p>
                 </div>
             </div>
         </div>
 
         <!-- Simulation Transport & Presets -->
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
             <!-- Transport Controls -->
-            <div class="bg-slate-900/90 p-1 rounded-xl flex items-center space-x-1 border border-slate-800 shadow-inner">
-                <button id="btn-run" onclick="toggleSimulation()" class="px-3.5 py-1.5 rounded-lg font-medium text-xs flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm" title="Run / Pause Simulation (Space)">
+            <div class="bg-slate-900/90 p-1 rounded-xl flex items-center space-x-1 border border-slate-800 shadow-inner shrink-0">
+                <button id="btn-run" onclick="toggleSimulation()" class="px-3.5 py-1.5 rounded-lg font-medium text-xs flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm whitespace-nowrap shrink-0" title="Run / Pause Simulation (Space)">
                     <i class="fa-solid fa-play" id="run-icon"></i>
-                    <span id="run-text">Run Sim</span>
+                    <span id="run-text" class="whitespace-nowrap">Run Sim</span>
                 </button>
-                <button id="btn-reset" onclick="resetSimulation()" class="px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 text-xs transition-all flex items-center space-x-1.5" title="Reset Simulation">
+                <button id="btn-reset" onclick="resetSimulation()" class="px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 text-xs transition-all flex items-center space-x-1.5 whitespace-nowrap shrink-0" title="Reset Simulation">
                     <i class="fa-solid fa-rotate-right"></i>
-                    <span class="hidden md:inline">Reset</span>
+                    <span class="hidden md:inline whitespace-nowrap">Reset</span>
                 </button>
             </div>
 
             <!-- Sim Speed Control -->
-            <div class="hidden sm:flex items-center space-x-1.5 bg-slate-900/90 px-2.5 py-1.5 rounded-xl border border-slate-800 text-xs">
+            <div class="hidden sm:flex items-center space-x-1.5 bg-slate-900/90 px-2.5 py-1.5 rounded-xl border border-slate-800 text-xs shrink-0 whitespace-nowrap">
                 <span class="text-slate-400 text-[11px] font-medium">Speed:</span>
                 <select id="sim-speed" onchange="updateSimSpeed(this.value)" class="bg-slate-950 text-slate-200 text-xs rounded px-2 py-0.5 outline-none border border-slate-800 cursor-pointer font-mono">
                     <option value="0.5">0.5×</option>
@@ -79,9 +107,10 @@
             </div>
 
             <!-- Presets Dropdown Organized into Optgroups -->
-            <div class="relative">
-                <select id="preset-selector" onchange="loadPreset(this.value)" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 outline-none cursor-pointer transition-all shadow-sm">
+            <div class="relative shrink-0">
+                <select id="preset-selector" onchange="loadPreset(this.value)" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 text-xs rounded-xl px-2.5 py-2 outline-none cursor-pointer transition-all shadow-sm max-w-[170px] sm:max-w-[210px] md:max-w-[250px] lg:max-w-[280px] xl:max-w-[320px] truncate" title="Load Circuit Preset">
                     <option value="" disabled selected>📂 Load Circuit Preset</option>
+                    <option value="blank">✨ Blank Canvas (Start from Scratch)</option>
                     <optgroup label="Basic Foundations">
                         <option value="simple_led">Simple LED Circuit (Switchable)</option>
                         <option value="voltage_divider">Precision Voltage Divider</option>
@@ -106,7 +135,7 @@
             </div>
 
             <!-- Undo / Redo Actions -->
-            <div class="flex items-center space-x-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+            <div class="flex items-center space-x-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 shrink-0">
                 <button id="btn-undo" onclick="undo()" class="p-1.5 px-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 text-xs transition-all" title="Undo (Ctrl+Z)">
                     <i class="fa-solid fa-rotate-left"></i>
                 </button>
@@ -117,32 +146,41 @@
         </div>
 
         <!-- Utility Actions & Right Sidebar Toggle -->
-        <div class="flex items-center space-x-1.5">
-            <button id="btn-open-ide" onclick="openEmbeddedIDE()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center space-x-1.5 shadow-sm border border-indigo-500/50" title="Open Embedded Microcontroller Code IDE (F7)">
+        <div class="flex items-center space-x-1.5 shrink-0">
+            <button id="btn-ai-copilot" onclick="toggleAIAssistant()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-1.5 shadow-sm border border-purple-500/50 whitespace-nowrap shrink-0 group" title="Open AI Electronics Engineering Copilot (F8)">
+                <i class="fa-solid fa-wand-magic-sparkles text-amber-300 group-hover:rotate-12 transition-transform"></i>
+                <span class="hidden md:inline whitespace-nowrap">AI Copilot</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-0.5" id="ai-status-indicator" title="AI Backend Ready"></span>
+            </button>
+            <button id="btn-open-ide" onclick="openEmbeddedIDE()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center space-x-1.5 shadow-sm border border-indigo-500/50 whitespace-nowrap shrink-0" title="Open Embedded Microcontroller Code IDE (F7)">
                 <i class="fa-solid fa-code text-indigo-200"></i>
-                <span class="hidden xl:inline">Code IDE</span>
+                <span class="hidden xl:inline whitespace-nowrap">Code IDE</span>
             </button>
-            <button onclick="openCustomComponentModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center space-x-1.5 shadow-sm" title="Upload or Create Custom Component">
+            <button onclick="openCustomComponentModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center space-x-1.5 shadow-sm whitespace-nowrap shrink-0" title="Upload or Create Custom Component">
                 <i class="fa-solid fa-plus-circle text-indigo-400"></i>
-                <span class="hidden xl:inline">New Component</span>
+                <span class="hidden xl:inline whitespace-nowrap">New Component</span>
             </button>
-            <button id="btn-save" onclick="saveCircuitToStorage()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white p-2 rounded-xl text-xs transition-all shadow-sm" title="Save to Browser Storage">
+            <button id="btn-new-circuit" onclick="newCircuit()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center space-x-1.5 shadow-sm whitespace-nowrap shrink-0 group" title="New Blank Canvas (Ctrl+N)">
+                <i class="fa-solid fa-file-circle-plus text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                <span class="hidden md:inline whitespace-nowrap">New Canvas</span>
+            </button>
+            <button id="btn-save" onclick="saveCircuitToStorage()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white p-2 rounded-xl text-xs transition-all shadow-sm shrink-0" title="Save to Browser Storage">
                 <i class="fa-solid fa-floppy-disk"></i>
             </button>
-            <button id="btn-export" onclick="exportCircuitJSON()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white p-2 rounded-xl text-xs transition-all shadow-sm" title="Export Circuit (JSON)">
+            <button id="btn-export" onclick="exportCircuitJSON()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white p-2 rounded-xl text-xs transition-all shadow-sm shrink-0" title="Export Circuit (JSON)">
                 <i class="fa-solid fa-file-export"></i>
             </button>
-            <button id="btn-import" onclick="triggerImportJSON()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white p-2 rounded-xl text-xs transition-all shadow-sm" title="Import Circuit (JSON)">
+            <button id="btn-import" onclick="triggerImportJSON()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white p-2 rounded-xl text-xs transition-all shadow-sm shrink-0" title="Import Circuit (JSON)">
                 <i class="fa-solid fa-file-import"></i>
             </button>
-            <button id="btn-clear" onclick="clearCanvas()" class="bg-slate-800 hover:bg-red-950/40 hover:border-red-800/50 border border-slate-700 text-slate-300 hover:text-red-400 p-2 rounded-xl text-xs transition-all shadow-sm" title="Clear Canvas">
+            <button id="btn-clear" onclick="clearCanvas()" class="bg-slate-800 hover:bg-red-950/40 hover:border-red-800/50 border border-slate-700 text-slate-300 hover:text-red-400 p-2 rounded-xl text-xs transition-all shadow-sm shrink-0" title="Clear Canvas">
                 <i class="fa-solid fa-trash-can"></i>
             </button>
-            <button onclick="toggleHelp()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 p-2 rounded-xl text-xs transition-all shadow-sm" title="Help & Keyboard Shortcuts (?)">
+            <button onclick="toggleHelp()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 p-2 rounded-xl text-xs transition-all shadow-sm shrink-0" title="Help & Keyboard Shortcuts (?)">
                 <i class="fa-solid fa-circle-question"></i>
             </button>
-            <div class="h-4 w-px bg-slate-800 mx-1"></div>
-            <button onclick="toggleSidebar('right')" id="btn-toggle-inspector" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 text-xs transition-all shadow-sm" title="Toggle Component Inspector (])">
+            <div class="h-4 w-px bg-slate-800 mx-1 shrink-0"></div>
+            <button onclick="toggleSidebar('right')" id="btn-toggle-inspector" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 text-xs transition-all shadow-sm shrink-0" title="Toggle Component Inspector (])">
                 <i class="fa-solid fa-sliders"></i>
             </button>
             <!-- Hidden file input for JSON import -->
@@ -217,6 +255,9 @@
                 </button>
                 <button onclick="openEmbeddedIDE()" id="btn-ide-dock" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-indigo-600 border border-slate-700/80 text-slate-300 hover:text-white text-xs transition-all flex items-center justify-center group shadow-sm" title="Open Microcontroller Code IDE (F7)">
                     <i class="fa-solid fa-code text-indigo-400 group-hover:scale-110 transition-transform"></i>
+                </button>
+                <button onclick="toggleAIAssistant()" id="btn-ai-dock" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-purple-600 border border-slate-700/80 text-purple-400 hover:text-purple-300 text-xs transition-all flex items-center justify-center group shadow-sm" title="AI Electronics Copilot (F8)">
+                    <i class="fa-solid fa-wand-magic-sparkles group-hover:scale-110 transition-transform"></i>
                 </button>
                 <div class="h-4 w-px bg-slate-800 mx-1"></div>
                 <button onclick="zoomCanvas(1.2)" class="p-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-all" title="Zoom In (+)">
@@ -630,7 +671,7 @@
     <!-- JavaScript Circuit Engine & UI Controller -->
     <script>
         // --- COMPONENT DEFINITIONS ---
-        const COMPONENT_TYPES = {
+        const COMPONENT_TYPES = (typeof window !== "undefined" && window.COMPONENT_TYPES) ? window.COMPONENT_TYPES : {
             dc_voltage: { name: 'DC Voltage', symbol: 'V_DC', desc: 'Direct Current Source', category: 'power', terminals: 2, defaultVal: 9, unit: 'V' },
             ac_voltage: { name: 'AC Voltage', symbol: 'V_AC', desc: 'Alternating Sine Source', category: 'power', terminals: 2, defaultVal: 12, unit: 'V' },
             resistor:   { name: 'Resistor',   symbol: 'R',    desc: 'Passive Resistance', category: 'passive', terminals: 2, defaultVal: 220, unit: 'Ω' },
@@ -654,8 +695,16 @@
             relay:      { name: '5V Relay Module',symbol: 'RELAY', desc: '10A SPDT Optocoupled Isolation Relay', category: 'iot', terminals: 6, defaultVal: 5, unit: 'V' }
         };
 
+        // --- OPTIMIZED COMPONENT LOOKUP HELPER (ZERO-ALLOCATION) ---
+        function getComponentDef(type) {
+            if (typeof customComponentDefs !== 'undefined' && customComponentDefs && customComponentDefs[type]) {
+                return customComponentDefs[type];
+            }
+            return COMPONENT_TYPES[type] || null;
+        }
+
         // --- AUTHENTIC COMPONENT DATASHEETS ARCHIVE ---
-        const REAL_COMPONENT_DATASHEETS = {
+        const REAL_COMPONENT_DATASHEETS = (typeof window !== "undefined" && window.REAL_COMPONENT_DATASHEETS) ? window.REAL_COMPONENT_DATASHEETS : {
             led: {
                 partNumber: 'WP7113ID (Kingbright)',
                 title: '5mm High-Efficiency Red Solid State LED Lamp',
@@ -1269,17 +1318,20 @@
         let animFrameId = null;
         let toastTimeout = null;
 
-        // --- UTILITY: ROTATION MATH ---
+        // --- UTILITY: ROTATION MATH (FAST INTEGER ORTHOGONAL TRANSFORM) ---
         function rotatePoint(x, y, deg) {
-            const rad = (deg * Math.PI) / 180;
+            const d = ((deg % 360) + 360) % 360;
+            if (d === 0) return { x, y };
+            if (d === 90) return { x: -y, y: x };
+            if (d === 180) return { x: -x, y: -y };
+            if (d === 270) return { x: y, y: -x };
+            const rad = (d * Math.PI) / 180;
             const cos = Math.cos(rad);
             const sin = Math.sin(rad);
             return {
                 x: Math.round(x * cos - y * sin),
                 y: Math.round(x * sin + y * cos)
             };
-
-        
         }
 
         // --- WEB AUDIO API BUZZER SOUND SYNTHESIZER ---
@@ -1356,8 +1408,7 @@
             solve(components, wires, time = 0, dt = 0.016) {
                 const termKeys = [];
                 for (const comp of components) {
-                    const allTypes = { ...COMPONENT_TYPES, ...customComponentDefs };
-                    const typeInfo = allTypes[comp.type] || { terminals: 2 };
+                    const typeInfo = getComponentDef(comp.type) || { terminals: 2 };
                     const numTerms = typeInfo.terminals || (comp.type === 'ground' ? 1 : 2);
                     for (let t = 0; t < numTerms; t++) {
                         termKeys.push(`${comp.id}_${t}`);
@@ -1632,7 +1683,7 @@
                 const K = vSources.length;
                 const size = M + K;
 
-                let voltages = new Array(numNodes).fill(0);
+                let voltages = (this._prevVoltages && this._prevVoltages.length === numNodes) ? [...this._prevVoltages] : new Array(numNodes).fill(0);
                 let srcCurrents = new Array(K).fill(0);
                 const maxIter = 8;
 
@@ -1679,7 +1730,7 @@
                             const g = c / dt;
                             addConductance(n0, n1, g);
                             const vPrev = comp.prevV || 0;
-                            addCurrentSource(n0, n1, g * vPrev);
+                            addCurrentSource(n1, n0, g * vPrev);
                         } else if (comp.type === 'inductor') {
                             const l = Math.max(1e-12, (comp.value || 10) * 1e-3);
                             const g = dt / l;
@@ -1874,6 +1925,7 @@
                     const v0 = voltages[n0] || 0;
                     const v1 = voltages[n1] || 0;
                     const deltaV = v1 - v0;
+                    const vCap = v0 - v1;
 
                     let current = 0;
                     if (comp.type === 'resistor') {
@@ -2029,8 +2081,8 @@
                     } else if (comp.type === 'capacitor') {
                         const c = (comp.value || 100) * 1e-6;
                         const vPrev = comp.prevV || 0;
-                        current = c * (deltaV - vPrev) / dt;
-                        comp.prevV = deltaV;
+                        current = c * (vCap - vPrev) / dt;
+                        comp.prevV = vCap;
                     } else if (comp.type === 'inductor') {
                         const l = (comp.value || 10) * 1e-3;
                         const iPrev = comp.prevI || 0;
@@ -2053,6 +2105,7 @@
                 }
 
                 const isShortCircuit = isDeadShort || (maxCurrent > 10.0);
+                this._prevVoltages = [...voltages];
                 const isClosedLoop = maxCurrent > 1e-5;
 
                 return {
@@ -2122,7 +2175,7 @@
 
             // Load saved circuit or default preset
             if (!loadCircuitFromStorage(true)) {
-                loadPreset('simple_led');
+                newCircuit(true);
             }
 
             recordHistory();
@@ -2766,7 +2819,16 @@ Generated by ElectroSim Pro Engineering CAD Engine
                     closeDatasheetViewer();
                     closeCustomComponentModal();
                     closeEmbeddedIDE();
-                } else if (e.key === 'F7') {
+                } else if ((e.ctrlKey || e.metaKey) && (e.key === 'n' || e.key === 'N')) {
+                e.preventDefault();
+                newCircuit();
+                return;
+            } else if (e.key === 'F8') {
+                e.preventDefault();
+                toggleAIAssistant();
+                return;
+            }
+            if (e.key === 'F7') {
                     e.preventDefault();
                     const modal = document.getElementById('embedded-ide-modal');
                     if (modal && modal.classList.contains('hidden')) {
@@ -2843,8 +2905,19 @@ Generated by ElectroSim Pro Engineering CAD Engine
             state.panY += dy;
         }
 
+        let cachedCanvasRect = null;
+        function getCanvasBoundingRect() {
+            if (!cachedCanvasRect && canvas) {
+                cachedCanvasRect = canvas.getBoundingClientRect();
+            }
+            return cachedCanvasRect || { left: 0, top: 0, width: 800, height: 600 };
+        }
+        function invalidateCanvasRect() {
+            cachedCanvasRect = null;
+        }
+
         function screenToWorld(sx, sy) {
-            const rect = canvas.getBoundingClientRect();
+            const rect = getCanvasBoundingRect();
             const x = (sx - rect.left - state.panX) / state.zoom;
             const y = (sy - rect.top - state.panY) / state.zoom;
             return { x, y };
@@ -2877,8 +2950,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
 
         function getComponentTerminals(comp) {
             const rot = comp.rotation || 0;
-            const allTypes = { ...COMPONENT_TYPES, ...customComponentDefs };
-            const typeInfo = allTypes[comp.type] || { terminals: 2 };
+            const typeInfo = getComponentDef(comp.type) || { terminals: 2 };
             const numTerms = typeInfo.terminals || (comp.type === 'ground' ? 1 : 2);
 
             let base = [];
@@ -3564,8 +3636,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
         }
 
         function addComponentAt(type, wx, wy) {
-            const allTypes = { ...COMPONENT_TYPES, ...customComponentDefs };
-            const info = allTypes[type] || { defaultVal: 5, name: 'Component' };
+            const info = getComponentDef(type) || { defaultVal: 5, name: 'Component' };
             const newComp = {
                 id: 'c_' + Math.random().toString(36).substring(2, 9),
                 type: type,
@@ -3645,6 +3716,55 @@ Generated by ElectroSim Pro Engineering CAD Engine
             state.selectedType = null;
             updateInspector();
         }
+
+                function newCircuit(silent = false) {
+            if (!silent && state.components && state.components.length > 0) {
+                if (!confirm("Start a new blank circuit? Any unsaved changes on the current canvas will be cleared.")) {
+                    return;
+                }
+            }
+
+            // Stop firmware sketches on any microcontrollers
+            if (state.components) {
+                for (let c of state.components) {
+                    if (c.sketchRunning && typeof stopIdeSketchForBoard === "function") {
+                        stopIdeSketchForBoard(c.id);
+                    }
+                }
+            }
+
+            state.components = [];
+            state.wires = [];
+            state.selectedId = null;
+            state.selectedType = null;
+            state.hoveredTerm = null;
+            state.wiring = null;
+            state.panX = 0;
+            state.panY = 0;
+            state.zoom = 1;
+            state.scopeBuffer = [];
+            state.scopeBufferI = [];
+            state.lastSolveResult = null;
+
+            try {
+                localStorage.removeItem("electro_circuit_data");
+            } catch (e) {}
+
+            recordHistory();
+            updateInspector();
+
+            const presetSelector = document.getElementById("preset-selector");
+            if (presetSelector) presetSelector.value = "";
+
+            if (typeof render === "function") {
+                render();
+            }
+
+            if (!silent) {
+                showToast("Fresh blank canvas ready — drag parts from the palette to start building!", "success");
+            }
+        }
+        window.newCircuit = newCircuit;
 
         function clearCanvas() {
             if (confirm('Clear entire circuit?')) {
@@ -3837,14 +3957,14 @@ Generated by ElectroSim Pro Engineering CAD Engine
             if (state.isRunning) {
                 dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
                 text.textContent = 'Simulation Running';
-                btnRun.className = 'px-4 py-1.5 rounded-lg font-medium text-sm flex items-center space-x-2 bg-amber-600 hover:bg-amber-500 text-white transition-all shadow-sm';
+                btnRun.className = 'px-3.5 py-1.5 rounded-lg font-medium text-xs flex items-center space-x-2 bg-amber-600 hover:bg-amber-500 text-white transition-all shadow-sm whitespace-nowrap shrink-0';
                 runIcon.className = 'fa-solid fa-pause';
                 runText.textContent = 'Pause Sim';
                 showToast('Simulation started with live MNA engine', 'success');
             } else {
                 dot.className = 'w-2.5 h-2.5 rounded-full bg-slate-500';
                 text.textContent = 'Simulation Stopped';
-                btnRun.className = 'px-4 py-1.5 rounded-lg font-medium text-sm flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm';
+                btnRun.className = 'px-3.5 py-1.5 rounded-lg font-medium text-xs flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm whitespace-nowrap shrink-0';
                 runIcon.className = 'fa-solid fa-play';
                 runText.textContent = 'Run Sim';
                 showToast('Simulation paused', 'info');
@@ -3852,6 +3972,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
         }
 
         function resetSimulation() {
+            if (typeof circuitSolver !== "undefined") circuitSolver._prevVoltages = null;
             state.time = 0;
             state.scopeBuffer = [];
             state.scopeBufferI = [];
@@ -3872,21 +3993,27 @@ Generated by ElectroSim Pro Engineering CAD Engine
             // Solve circuit physics with Modified Nodal Analysis
             state.lastSolveResult = circuitSolver.solve(state.components, state.wires, state.time, dt * state.simSpeed);
 
-            // Update floating status badge dynamically
-            const dot = document.getElementById('sim-status-dot');
-            const text = document.getElementById('sim-status-text');
-            if (state.lastSolveResult.isShortCircuit) {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 animate-ping';
-                text.textContent = '⚠️ Short Circuit! High Current!';
-                text.className = 'font-bold text-red-400';
-            } else if (!state.lastSolveResult.isClosedLoop) {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500';
-                text.textContent = 'Simulation Running (Open Circuit - 0 mA)';
-                text.className = 'font-medium text-amber-300';
-            } else {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
-                text.textContent = 'Simulation Running (Closed Loop)';
-                text.className = 'font-medium text-emerald-400';
+            // Update floating status badge dynamically (ONLY ON STATE CHANGE)
+            const currentSimStatus = state.lastSolveResult.isShortCircuit ? 'short' : (!state.lastSolveResult.isClosedLoop ? 'open' : 'closed');
+            if (state._lastSimStatus !== currentSimStatus) {
+                state._lastSimStatus = currentSimStatus;
+                const dot = document.getElementById('sim-status-dot');
+                const text = document.getElementById('sim-status-text');
+                if (dot && text) {
+                    if (currentSimStatus === 'short') {
+                        dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500 animate-ping';
+                        text.textContent = '⚠️ Short Circuit! High Current!';
+                        text.className = 'font-bold text-red-400';
+                    } else if (currentSimStatus === 'open') {
+                        dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500';
+                        text.textContent = 'Simulation Running (Open Circuit - 0 mA)';
+                        text.className = 'font-medium text-amber-300';
+                    } else {
+                        dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
+                        text.textContent = 'Simulation Running (Closed Loop)';
+                        text.className = 'font-medium text-emerald-400';
+                    }
+                }
             }
         }
 
@@ -3997,21 +4124,21 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 }
             }
 
-            // Major grid coordinate crosshairs (100px)
+            // Major grid coordinate crosshairs (100px) - BATCHED SINGLE PATH
             const majorStartX = Math.floor(left / majorGridSize) * majorGridSize;
             const majorStartY = Math.floor(top / majorGridSize) * majorGridSize;
             ctx.strokeStyle = '#33415580';
             ctx.lineWidth = 1;
+            ctx.beginPath();
             for (let x = majorStartX; x < right; x += majorGridSize) {
                 for (let y = majorStartY; y < bottom; y += majorGridSize) {
-                    ctx.beginPath();
                     ctx.moveTo(x - 4, y);
                     ctx.lineTo(x + 4, y);
                     ctx.moveTo(x, y - 4);
                     ctx.lineTo(x, y + 4);
-                    ctx.stroke();
                 }
             }
+            ctx.stroke();
         }
 
         function drawWire(wire) {
@@ -4025,7 +4152,26 @@ Generated by ElectroSim Pro Engineering CAD Engine
 
             const t1 = terms1[wire.fromTerm];
             const t2 = terms2[wire.toTerm];
-            const path = computeWirePath(t1, t2, c1.id, c2.id);
+            
+            // Check if cached orthogonal path is valid
+            let path = wire._cachedPath;
+            if (!path || wire._c1x !== c1.x || wire._c1y !== c1.y || wire._c1r !== c1.rotation ||
+                wire._c2x !== c2.x || wire._c2y !== c2.y || wire._c2r !== c2.rotation) {
+                path = computeWirePath(t1, t2, c1.id, c2.id);
+                wire._cachedPath = path;
+                wire._c1x = c1.x; wire._c1y = c1.y; wire._c1r = c1.rotation;
+                wire._c2x = c2.x; wire._c2y = c2.y; wire._c2r = c2.rotation;
+                // Precompute segment lengths
+                const segs = [];
+                let totalLen = 0;
+                for (let i = 0; i < path.length - 1; i++) {
+                    const len = Math.hypot(path[i+1].x - path[i].x, path[i+1].y - path[i].y);
+                    segs.push(len);
+                    totalLen += len;
+                }
+                wire._cachedSegLengths = segs;
+                wire._cachedTotalLen = totalLen;
+            }
 
             // Determine branch electrical current from solver
             let wireCurrent = 0;
@@ -4078,15 +4224,10 @@ Generated by ElectroSim Pro Engineering CAD Engine
             ctx.fillStyle = ctx.strokeStyle;
             ctx.fill();
 
-            // Animated glowing current flow particles along path
+            // Animated glowing current flow particles along path (USING CACHED METRICS)
             if (hasCurrent) {
-                const segLengths = [];
-                let totalLen = 0;
-                for (let i = 0; i < path.length - 1; i++) {
-                    const len = Math.hypot(path[i+1].x - path[i].x, path[i+1].y - path[i].y);
-                    segLengths.push(len);
-                    totalLen += len;
-                }
+                const segLengths = wire._cachedSegLengths || [];
+                const totalLen = wire._cachedTotalLen || 0;
 
                 if (totalLen > 0) {
                     const particleCount = Math.max(2, Math.min(8, Math.round(totalLen / 45)));
@@ -4185,8 +4326,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
         // --- SCHEMATIC SYMBOL COMPONENT RENDERING ---
         function drawComponent(comp) {
             const isSelected = state.selectedId === comp.id;
-            const allTypes = { ...COMPONENT_TYPES, ...customComponentDefs };
-            const info = allTypes[comp.type] || { symbol: '?', name: 'Unknown' };
+            const info = getComponentDef(comp.type) || { symbol: '?', name: 'Unknown' };
 
             // Check if component has current from solver
             let compCurrent = 0;
@@ -5134,8 +5274,8 @@ Generated by ElectroSim Pro Engineering CAD Engine
                     if (b) {
                         probeVoltage = b.deltaV;
                         probeCurrent = b.current;
-                        const allTypes = { ...COMPONENT_TYPES, ...customComponentDefs };
-                        probeName = allTypes[comp.type] ? allTypes[comp.type].name : comp.id;
+                        const def = getComponentDef(comp.type);
+                        probeName = def ? def.name : comp.id;
                     }
                 }
             } else if (state.lastSolveResult && state.lastSolveResult.branchCurrents) {
@@ -5207,38 +5347,47 @@ Generated by ElectroSim Pro Engineering CAD Engine
             }
             scopeCtx.restore();
 
-            // Update numeric readouts
-            if (state.isRunning) {
-                document.getElementById('meter-val-1').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-cyan-400 inline-block mr-1"></span>V: ${probeVoltage.toFixed(2)} V`;
-                document.getElementById('meter-val-2').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block mr-1"></span>I: ${(probeCurrent * 1000).toFixed(2)} mA`;
-                const pMw = Math.abs(probeVoltage * probeCurrent * 1000);
-                document.getElementById('meter-val-p').textContent = `P: ${pMw < 0.1 && pMw > 0 ? (pMw * 1000).toFixed(1) + ' µW' : pMw >= 1000 ? (pMw / 1000).toFixed(2) + ' W' : pMw.toFixed(1) + ' mW'}`;
-                document.getElementById('meter-target').textContent = `Probe: ${probeName}`;
-            } else {
-                document.getElementById('meter-val-1').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block mr-1"></span>V: 0.00 V`;
-                document.getElementById('meter-val-2').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block mr-1"></span>I: 0.00 mA`;
-                document.getElementById('meter-val-p').textContent = `P: 0.00 mW`;
-                document.getElementById('meter-target').textContent = `Probe: Paused`;
-            }
+            // Update numeric readouts (THROTTLED AT ~10Hz / 100ms TO PREVENT LAYOUT THRASHING)
+            const nowMs = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+            if (!state._lastScopeDomTime || (nowMs - state._lastScopeDomTime) >= 100 || !state.isRunning) {
+                state._lastScopeDomTime = nowMs;
+                const m1 = document.getElementById('meter-val-1');
+                const m2 = document.getElementById('meter-val-2');
+                const mp = document.getElementById('meter-val-p');
+                const mt = document.getElementById('meter-target');
 
-            // Live Inspector Electrical Metrics & Operational Stress
-            const liveVDrop = document.getElementById('live-vdrop');
-            const liveCurrent = document.getElementById('live-current');
-            const livePower = document.getElementById('live-power');
-            if (liveVDrop && liveCurrent && state.selectedId) {
-                let v = 0, i = 0;
-                if (state.lastSolveResult && state.lastSolveResult.branchCurrents) {
-                    const b = state.lastSolveResult.branchCurrents.get(state.selectedId);
-                    if (b) { v = b.deltaV; i = b.current; }
+                if (state.isRunning) {
+                    if (m1) m1.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-cyan-400 inline-block mr-1"></span>V: ${probeVoltage.toFixed(2)} V`;
+                    if (m2) m2.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block mr-1"></span>I: ${(probeCurrent * 1000).toFixed(2)} mA`;
+                    const pMw = Math.abs(probeVoltage * probeCurrent * 1000);
+                    if (mp) mp.textContent = `P: ${pMw < 0.1 && pMw > 0 ? (pMw * 1000).toFixed(1) + ' µW' : pMw >= 1000 ? (pMw / 1000).toFixed(2) + ' W' : pMw.toFixed(1) + ' mW'}`;
+                    if (mt) mt.textContent = `Probe: ${probeName}`;
+                } else {
+                    if (m1) m1.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block mr-1"></span>V: 0.00 V`;
+                    if (m2) m2.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block mr-1"></span>I: 0.00 mA`;
+                    if (mp) mp.textContent = `P: 0.00 mW`;
+                    if (mt) mt.textContent = `Probe: Paused`;
                 }
-                liveVDrop.textContent = `${v.toFixed(2)} V`;
-                liveCurrent.textContent = `${(i * 1000).toFixed(2)} mA`;
-                if (livePower) {
-                    const p = Math.abs(v * i * 1000);
-                    livePower.textContent = p < 0.1 && p > 0 ? `${(p * 1000).toFixed(1)} µW` : p >= 1000 ? `${(p / 1000).toFixed(2)} W` : `${p.toFixed(1)} mW`;
+
+                // Live Inspector Electrical Metrics & Operational Stress
+                const liveVDrop = document.getElementById('live-vdrop');
+                const liveCurrent = document.getElementById('live-current');
+                const livePower = document.getElementById('live-power');
+                if (liveVDrop && liveCurrent && state.selectedId) {
+                    let v = 0, i = 0;
+                    if (state.lastSolveResult && state.lastSolveResult.branchCurrents) {
+                        const b = state.lastSolveResult.branchCurrents.get(state.selectedId);
+                        if (b) { v = b.deltaV; i = b.current; }
+                    }
+                    liveVDrop.textContent = `${v.toFixed(2)} V`;
+                    liveCurrent.textContent = `${(i * 1000).toFixed(2)} mA`;
+                    if (livePower) {
+                        const p = Math.abs(v * i * 1000);
+                        livePower.textContent = p < 0.1 && p > 0 ? `${(p * 1000).toFixed(1)} µW` : p >= 1000 ? `${(p / 1000).toFixed(2)} W` : `${p.toFixed(1)} mW`;
+                    }
                 }
+                updateInspectorStressLive();
             }
-            updateInspectorStressLive();
         }
 
         // --- COMPONENT DETAILS & RESISTOR COLOR CODE SYSTEM ---
@@ -6077,23 +6226,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
             `;
         }
 
-        function setArduinoD13Mode(mode) {
-            const comp = state.components.find(c => c.id === state.selectedId);
-            if (comp) {
-                comp.d13Mode = mode;
-                recordHistory();
-                updateInspector();
-            }
-        }
 
-        function setArduinoD9Duty(val) {
-            const comp = state.components.find(c => c.id === state.selectedId);
-            if (comp) {
-                comp.d9Duty = parseInt(val, 10);
-                const lbl = document.getElementById('d9-duty-label');
-                if (lbl) lbl.textContent = `${comp.d9Duty}% (${(5 * comp.d9Duty / 100).toFixed(2)}V avg)`;
-            }
-        }
 
         function toggleArduinoPin(compId, pinName) {
             const comp = state.components.find(c => c.id === compId);
@@ -6239,14 +6372,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
             `;
         }
 
-        function setEsp32D2Mode(mode) {
-            const comp = state.components.find(c => c.id === state.selectedId);
-            if (comp) {
-                comp.d2Mode = mode;
-                recordHistory();
-                updateInspector();
-            }
-        }
+
 
         function toggleEsp32Pin(compId, pinName) {
             const comp = state.components.find(c => c.id === compId);
@@ -7000,8 +7126,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
             if (state.selectedType === 'component') {
                 const comp = state.components.find(c => c.id === state.selectedId);
                 if (!comp) return;
-                const allTypes = { ...COMPONENT_TYPES, ...customComponentDefs };
-                const info = allTypes[comp.type] || { name: 'Component', desc: '', unit: '' };
+                const info = getComponentDef(comp.type) || { name: 'Component', desc: '', unit: '' };
 
                 idLabel.textContent = comp.id;
 
@@ -7161,6 +7286,10 @@ Generated by ElectroSim Pro Engineering CAD Engine
 
         // --- PRESET CIRCUITS ---
         function loadPreset(presetName) {
+            if (presetName === "blank") {
+                newCircuit(false);
+                return;
+            }
             state.components = [];
             state.wires = [];
             state.selectedId = null;
@@ -8262,5 +8391,91 @@ void loop() {
             showToast(`Stopped firmware on ${comp.id}`, 'info');
         }
     </script>
+
+    <!-- ========================================================================= -->
+    <!-- --- AI ELECTRONICS ENGINEERING COPILOT PANEL --- -->
+    <!-- ========================================================================= -->
+    <aside id="ai-assistant-panel" class="fixed top-14 right-3 bottom-3 w-[460px] max-w-[calc(100vw-24px)] bg-slate-900/95 backdrop-blur-xl border border-purple-500/40 rounded-2xl shadow-2xl flex flex-col z-40 overflow-hidden transition-all duration-300 translate-x-[500px] pointer-events-none opacity-0 select-text">
+        <!-- Panel Header -->
+        <div class="bg-gradient-to-r from-purple-950/90 via-slate-900 to-indigo-950/90 px-4 py-3 border-b border-purple-800/40 flex items-center justify-between select-none shrink-0">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-300 text-sm"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h3 class="font-bold text-xs tracking-wide text-white">ElectroSim AI Copilot</h3>
+                        <span class="text-[9px] font-mono font-semibold bg-purple-950 text-purple-300 px-1.5 py-0.5 rounded border border-purple-800/60" id="ai-model-badge">Super-VL</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5 text-[10px] text-slate-400">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400" id="ai-conn-dot"></span>
+                        <span id="ai-conn-status">Checking backend...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-1">
+                <select id="ai-model-selector" onchange="onAiModelChanged(this.value)" class="bg-slate-950/90 text-purple-300 border border-purple-800/50 rounded-lg text-[10px] px-2 py-1 outline-none cursor-pointer font-mono mr-1">
+                    <option value="nvidia/nemotron-3.5-super-vl-120b-a12b" selected>Super-VL (120B)</option>
+                    <option value="nvidia/llama-3.1-nemotron-70b-instruct">Nemotron 70B</option>
+                    <option value="meta/llama-3.2-11b-vision-instruct">Llama 3.2 11B</option>
+                    <option value="mock">Offline Mock Mode</option>
+                </select>
+                <button onclick="clearAIChat()" class="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-slate-800 text-xs transition-all" title="Clear Chat History">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+                <button onclick="closeAIAssistant()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 text-xs transition-all" title="Close Copilot (Esc)">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Messages Stream -->
+        <div id="ai-chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-sans">
+            <!-- Messages inserted dynamically -->
+        </div>
+
+        <!-- Thinking / Generation Status Bar -->
+        <div id="ai-thinking-bar" class="hidden px-4 py-2 bg-purple-950/40 border-t border-purple-900/40 flex items-center justify-between text-xs text-purple-300 shrink-0">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+                <span class="text-[11px] font-medium" id="ai-thinking-text">Analyzing circuit physics & equations...</span>
+            </div>
+            <button onclick="stopAIGeneration()" class="px-2.5 py-0.5 rounded-lg bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/60 text-[10px] font-semibold transition-all">Stop</button>
+        </div>
+
+        <!-- Input & Controls Area -->
+        <div class="p-3 bg-slate-950/95 border-t border-slate-800 space-y-2 shrink-0">
+            <!-- Context and Attachment Controls -->
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+                <label class="flex items-center space-x-1.5 cursor-pointer select-none">
+                    <input type="checkbox" id="ai-context-toggle" checked class="rounded border-slate-700 bg-slate-900 text-purple-600 focus:ring-0">
+                    <span class="text-[11px] text-slate-300">Include Live Circuit Snapshot</span>
+                </label>
+                <div class="flex items-center space-x-1">
+                    <label class="px-2 py-0.5 bg-slate-900 hover:bg-slate-800 text-slate-300 rounded-lg border border-slate-800 text-[10px] font-medium cursor-pointer transition-all flex items-center space-x-1" title="Upload Datasheet (PDF/TXT/JSON)">
+                        <i class="fa-solid fa-paperclip text-purple-400"></i>
+                        <span id="ai-attachment-label">Attach Specs</span>
+                        <input type="file" id="ai-datasheet-input" onchange="handleAIDatasheetUpload(event)" accept=".pdf,.txt,.json,.md" class="hidden">
+                    </label>
+                    <button id="ai-remove-attachment" onclick="removeAIAttachment()" class="hidden text-red-400 hover:text-red-300 text-[10px] p-0.5" title="Remove attachment">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Multi-line input & Send button -->
+            <div class="relative flex items-end bg-slate-900 rounded-xl border border-slate-800 focus-within:border-purple-500/80 transition-colors">
+                <textarea id="ai-user-input" rows="2" placeholder="Ask about circuit design, Ohm's law, datasheets, or say 'build a 5V LED circuit'..." onkeydown="handleAIInputKey(event)" class="w-full bg-transparent p-2.5 pr-10 text-xs text-white placeholder-slate-500 outline-none resize-none max-h-32"></textarea>
+                <button id="btn-ai-send" onclick="sendAIMessage()" class="absolute right-2 bottom-2 p-1.5 px-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs transition-all shadow-md disabled:opacity-50" title="Send (Enter)">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+            <div class="text-[9px] text-slate-500 flex justify-between select-none">
+                <span>Press <strong>Enter</strong> to send, <strong>Shift+Enter</strong> for newline</span>
+                <span>ElectroSim AI v3.0 • Safety Verified</span>
+            </div>
+        </div>
+    </aside>
+
 </body>
 </html>

@@ -1,0 +1,77 @@
+/**
+ * ElectroSim Pro — Component Specification & Full Datasheet
+ * Part: Ground (ground)
+ * Category: POWER
+ * Manufacturer / Part Reference: IEEE Std 142 (Earth Reference Node)
+ */
+
+(function(root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define([], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        module.exports = factory();
+    } else {
+        root.ELECTRO_COMPONENTS = root.ELECTRO_COMPONENTS || {};
+        root.ELECTRO_COMPONENTS['ground'] = factory();
+    }
+})(typeof self !== 'undefined' ? self : this, function() {
+    'use strict';
+
+    return {
+    "id": "ground",
+    "name": "Ground",
+    "symbol": "GND",
+    "desc": "Reference 0V Node",
+    "category": "power",
+    "terminals": 1,
+    "defaultVal": 0,
+    "unit": "V",
+    "datasheet": {
+        "partNumber": "IEEE Std 142 (Earth Reference Node)",
+        "title": "Zero-Volt Universal Reference & Earth Ground Plane",
+        "category": "System Reference / Ground Bus",
+        "package": "Direct Chassis / Earth Terminal / PCB Star Ground Plane",
+        "description": "Universal 0.000V electrical datum defined by IEEE Green Book standards. Serves as nodal reference for all nodal matrix equations (Node 0) and low-impedance fault return.",
+        "pinout": [
+            {
+                "pin": 0,
+                "name": "GND Datum (0V)",
+                "desc": "Single-point reference node for circuit potentials"
+            }
+        ],
+        "maxRatings": [
+            {
+                "param": "Maximum Fault Surge Current",
+                "symbol": "I_fault",
+                "max": "25",
+                "unit": "A"
+            },
+            {
+                "param": "Nominal Ground Reference Potential",
+                "symbol": "V_ref",
+                "max": "0.000",
+                "unit": "V"
+            }
+        ],
+        "characteristics": [
+            {
+                "param": "Impedance to True Earth Ground",
+                "symbol": "Z_gnd",
+                "min": "0.0",
+                "typ": "0.001",
+                "max": "0.1",
+                "unit": "Ω"
+            },
+            {
+                "param": "Common-Mode Noise Rejection",
+                "symbol": "CMRR",
+                "min": "80",
+                "typ": "110",
+                "max": "-",
+                "unit": "dB"
+            }
+        ],
+        "appNotes": "Always connect at least one ground node in any circuit loop to fix the nodal matrix reference (V_0 = 0V) and prevent floating subnets."
+    }
+};
+});

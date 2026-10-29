@@ -1,0 +1,90 @@
+{
+  "id": "dc_voltage",
+  "name": "DC Voltage",
+  "symbol": "V_DC",
+  "desc": "Direct Current Source",
+  "category": "power",
+  "terminals": 2,
+  "defaultVal": 9,
+  "unit": "V",
+  "datasheet": {
+    "partNumber": "6LR61 / MN1604 / 522 (Energizer / Duracell)",
+    "title": "9-Volt Industrial Alkaline Manganese Dioxide Battery",
+    "category": "Power Sources / Primary Electrochemical Cell",
+    "package": "PP3 Rectangular Prismatic (48.5mm × 26.5mm × 17.5mm)",
+    "description": "Standard 9V multi-cell alkaline primary battery consisting of 6 series-connected 1.5V LR61 cells. Delivers consistent voltage discharge profiles across wide thermal operating regimes.",
+    "pinout": [
+      {
+        "pin": 0,
+        "name": "Negative (-)",
+        "desc": "Large octagonal snap female socket terminal"
+      },
+      {
+        "pin": 1,
+        "name": "Positive (+)",
+        "desc": "Small circular stud male plug terminal"
+      }
+    ],
+    "maxRatings": [
+      {
+        "param": "Nominal Open-Circuit Voltage",
+        "symbol": "V_OC",
+        "max": "9.6",
+        "unit": "V"
+      },
+      {
+        "param": "Rated Energy Capacity (@ 25mA discharge)",
+        "symbol": "C_nom",
+        "max": "550 - 625",
+        "unit": "mAh"
+      },
+      {
+        "param": "Maximum Continuous Discharge Current",
+        "symbol": "I_max",
+        "max": "250",
+        "unit": "mA"
+      },
+      {
+        "param": "Recommended Operating Temp",
+        "symbol": "T_OP",
+        "max": "-18 to +55",
+        "unit": "°C"
+      }
+    ],
+    "characteristics": [
+      {
+        "param": "Nominal Operating Voltage",
+        "symbol": "V_nom",
+        "min": "7.2",
+        "typ": "9.0",
+        "max": "9.6",
+        "unit": "V"
+      },
+      {
+        "param": "End-of-Life Cutoff Voltage",
+        "symbol": "V_cutoff",
+        "min": "4.8",
+        "typ": "5.4",
+        "max": "6.0",
+        "unit": "V"
+      },
+      {
+        "param": "Internal Series Resistance (Fresh @ 1kHz)",
+        "symbol": "R_int",
+        "min": "1.2",
+        "typ": "1.7",
+        "max": "2.5",
+        "unit": "Ω"
+      },
+      {
+        "param": "Self-Discharge Rate (20°C)",
+        "symbol": "Self-Dis",
+        "min": "-",
+        "typ": "< 2.0",
+        "max": "3.0",
+        "unit": "% / year"
+      }
+    ],
+    "appNotes": "Primary cell (non-rechargeable). Do not short-circuit terminals: short-circuit current can exceed 4A, causing excessive Joule heating and thermal rupture."
+  }
+}

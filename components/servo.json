@@ -1,0 +1,95 @@
+{
+  "id": "servo",
+  "name": "SG90 Servo",
+  "symbol": "SG90",
+  "desc": "9g Position Micro Servo Motor (0° - 180°)",
+  "category": "iot",
+  "terminals": 3,
+  "defaultVal": 90,
+  "unit": "deg",
+  "datasheet": {
+    "partNumber": "SG90 (TowerPro)",
+    "title": "9g Precision Micro Position Servo Motor with Feedback Potentiometer",
+    "category": "Actuators / Mechatronic Servomechanisms",
+    "package": "Sub-Micro Nylon Geared Actuator (22.2mm × 11.8mm × 31.0mm, 9g)",
+    "description": "The TowerPro SG90 is the global hobby and robotics standard 9-gram analog micro servo motor. Delivers 1.8 kg·cm stall torque with 180° rotation capability. Includes internal DC motor, gear reduction train, potentiometer feedback, and proportional-integral servo control amplifier circuit.",
+    "pinout": [
+      {
+        "pin": 0,
+        "name": "GND (Brown / Black)",
+        "desc": "Power and signal reference ground"
+      },
+      {
+        "pin": 1,
+        "name": "VCC (Red Lead)",
+        "desc": "Motor power supply rail (+4.8V to +6.0V DC)"
+      },
+      {
+        "pin": 2,
+        "name": "PWM (Orange / Yellow)",
+        "desc": "Standard 50Hz (20ms period) PPM/PWM position control signal pulse (1.0ms - 2.0ms)"
+      }
+    ],
+    "maxRatings": [
+      {
+        "param": "Operating Voltage Supply",
+        "symbol": "V_CC",
+        "max": "6.0",
+        "unit": "V"
+      },
+      {
+        "param": "Stall Current (@ 4.8V supply)",
+        "symbol": "I_stall",
+        "max": "550",
+        "unit": "mA"
+      },
+      {
+        "param": "Running Idle Current",
+        "symbol": "I_idle",
+        "max": "20",
+        "unit": "mA"
+      },
+      {
+        "param": "Stall Torque (@ 4.8V)",
+        "symbol": "τ_stall",
+        "max": "1.8",
+        "unit": "kg·cm"
+      }
+    ],
+    "characteristics": [
+      {
+        "param": "Operating Speed (No Load @ 4.8V)",
+        "symbol": "v_rot",
+        "min": "-",
+        "typ": "0.12 (s/60°)",
+        "max": "0.10",
+        "unit": "s/60°"
+      },
+      {
+        "param": "PWM Control Frame Frequency",
+        "symbol": "f_PWM",
+        "min": "40",
+        "typ": "50",
+        "max": "60",
+        "unit": "Hz"
+      },
+      {
+        "param": "Pulse Width Range (0° to 180°)",
+        "symbol": "t_pulse",
+        "min": "1.0",
+        "typ": "1.5 (center)",
+        "max": "2.0",
+        "unit": "ms"
+      },
+      {
+        "param": "Dead Band Width",
+        "symbol": "t_db",
+        "min": "-",
+        "typ": "5",
+        "max": "10",
+        "unit": "µs"
+      }
+    ],
+    "appNotes": "Position angle is controlled by the pulse duration: 1.0ms pulse corresponds to 0° (full left), 1.5ms pulse corresponds to 90° (neutral center), and 2.0ms pulse corresponds to 180° (full right). When powered from MCU, add a 100µF decoupling capacitor to suppress motor surge transients."
+  }
+}

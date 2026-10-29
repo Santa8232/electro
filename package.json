@@ -1,0 +1,22 @@
+{
+  "name": "electrosim-pro",
+  "version": "3.1.0",
+  "description": "Interactive Electronic Circuit Simulator & Embedded EDA Workstation with AI Copilot",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/test_components.js && node tests/test_ai_calculations.js && node tests/test_ai_context.js && node tests/test_ai_proposal.js && node tests/test_ai_agent_ui.js && node tests/test_ai_build_and_apply.js && node tests/test_ai_server.js && node tests/test_iot_features.js && node tests/test_embedded_ide.js"
+  },
+  "keywords": [
+    "electronics",
+    "circuit-simulation",
+    "mna",
+    "eda",
+    "nvidia",
+    "nemotron",
+    "ai-agent"
+  ],
+  "author": "ElectroSim Pro Engineering Team",
+  "license": "MIT"
+}
+

@@ -1,0 +1,110 @@
+/**
+ * ElectroSim Pro — Component Specification & Full Datasheet
+ * Part: Capacitor (capacitor)
+ * Category: PASSIVE
+ * Manufacturer / Part Reference: UHE1E101MED (Nichicon / Panasonic FC)
+ */
+
+(function(root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define([], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        module.exports = factory();
+    } else {
+        root.ELECTRO_COMPONENTS = root.ELECTRO_COMPONENTS || {};
+        root.ELECTRO_COMPONENTS['capacitor'] = factory();
+    }
+})(typeof self !== 'undefined' ? self : this, function() {
+    'use strict';
+
+    return {
+    "id": "capacitor",
+    "name": "Capacitor",
+    "symbol": "C",
+    "desc": "Energy Storage",
+    "category": "passive",
+    "terminals": 2,
+    "defaultVal": 100,
+    "unit": "µF",
+    "datasheet": {
+        "partNumber": "UHE1E101MED (Nichicon / Panasonic FC)",
+        "title": "Aluminum Electrolytic Polarized Radial Capacitor",
+        "category": "Passive Components / Electrolytic Capacitor",
+        "package": "Radial Can (6.3mm Dia × 11mm Height, 2.5mm Lead Pitch)",
+        "description": "Low-impedance, miniature aluminum electrolytic capacitor designed for power supply filtering, smoothing, and timing delay circuits in consumer and industrial electronics.",
+        "pinout": [
+            {
+                "pin": 0,
+                "name": "Positive (+)",
+                "desc": "Longer lead without stripe"
+            },
+            {
+                "pin": 1,
+                "name": "Negative (-)",
+                "desc": "Shorter lead aligned with black minus-marked casing stripe"
+            }
+        ],
+        "maxRatings": [
+            {
+                "param": "Rated Working DC Voltage (WV)",
+                "symbol": "V_R",
+                "max": "25",
+                "unit": "V DC"
+            },
+            {
+                "param": "Surge Voltage Limit (30 sec)",
+                "symbol": "V_surge",
+                "max": "32",
+                "unit": "V"
+            },
+            {
+                "param": "Rated Max Ripple Current (105°C, 100kHz)",
+                "symbol": "I_ripple",
+                "max": "420",
+                "unit": "mA rms"
+            },
+            {
+                "param": "Operating Temperature Range",
+                "symbol": "T_OP",
+                "max": "-40 to +105",
+                "unit": "°C"
+            }
+        ],
+        "characteristics": [
+            {
+                "param": "Capacitance Tolerance (120Hz, 20°C)",
+                "symbol": "Tol",
+                "min": "-20",
+                "typ": "±20",
+                "max": "+20",
+                "unit": "%"
+            },
+            {
+                "param": "Equivalent Series Resistance (ESR @ 100kHz)",
+                "symbol": "ESR",
+                "min": "0.12",
+                "typ": "0.18",
+                "max": "0.25",
+                "unit": "Ω"
+            },
+            {
+                "param": "Dissipation Factor (tan δ @ 120Hz)",
+                "symbol": "DF",
+                "min": "-",
+                "typ": "0.14",
+                "max": "0.16",
+                "unit": "-"
+            },
+            {
+                "param": "Leakage Current (after 2 min)",
+                "symbol": "I_leak",
+                "min": "-",
+                "typ": "3.0",
+                "max": "7.5",
+                "unit": "µA"
+            }
+        ],
+        "appNotes": "POLARIZED COMPONENT: strictly observe polarity. Reversing polarity causes rapid dielectric breakdown, gas generation, and relief vent activation. For AC signals, use non-polarized film or ceramic capacitors."
+    }
+};
+});

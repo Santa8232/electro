@@ -1,0 +1,100 @@
+{
+  "id": "hc_sr04",
+  "name": "HC-SR04 Sonar",
+  "symbol": "HC-SR04",
+  "desc": "Ultrasonic Distance Ranging Module (2-400cm)",
+  "category": "iot",
+  "terminals": 4,
+  "defaultVal": 25,
+  "unit": "cm",
+  "datasheet": {
+    "partNumber": "HC-SR04 (Cytron / Osepp)",
+    "title": "Ultrasonic Sonar Non-Contact Distance Measuring Transducer",
+    "category": "Sensors / Acoustic Sonar Ranging",
+    "package": "Dual Transducer PCB Assembly (45.0mm × 20.0mm × 15.0mm)",
+    "description": "The HC-SR04 ultrasonic distance sensor provides 2cm to 400cm non-contact distance measurement with accuracy down to 3mm. Module incorporates dual piezoelectric ceramic transducers (40 kHz transmitter and receiver) along with receiver amplifier and threshold detector circuitry.",
+    "pinout": [
+      {
+        "pin": 0,
+        "name": "VCC (Supply Power)",
+        "desc": "+5.0V DC regulated power input"
+      },
+      {
+        "pin": 1,
+        "name": "TRIG (Trigger Input)",
+        "desc": "10µs TTL pulse input initiates 8-cycle 40kHz sonic burst"
+      },
+      {
+        "pin": 2,
+        "name": "ECHO (Echo Output)",
+        "desc": "TTL pulse output whose high duration equals sonic flight time (t = 2*d / v_sound)"
+      },
+      {
+        "pin": 3,
+        "name": "GND (Ground)",
+        "desc": "Common 0V ground connection"
+      }
+    ],
+    "maxRatings": [
+      {
+        "param": "Operating Supply Voltage",
+        "symbol": "V_CC",
+        "max": "5.5",
+        "unit": "V"
+      },
+      {
+        "param": "Quiescent Standby Current",
+        "symbol": "I_Q",
+        "max": "2",
+        "unit": "mA"
+      },
+      {
+        "param": "Working Active Current",
+        "symbol": "I_work",
+        "max": "15",
+        "unit": "mA"
+      },
+      {
+        "param": "Maximum Sonar Range",
+        "symbol": "D_max",
+        "max": "400",
+        "unit": "cm"
+      }
+    ],
+    "characteristics": [
+      {
+        "param": "Ultrasonic Burst Frequency",
+        "symbol": "f_sound",
+        "min": "-",
+        "typ": "40",
+        "max": "-",
+        "unit": "kHz"
+      },
+      {
+        "param": "Effective Measuring Angle",
+        "symbol": "θ_beam",
+        "min": "-",
+        "typ": "15",
+        "max": "-",
+        "unit": "deg"
+      },
+      {
+        "param": "Ranging Conversion Constant",
+        "symbol": "K_dist",
+        "min": "-",
+        "typ": "58.3 (µs/cm)",
+        "max": "-",
+        "unit": "µs/cm"
+      },
+      {
+        "param": "Measurement Resolution",
+        "symbol": "Res",
+        "min": "-",
+        "typ": "0.3",
+        "max": "-",
+        "unit": "cm"
+      }
+    ],
+    "appNotes": "Distance formula: Distance (cm) = (Echo High Time in µs) / 58.0, or Distance (inch) = Time / 148.0. Maintain at least 60ms between trigger pulses to prevent measurement overlap from reflected secondary echoes."
+  }
+}

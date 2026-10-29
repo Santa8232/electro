@@ -1,4 +1,4 @@
-# ElectroSim Pro — Interactive Electronic Circuit Simulator & IoT Workbench
+# ElectroSim Pro — Interactive Electronic Circuit Simulator, IoT Workbench & AI Copilot
 
 [![Version](https://img.shields.io/badge/version-3.0%20IoT%20%26%20EDA-indigo.svg)](file:///c:/Users/Santa/OneDrive/Desktop/electro/index.html)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0%20(Pure%20HTML5%20%2B%20ES6%2B)-emerald.svg)](file:///c:/Users/Santa/OneDrive/Desktop/electro/index.html)
@@ -14,6 +14,13 @@ Version 3.0 expands the simulator beyond discrete analog/digital components into
 
 ## ⚡ Key Highlights
 
+- **AI Electronics Engineering Agent & Copilot (v3.1):**
+  - **NVIDIA API Catalog Integration:** Powered by NVIDIA's premier reasoning models (`nvidia/nemotron-3.5-super-vl-120b-a12b` and `nvidia/llama-3.1-nemotron-70b-instruct`) via a secure, lightweight local proxy server (`server.js`).
+  - **Live Circuit Context Awareness:** Dynamically serializes active canvas components, net connectivity, node potentials, branch currents, component power dissipation, and SOA operational stress into read-only structured snapshots.
+  - **Deterministic Engineering Math Library:** Real-time verified formulas for Ohm's law, LED current-limiting resistors, series/parallel combinations, voltage dividers, RC time constants, and reactance (Xc, Xl).
+  - **Structured Circuit Proposal Protocol:** Generates reviewable schematic proposals with verified component types, values, and wiring plans. Requires **explicit user approval** before touching the canvas.
+  - **Safety & Datasheet Verification:** Automatically queries the 21 authentic manufacturer datasheets archive, checks absolute maximum ratings vs recommended operating conditions, flags missing 0V grounds, and warns against reverse breakdown and overcurrent.
+  - **Offline Mock Engine:** Seamless automatic fallback to deterministic electronics reasoning when running standalone without an internet connection or API credentials.
 - **Mathematical Modified Nodal Analysis (MNA):** Computes exact node voltages and branch currents via Gaussian elimination with partial row pivoting ($A \cdot x = z$).
 - **Embedded Microcontroller Cores & In-Browser Code IDE:**
   - **Arduino Uno R3:** ATmega328P 16MHz AVR board with full **29 authentic datasheet terminals** (14 Digital I/O D0-D13 with PWM on D3/D5/D6/D9/D10/D11 and SPI, 6 Analog 10-bit ADC channels A0-A5, 5V, 3.3V, VIN, IOREF, AREF, 3 GNDs), synchronized 'L' LED indicator on D13, D9 PWM duty control, and interactive GPIO matrix.
@@ -154,6 +161,31 @@ Select any pre-configured circuit from the top toolbar dropdown:
 
 ---
 
+---
+
+## 🤖 AI Copilot Setup & Backend Proxy
+
+The simulator is fully self-contained and functions 100% in client-side mock mode without any setup. To enable live cloud inference via NVIDIA's Super-VL / Nemotron models:
+
+1. **Configure Environment Variables:**
+   ```bash
+   # Copy the example configuration
+   copy .env.example .env
+
+   # Edit .env and enter your NVIDIA API key from https://build.nvidia.com
+   APIKEY=nvapi-your-actual-nvidia-api-key
+   ```
+
+2. **Start the AI Proxy Server:**
+   ```bash
+   npm start
+   # Or directly: node server.js
+   ```
+   The server starts on `http://localhost:3001` with CORS enabled, in-memory rate limiting, and zero external npm package dependencies.
+
+3. **Launch ElectroSim Pro:**
+   Open `index.html` directly in any browser (or navigate to `http://localhost:3001`). Click the **AI Copilot** button in the top toolbar or press `F8` to start designing!
+
 ## ⌨️ Keyboard Shortcuts
 
 | Shortcut | Action | Scope |
@@ -172,6 +204,7 @@ Select any pre-configured circuit from the top toolbar dropdown:
 | `Ctrl + Y` / `Ctrl + Shift + Z` | **Redo Last Action** | History |
 | `Escape` | **Cancel Current Wiring / Deselect / Close Modals** | Global |
 | `F7` | **Toggle Embedded Microcontroller Code IDE** | Global |
+| `F8` | **Toggle AI Electronics Engineering Copilot** | Global |
 | `Ctrl + Enter` / `Ctrl + U` | **Compile & Upload Sketch to Virtual Board** | Code IDE |
 | `Ctrl + R` | **Verify & Compile Sketch** | Code IDE |
 
@@ -179,15 +212,19 @@ Select any pre-configured circuit from the top toolbar dropdown:
 
 ## 🧪 Automated Testing & Verification
 
-ElectroSim Pro includes headless unit, physical, and integration test suites executable with Node.js:
+ElectroSim Pro includes 6 comprehensive headless test suites executable with Node.js:
 
 ```powershell
 # Run the complete test suite
-node tests/test_iot_features.js          # 9/9 Microcontroller, sensor, actuator, and preset tests
-node scratch/e2e_integration_test.js      # 10/10 MNA solver, switch, rotation, and persistence tests
-node scratch/test_embedded_features.js   # 5/5 2N2222 BJT, BZX55C Zener, Polyfuse, and LED breakdown tests
-node scratch/test_datasheet_features.js  # 4/4 Real datasheets coverage and SOA gauge tests
-node scratch/test_component_details.js   # 5/5 Resistor color codes and EIA marking tests
+npm test
+
+# Or run individual test suites:
+node tests/test_ai_calculations.js   # 6/6 Deterministic engineering math formulas
+node tests/test_ai_context.js        # 2/2 Live circuit context extraction & probe telemetry
+node tests/test_ai_proposal.js       # 6/6 Circuit proposal validation, error rejection & undo
+node tests/test_ai_server.js         # 5/5 Backend proxy, health check, CORS & live NVIDIA API
+node tests/test_iot_features.js      # 9/9 IoT microcontrollers, sensors, actuators, and presets
+node tests/test_embedded_ide.js      # 8/8 Virtual C++ compiler, transpiler, and runtime
 ```
 
 ---

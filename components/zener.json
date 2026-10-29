@@ -1,0 +1,76 @@
+{
+  "id": "zener",
+  "name": "Zener Diode",
+  "symbol": "ZD",
+  "desc": "5.1V Voltage Regulator",
+  "category": "semi",
+  "terminals": 2,
+  "defaultVal": 5.1,
+  "unit": "Vz",
+  "datasheet": {
+    "partNumber": "BZX55C5V1 (Vishay / NXP)",
+    "title": "500mW 5.1-Volt Silicon Planar Zener Diode",
+    "category": "Discrete Semiconductor / Voltage Regulator",
+    "package": "DO-35 Hermetically Sealed Axial Glass Package",
+    "description": "The BZX55C5V1 is a precision 5.1V Zener diode engineered for voltage stabilization, rail regulation, ADC voltage clamping, and overvoltage surge suppression.",
+    "pinout": [
+      {
+        "pin": 0,
+        "name": "Anode (+)",
+        "desc": "Connects to lower potential or Ground in reverse regulation mode"
+      },
+      {
+        "pin": 1,
+        "name": "Cathode (-)",
+        "desc": "Marked with black cathode band, connects to regulated voltage rail"
+      }
+    ],
+    "maxRatings": [
+      {
+        "param": "Power Dissipation (@ T_amb = 25°C)",
+        "symbol": "P_tot",
+        "max": "500",
+        "unit": "mW"
+      },
+      {
+        "param": "Zener Continuous Current",
+        "symbol": "I_Z",
+        "max": "70",
+        "unit": "mA"
+      },
+      {
+        "param": "Junction Temperature",
+        "symbol": "T_J",
+        "max": "+175",
+        "unit": "°C"
+      }
+    ],
+    "characteristics": [
+      {
+        "param": "Zener Voltage (@ I_ZT = 5.0mA)",
+        "symbol": "V_Z",
+        "min": "4.8",
+        "typ": "5.1",
+        "max": "5.4",
+        "unit": "V"
+      },
+      {
+        "param": "Dynamic Zener Impedance (@ 5mA)",
+        "symbol": "Z_ZT",
+        "min": "-",
+        "typ": "30",
+        "max": "60",
+        "unit": "Ω"
+      },
+      {
+        "param": "Reverse Leakage Current (@ V_R = 1V)",
+        "symbol": "I_R",
+        "min": "-",
+        "typ": "0.1",
+        "max": "2.0",
+        "unit": "µA"
+      }
+    ],
+    "appNotes": "Always place a current-limiting series resistor R_S between the unregulated input and the Zener cathode to keep diode dissipation within 500mW: R_S = (V_in - V_Z) / (I_Z + I_load)."
+  }
+}

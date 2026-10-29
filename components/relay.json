@@ -1,0 +1,110 @@
+{
+  "id": "relay",
+  "name": "5V Relay Module",
+  "symbol": "RELAY",
+  "desc": "10A SPDT Optocoupled Isolation Relay",
+  "category": "iot",
+  "terminals": 6,
+  "defaultVal": 5,
+  "unit": "V",
+  "datasheet": {
+    "partNumber": "SRD-05VDC-SL-C (Songle / Omron)",
+    "title": "5V Single-Pole Double-Throw (SPDT) 10A Optocoupled Power Relay",
+    "category": "Electromechanical / Galvanic Isolation Switches",
+    "package": "Sealed Sugar-Cube Sealed Relay (19.0mm × 15.5mm × 15.0mm)",
+    "description": "The SRD-05VDC-SL-C relay module provides safe galvanic electrical isolation between low-power microcontroller logic (Arduino/ESP32) and high-power AC or DC electrical loads up to 250VAC @ 10A. Built with an on-board PC817 optocoupler, flyback suppression diode, transistor driver, and switching indicator LED.",
+    "pinout": [
+      {
+        "pin": 0,
+        "name": "VCC (Coil Power Rail)",
+        "desc": "+5.0V DC supply to power electromagnet relay coil"
+      },
+      {
+        "pin": 1,
+        "name": "IN (Digital Trigger Input)",
+        "desc": "Control signal input; activates coil through optocoupler (Active HIGH / LOW selectable)"
+      },
+      {
+        "pin": 2,
+        "name": "GND (Ground)",
+        "desc": "Coil supply ground reference"
+      },
+      {
+        "pin": 3,
+        "name": "NO (Normally Open Contact)",
+        "desc": "Load terminal connected to COM ONLY when relay is energized"
+      },
+      {
+        "pin": 4,
+        "name": "COM (Common Contact)",
+        "desc": "Common switch pole connected to load supply or hot line"
+      },
+      {
+        "pin": 5,
+        "name": "NC (Normally Closed Contact)",
+        "desc": "Load terminal connected to COM when relay coil is de-energized"
+      }
+    ],
+    "maxRatings": [
+      {
+        "param": "Maximum Contact Switching Voltage",
+        "symbol": "V_sw",
+        "max": "250VAC / 30VDC",
+        "unit": "V"
+      },
+      {
+        "param": "Maximum Continuous Contact Current",
+        "symbol": "I_contact",
+        "max": "10",
+        "unit": "A"
+      },
+      {
+        "param": "Dielectric Insulation Voltage",
+        "symbol": "V_iso",
+        "max": "1500",
+        "unit": "VAC"
+      },
+      {
+        "param": "Nominal Coil Voltage",
+        "symbol": "V_coil",
+        "max": "5.0",
+        "unit": "V"
+      }
+    ],
+    "characteristics": [
+      {
+        "param": "Nominal Coil Resistance (@ 20°C)",
+        "symbol": "R_coil",
+        "min": "63",
+        "typ": "70",
+        "max": "77",
+        "unit": "Ω"
+      },
+      {
+        "param": "Coil Operating Current (@ 5V)",
+        "symbol": "I_coil",
+        "min": "65",
+        "typ": "71.4",
+        "max": "80",
+        "unit": "mA"
+      },
+      {
+        "param": "Pull-in Pickup Voltage (Max)",
+        "symbol": "V_pull",
+        "min": "-",
+        "typ": "3.75 (75%)",
+        "max": "3.75",
+        "unit": "V"
+      },
+      {
+        "param": "Contact Operate / Release Time",
+        "symbol": "t_sw",
+        "min": "-",
+        "typ": "10 / 5",
+        "max": "15",
+        "unit": "ms"
+      }
+    ],
+    "appNotes": "Galvanic isolation protects delicate digital processors from mains spikes, noise, and back-EMF surges. Always observe electrical safety clearance rules when switching 120V/240V AC mains lines."
+  }
+}
