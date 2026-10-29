@@ -46,15 +46,33 @@
 - [x] **Circuit Presets:** 8 pre-wired engineering circuits (LED, BJT Switch, Zener Regulator, Polyfuse Rail, RC Filter, Voltage Divider, AC Bulb, Two-Way Switch).
 - [x] **History & Persistence:** Undo/redo stack (Ctrl+Z / Ctrl+Y), browser LocalStorage persistence, and JSON circuit export/import.
 
-### 4.2 Phase 2: Enhanced Capabilities (Current)
+### 4.2 Phase 2: Modern EDA Workstation Layout (Completed)
 - [x] **Modern EDA Workstation Layout:** High-density top bar, collapsible sidebars (`[` and `]`), and categorized palette search.
 - [x] **3-Card Live Telemetry Grid:** Inspector cards for Voltage (cyan), Current (emerald), and Power (purple).
 - [x] **Floating Canvas Viewport Dock:** Direct canvas access to Rotate and Delete buttons paired alongside navigation tools.
+
+### 4.3 Phase 3: Embedded Microcontrollers & IoT Ecosystem (Completed)
+- [x] **Microcontroller Simulation Models:**
+  - **Arduino Uno R3:** ATmega328P with regulated 5V and 3.3V rails, 10-bit quantized ADC ($0-1023$ on A0), D13 synchronized LED, and D9 PWM duty control.
+  - **ESP32 NodeMCU:** Dual-core 240MHz SoC with regulated 3.3V rail, 12-bit SAR ADC on VN/GPIO36 ($0-4095$), GPIO2 blue status LED, and Wi-Fi/MQTT telemetry streams.
+- [x] **Smart Sensors & Environmental Triggers:**
+  - **DHT11:** Temperature ($-20^\circ\text{C}$ to $+60^\circ\text{C}$) & Relative Humidity ($20\%$ to $90\%$) with dew point calculation.
+  - **HC-SR04 Sonar:** Ultrasonic distance sensor ($2\text{ cm} - 400\text{ cm}$) with echo pulse duration and canvas radar emission waves.
+  - **HC-SR501 PIR:** Passive infrared motion sensor with interactive trigger and 3.3V TTL active output.
+  - **CdS Photoresistor (LDR):** Logarithmic photoconductive response ($500\text{ k}\Omega$ to $500\ \Omega$) with lux slider.
+- [x] **Acoustic & Kinematic Actuators:**
+  - **Active Piezo Buzzer:** Web Audio API sound generator ($2.4\text{ kHz}$) with audible synthesis, canvas soundwave ripple arcs, and mute toggle.
+  - **SG90 Micro Servo:** Dynamic rotating white horn ($0^\circ - 180^\circ$) and 50Hz PWM pulse width calculations.
+  - **5V Optocoupled Relay:** 1-channel SPDT 10A relay with galvanic isolation and armature contact switching.
+- [x] **Pre-Wired IoT Presets:** Arduino Alarm, ESP32 Weather Station, Ultrasonic Radar, and Relay Mains Driver.
+- [x] **Dual Action Controls:** Rotate and Delete buttons accessible in both the Floating Canvas Dock and the Component Inspector.
+
+### 4.4 Phase 4: Future Capabilities
 - [ ] **Sub-circuit Hierarchical Blocks:** Ability to group multiple components into reusable IC blocks.
 - [ ] **Multi-meter Probe Tool:** Draggable DMM test leads for differential voltage and current measurements.
 - [ ] **Frequency Domain Bode Plotter:** AC sweep simulation plotting magnitude and phase response over frequency.
 
-### 4.3 Out of Scope / Non-Goals
+### 4.5 Out of Scope / Non-Goals
 - Real-time SPICE transient integration of high-frequency RF transmission lines (focus is on DC, audio, and low-frequency embedded circuits).
 - PCB layout Gerber file generation (ElectroSim Pro focuses on schematic capture and behavioral circuit physics).
 - Multi-user collaborative cloud editing requiring backend databases (retains zero-dependency offline architecture).
@@ -78,6 +96,29 @@
 
 ### User Story 3: Overcurrent & Fault Protection
 - **As a:** Hardware engineer
+- **I want to:** Cause a short circuit across a protected power rail
+- **So that:** I can verify that the polyfuse trips and interrupts current before components burn out.
+- **Acceptance Criteria:**
+  - [x] Polyfuse detects current exceeding continuous rating ($500\text{ mA}$) and triggers open fault.
+  - [x] Visual filament turns red and flashes warning toast; inspector provides one-click fuse replacement.
+
+### User Story 4: Microcontroller ADC Sensor Reading & Telemetry
+- **As an:** IoT developer
+- **I want to:** Connect an analog sensor (LDR or potentiometer) to Arduino A0 or ESP32 VN
+- **So that:** I can verify sensor voltage division and monitor simulated ADC digital conversion codes ($0-1023$ or $0-4095$) and Wi-Fi/MQTT JSON packets.
+- **Acceptance Criteria:**
+  - [x] Arduino A0 accurately samples node potential and quantizes to 10-bit integer ($0-1023$).
+  - [x] ESP32 VN accurately samples node potential and quantizes to 12-bit integer ($0-4095$).
+  - [x] Live inspector card renders simulated sensor values and telemetry logs in real time.
+
+### User Story 5: Optocoupled Relay & High-Power Actuator Control
+- **As an:** Embedded systems engineer
+- **I want to:** Trigger a 5V relay module from a microcontroller pin to switch an isolated mains or 12V DC load
+- **So that:** I can verify galvanic isolation, coil current draw, and contact switching without risk to the control circuit.
+- **Acceptance Criteria:**
+  - [x] Relay coil energizes when control signal satisfies trigger polarity (Active LOW or HIGH).
+  - [x] Common (COM) contact flips from Normally Closed (NC) to Normally Open (NO), closing load circuit with $0.05\ \Omega$ resistance.
+  - [x] Load circuit remains completely galvanically isolated from the coil power loop.
 - **I want to:** Cause a short circuit across a protected power rail
 - **So that:** I can verify that the polyfuse trips and interrupts current before components burn out.
 - **Acceptance Criteria:**

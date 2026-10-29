@@ -1,25 +1,39 @@
-# ElectroSim Pro — Interactive Electronic Circuit Simulator & EDA Workbench
+# ElectroSim Pro — Interactive Electronic Circuit Simulator & IoT Workbench
 
-[![Version](https://img.shields.io/badge/version-2.2%20EDA-indigo.svg)](file:///c:/Users/Santa/OneDrive/Desktop/electro/index.html)
+[![Version](https://img.shields.io/badge/version-3.0%20IoT%20%26%20EDA-indigo.svg)](file:///c:/Users/Santa/OneDrive/Desktop/electro/index.html)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0%20(Pure%20HTML5%20%2B%20ES6%2B)-emerald.svg)](file:///c:/Users/Santa/OneDrive/Desktop/electro/index.html)
-[![Tests Passing](https://img.shields.io/badge/tests-100%25%20passing%20(6%2F6%20suites)-blue.svg)](file:///c:/Users/Santa/OneDrive/Desktop/electro/scratch/)
-[![Architecture](https://img.shields.io/badge/architecture-MNA%20Matrix%20Solver-purple.svg)](file:///c:/Users/Santa/OneDrive/Desktop/electro/docs/ARCHITECTURE.md)
+[![Tests Passing](https://img.shields.io/badge/tests-100%25%20passing%20(7%2F7%20suites)-blue.svg)](file:///c:/Users/Santa/OneDrive/Desktop/electro/scratch/)
+[![Architecture](https://img.shields.io/badge/architecture-MNA%20Matrix%20Solver%20%2B%20IoT-purple.svg)](file:///c:/Users/Santa/OneDrive/Desktop/electro/docs/ARCHITECTURE.md)
 [![License](https://img.shields.io/badge/license-MIT-slate.svg)](#license)
 
-**ElectroSim Pro** is a modern, zero-dependency, browser-native Electronic Design Automation (EDA) workstation and interactive circuit simulation engine. Designed to bridge the gap between academic SPICE engines and user-friendly visual schematic capture, it evaluates mathematical Modified Nodal Analysis (MNA) matrices at 60 fps directly inside any modern web browser without installations, package managers, or build pipelines.
+**ElectroSim Pro** is a modern, zero-dependency, browser-native Electronic Design Automation (EDA) and embedded IoT workbench. Designed to bridge the gap between academic SPICE engines and user-friendly visual schematic capture, it evaluates mathematical Modified Nodal Analysis (MNA) matrices at 60 fps directly inside any modern web browser without installations, package managers, or build pipelines.
+
+Version 3.0 expands the simulator beyond discrete analog/digital components into full **embedded systems and IoT simulation**, introducing the **Arduino Uno R3**, **ESP32 NodeMCU**, smart sensors (DHT11, HC-SR04 ultrasonic sonar, HC-SR501 PIR motion, CdS photoresistor), and real actuators (piezo buzzer with Web Audio API sound synthesis, SG90 servo motor with dynamic horn rotation, and 5V optocoupled SPDT relay).
 
 ---
 
 ## ⚡ Key Highlights
 
 - **Mathematical Modified Nodal Analysis (MNA):** Computes exact node voltages and branch currents via Gaussian elimination with partial row pivoting ($A \cdot x = z$).
-- **Active Semiconductor Physics:** Authentic companion models for NPN BJTs (2N2222A), Silicon Rectifiers (1N4007), 5.1V Zener Voltage Regulators (BZX55C), and Fast-Acting Polyfuses (0154.500DR).
+- **Embedded Microcontroller Cores:**
+  - **Arduino Uno R3:** ATmega328P 16MHz AVR board with regulated 5.0V and 3.3V rails, 10-bit quantized ADC ($0-1023$ on A0), synchronized 'L' LED indicator on D13 (Blink / HIGH / LOW), and D9 PWM duty control ($0-100\%$).
+  - **ESP32 NodeMCU:** Dual-core 240MHz Wi-Fi/BLE SoC with regulated 3.3V rail, 12-bit SAR ADC on VN/GPIO36 ($0-4095$), onboard GPIO2 blue status LED, and simulated Wi-Fi/MQTT telemetry streams.
+- **Smart Sensors & Environmental Triggers:**
+  - **DHT11:** Temperature ($-20^\circ\text{C}$ to $+60^\circ\text{C}$) and relative humidity ($20\%$ to $90\%$) with real-time dew point calculations.
+  - **HC-SR04 Sonar:** Ultrasonic distance sensor ($2\text{ cm} - 400\text{ cm}$) with echo pulse duration calculation ($t = d \times 58.3\ \mu\text{s}$) and canvas radar emission waves.
+  - **HC-SR501 PIR:** Passive infrared human motion detector with interactive simulation trigger, 3.3V TTL active output, and canvas radar alert ring.
+  - **CdS Photoresistor (LDR):** Logarithmic photoconductive response ($500\text{ k}\Omega$ dark to $500\ \Omega$ @ 1000 lx) with interactive lux slider.
+- **Interactive Actuators & Audio Synthesis:**
+  - **Piezo Buzzer:** 2.4 kHz acoustic sounder using native Web Audio API (`AudioContext`) with real audio generation on $\ge 2.5\text{V}$ drop, canvas soundwave ripple arcs, and mute toggle.
+  - **SG90 Micro Servo:** 9g position servo ($0^\circ - 180^\circ$) with dynamically rotating white horn arm and 50Hz PWM pulse width calculations ($1.0 - 2.0\text{ ms}$).
+  - **5V Optocoupled Relay:** 1-channel SPDT 10A relay (Songle `SRD-05VDC-SL-C`) with galvanic isolation ($1500\text{ V}$), interactive trigger polarity, and armature contact switching (COM-NC to COM-NO).
+- **Active Semiconductor Physics:** Authentic companion models for NPN BJTs (2N2222A), Silicon Rectifiers (1N4007), 5.1V Zener Regulators (BZX55C), and Fast-Acting Polyfuses (0154.500DR).
 - **Thévenin Battery Internal Resistance:** Realistic alkaline cell behavior ($R_{int} = 1.5\ \Omega$) modeling loaded terminal voltage droop ($V_{term} = V_{oc} - I \cdot R_{int}$).
 - **Safe Operating Area (SOA) Stress Telemetry:** Continuous evaluation of voltage, current, and power dissipation against manufacturer absolute maximum ratings with color-coded safety badges.
 - **EIA-RS-279 Resistor Color-Code System:** Dynamic SVG resistor graphic decoding 4-band and 5-band color rings in real time.
 - **Dual-Trace Virtual Bench Oscilloscope:** Calibrated $8 \times 4$ graticule screen with center crosshair tick marks, phosphor trace glow, and real-time $V_{pk}, I_{pk}, P$ telemetry.
-- **Modern EDA Workstation UI/UX:** High-density grouped toolbar, live component search, category filter pills (`All`, `Power`, `Passives`, `Semis`, `Control`), dual-density grid dots & crosshairs, and collapsible sidebars (`[` and `]`).
-- **Floating Canvas Viewport Dock:** Direct on-canvas tool selection (`S`, `H`, `W`) paired with one-click **Rotate 90°** (`R`) and **Delete** (`Del`) icon buttons.
+- **Modern EDA Workstation UI/UX:** High-density grouped toolbar, live component search, category filter pills (`All`, `Power`, `Passives`, `Semis`, `Control`, `IoT & MCU`), dual-density grid dots & crosshairs, and collapsible sidebars (`[` and `]`).
+- **Ergonomic Action Controls:** Fast **Rotate 90°** (`R`) and **Delete** (`Del`) icon buttons available both in the **Floating Canvas Viewport Dock** and at the bottom of the **Component Inspector**.
 
 ---
 
@@ -66,14 +80,16 @@ ElectroSim Pro provides a structured 4-region EDA workstation:
 │                   │ • Dual-Density Grid (20px dots / 100px crosses)│ • Live Telemetry  │
 │ • Live Search     │ • Orthogonal Manhattan Auto-Routing            │   (V, I, P Grid)  │
 │ • Category Pills  │ • Dynamic Particle Drift Velocity Animations   │ • Value Input     │
-│   - Power         │ • Empty State Watermark Guidance               │ • Resistor Color  │
-│   - Passives      │                                                │   Code Visualizer │
-│   - Semis         │ ┌────────────────────────────────────────────┐ │ • EIA Stamp Codes │
-│   - Control       │ │ FLOATING VIEWPORT HUD DOCK                 │ │ • Real Datasheet  │
-│ • Component Tiles │ │ [S] [H] [W] | [🔄 Rotate] [🗑️ Delete] | + - Fit│ │ • SOA Stress Bar │
-│ • Custom IC Add   │ └────────────────────────────────────────────┘ ├───────────────────┤
-│                   │                                                │ BENCH SCOPE       │
-│ [ [ ] Collapse    │                                                │ Dual-Trace (CH1/2)│
+│   - Power         │ • Audio Soundwaves & Radar Pulses              │ • Resistor Color  │
+│   - Passives      │ • Empty State Watermark Guidance               │   Code Visualizer │
+│   - Semis         │                                                │ • EIA Stamp Codes │
+│   - Control       │ ┌────────────────────────────────────────────┐ │ • Real Datasheet  │
+│   - IoT & MCU     │ │ FLOATING VIEWPORT HUD DOCK                 │ │ • SOA Stress Bar  │
+│ • Component Tiles │ │ [S] [H] [W] | [🔄 Rotate] [🗑️ Delete] | + - Fit│ │ • Module Controls │
+│ • Custom IC Add   │ └────────────────────────────────────────────┘ │ • Rotate / Delete │
+│                   │                                                ├───────────────────┤
+│ [ [ ] Collapse    │                                                │ BENCH SCOPE       │
+│                   │                                                │ Dual-Trace (CH1/2)│
 └───────────────────┴────────────────────────────────────────────────┴───────────────────┘
 ```
 
@@ -81,8 +97,22 @@ ElectroSim Pro provides a structured 4-region EDA workstation:
 
 ## 📦 Component Library & Datasheet Archive
 
-ElectroSim Pro integrates complete manufacturer specifications for all 12 core components:
+ElectroSim Pro integrates complete manufacturer specifications for all **21 components**:
 
+### Microcontrollers & IoT Modules (`IoT & MCU`)
+| Component | Symbol | Model / Part Number | Manufacturer | Pins | Key Specifications |
+| :--- | :---: | :--- | :--- | :---: | :--- |
+| **Arduino Uno R3** | `UNO` | ATmega328P-PU | Microchip / Arduino | 7 | $5\text{V} / 3.3\text{V}$ Regulated rails, 10-bit ADC ($0-1023$), D13 LED, D9 PWM |
+| **ESP32 NodeMCU** | `ESP32` | ESP-WROOM-32 | Espressif Systems | 7 | $3.3\text{V}$ Regulated, 12-bit SAR ADC ($0-4095$), GPIO2 LED, Wi-Fi/MQTT |
+| **DHT11 Sensor** | `DHT11` | DHT11 Digital Module | Aosong Electronics | 3 | $-20^\circ\text{C} - +60^\circ\text{C}$, $20\% - 90\%\text{ RH}$, 1-wire serial protocol |
+| **HC-SR04 Sonar** | `SONAR` | HC-SR04 Ultrasonic | Cytron / Osepp | 4 | $2 - 400\text{ cm}$ range, $40\text{ kHz}$ transducer, $58.3\ \mu\text{s/cm}$ echo |
+| **HC-SR501 PIR** | `PIR` | HC-SR501 Module | Nisheng / BISS0001 | 3 | Passive infrared detector, $7\text{ m}$ range, $3.3\text{V}$ active TTL output |
+| **CdS Photoresistor**| `LDR` | GL5528 Cadmium-Sulfide | Senba Sensing | 2 | $500\text{ k}\Omega$ dark to $500\ \Omega$ bright (@ 1000 lx), $\gamma = 0.65$ |
+| **Piezo Buzzer** | `BUZZ` | TMB12A05 Active Piezo | Sonitron / CUI Devices| 2 | $2400\text{ Hz}$ tone, Web Audio API synthesis, $85\text{ dB}$, $\ge 2.5\text{V}$ drop |
+| **SG90 Servo** | `SERVO` | SG90 9g Micro Servo | TowerPro | 3 | $0^\circ - 180^\circ$ angle, rotating horn, $50\text{ Hz}$ PWM ($1.0 - 2.0\text{ ms}$) |
+| **5V Relay Module** | `RELAY` | SRD-05VDC-SL-C | Songle / Omron | 6 | 10A 250VAC SPDT contacts, optocoupler isolation ($1500\text{ V}$), $70\ \Omega$ coil |
+
+### Discrete & Analog Components
 | Component | Symbol | Model / Part Number | Manufacturer | Key Specification |
 | :--- | :---: | :--- | :--- | :--- |
 | **DC Voltage** | `V_DC` | 6LR61 / MN1604 (9V Alkaline) | Energizer / Duracell | $9.0\text{ V}$, $R_{int} = 1.5\ \Omega$, $100\text{ mA}$ max |
@@ -104,14 +134,21 @@ ElectroSim Pro integrates complete manufacturer specifications for all 12 core c
 
 Select any pre-configured circuit from the top toolbar dropdown:
 
-1. **Simple LED Circuit (`simple_led`)**: 9V Battery $\to$ Toggle Switch $\to$ 330Ω Resistor $\to$ Red LED $\to$ Ground. Demonstrates closed-loop switching, forward current, and resistor color bands.
-2. **MCU Transistor Switch & Relay Driver (`bjt_gpio_switch`)**: 3.3V Logic $\to$ 180Ω Base Resistor $\to$ 2N2222 NPN BJT switching a 12V inductive coil clamped by a 1N4007 flyback diode.
-3. **Zener 5.1V Voltage Regulator (`zener_regulator`)**: 9V Supply with 100Ω series dropper feeding a BZX55C 5.1V Zener diode in reverse breakdown parallel with a 1kΩ load.
-4. **Polyfuse Protected Battery Rail (`fused_power_rail`)**: 9V Battery with 500mA Fast Polyfuse and switch. Shorting the load dynamically trips the fuse into high-impedance protection.
-5. **RC Low-Pass Filter (`rc_filter`)**: AC sinusoidal source feeding a 1kΩ resistor and 100µF capacitor to ground.
-6. **Precision Voltage Divider (`voltage_divider`)**: 12V DC across dual matched 1kΩ resistors producing exact 6.00V output.
-7. **AC Sine Wave & Resistor (`ac_bulb`)**: 24V AC sinusoidal signal generator driving a 150Ω resistive load.
-8. **Interactive Switch & Dual LEDs (`two_way_switch`)**: Multi-branch circuit with independent switchable parallel legs.
+### Embedded Systems & IoT Presets
+1. **Arduino Alarm System (`arduino_alarm`)**: Arduino Uno R3 powering an HC-SR501 PIR sensor from its 5V rail. Motion detection drives a 2.4kHz acoustic piezo buzzer and D13 alert LED.
+2. **ESP32 Environmental Station (`esp32_weather`)**: ESP32 NodeMCU reading a DHT11 temperature/humidity sensor and CdS photoresistor across an analog voltage divider with simulated MQTT telemetry.
+3. **Ultrasonic Distance Radar (`ultrasonic_radar`)**: Arduino Uno triggering an HC-SR04 ultrasonic sonar with dynamic distance slider and SG90 servo motor tracking target azimuth.
+4. **Isolated Relay Mains Controller (`relay_mains_driver`)**: 5V optocoupled SPDT relay switched by a low-current transistor / logic driver, switching an isolated 12V high-current load.
+
+### Discrete Analog & Semiconductor Presets
+5. **Simple LED Circuit (`simple_led`)**: 9V Battery $\to$ Toggle Switch $\to$ 330Ω Resistor $\to$ Red LED $\to$ Ground.
+6. **MCU Transistor Switch & Driver (`bjt_gpio_switch`)**: 3.3V Logic $\to$ 180Ω Base Resistor $\to$ 2N2222 NPN BJT switching an inductive coil with 1N4007 clamp.
+7. **Zener 5.1V Voltage Regulator (`zener_regulator`)**: 9V Supply with 100Ω series dropper feeding a BZX55C 5.1V Zener diode in reverse breakdown parallel with a 1kΩ load.
+8. **Polyfuse Protected Battery Rail (`fused_power_rail`)**: 9V Battery with 500mA Fast Polyfuse and switch. Shorting trips fuse into high impedance.
+9. **RC Low-Pass Filter (`rc_filter`)**: AC sinusoidal source feeding a 1kΩ resistor and 100µF capacitor to ground.
+10. **Precision Voltage Divider (`voltage_divider`)**: 12V DC across dual matched 1kΩ resistors producing exact 6.00V output.
+11. **AC Sine Wave & Resistor (`ac_bulb`)**: 24V AC sinusoidal signal generator driving a 150Ω resistive load.
+12. **Interactive Switch & Dual LEDs (`two_way_switch`)**: Multi-branch circuit with independent switchable parallel legs.
 
 ---
 
@@ -137,16 +174,15 @@ Select any pre-configured circuit from the top toolbar dropdown:
 
 ## 🧪 Automated Testing & Verification
 
-ElectroSim Pro includes a suite of headless unit, physical, and end-to-end integration tests in `scratch/` executable with Node.js:
+ElectroSim Pro includes headless unit, physical, and integration test suites executable with Node.js:
 
 ```powershell
 # Run the complete test suite
+node tests/test_iot_features.js          # 9/9 Microcontroller, sensor, actuator, and preset tests
 node scratch/e2e_integration_test.js      # 10/10 MNA solver, switch, rotation, and persistence tests
 node scratch/test_embedded_features.js   # 5/5 2N2222 BJT, BZX55C Zener, Polyfuse, and LED breakdown tests
 node scratch/test_datasheet_features.js  # 4/4 Real datasheets coverage and SOA gauge tests
 node scratch/test_component_details.js   # 5/5 Resistor color codes and EIA marking tests
-node scratch/test_icon_buttons.js        # DOM open/close tag balance & icon button checks
-node scratch/test_ui_ux_redesign.js       # Workstation layout, search, category pills & HUD tests
 ```
 
 ---
@@ -155,17 +191,16 @@ node scratch/test_ui_ux_redesign.js       # Workstation layout, search, category
 
 Comprehensive documentation is maintained in the project:
 
-- **[`knowledge_transfer.md`](file:///c:/Users/Santa/OneDrive/Desktop/electro/knowledge_transfer.md)**: Master engineering architecture and developer onboarding handbook (15 sections).
+- **[`knowledge_transfer.md`](file:///c:/Users/Santa/OneDrive/Desktop/electro/knowledge_transfer.md)**: Master engineering architecture and developer onboarding handbook (16 sections, updated to v3.0).
 - **[`docs/PRD.md`](file:///c:/Users/Santa/OneDrive/Desktop/electro/docs/PRD.md)**: Product Requirements Document, vision, user personas, and acceptance criteria.
-- **[`docs/ARCHITECTURE.md`](file:///c:/Users/Santa/OneDrive/Desktop/electro/docs/ARCHITECTURE.md)**: Mathematical MNA solver formulations, semiconductor companion models, and data flow.
+- **[`docs/ARCHITECTURE.md`](file:///c:/Users/Santa/OneDrive/Desktop/electro/docs/ARCHITECTURE.md)**: Mathematical MNA solver formulations, microcontroller companion models, and data flow.
 - **[`docs/RULES.md`](file:///c:/Users/Santa/OneDrive/Desktop/electro/docs/RULES.md)**: Engineering rules, physics integrity policies, and verification gates.
 - **[`docs/DESIGN.md`](file:///c:/Users/Santa/OneDrive/Desktop/electro/docs/DESIGN.md)**: Dark graphite design tokens, physical telemetry colors, typography scale, and 8pt metric grid.
 - **[`docs/TASKS.md`](file:///c:/Users/Santa/OneDrive/Desktop/electro/docs/TASKS.md)**: Roadmap milestones and living execution tracker.
-- **[`docs/MEMORY.md`](file:///c:/Users/Santa/OneDrive/Desktop/electro/docs/MEMORY.md)**: Architectural Decision Records (`ADR-001` through `ADR-005`) and solved traps.
+- **[`docs/MEMORY.md`](file:///c:/Users/Santa/OneDrive/Desktop/electro/docs/MEMORY.md)**: Architectural Decision Records (`ADR-001` through `ADR-006`) and solved traps.
 
 ---
 
 ## 📄 License
 
 This project is open-source software licensed under the **MIT License**.
-

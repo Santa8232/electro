@@ -96,6 +96,25 @@ $$v_{drift} = \text{clamp}(I \cdot 40, -15, 15)\text{ px/frame}$$
 - **Graticule Subdivisions:** $8 \times 4$ precision division grid with center crosshair tick marks (5 subdivisions per division).
 - **Digital Telemetry Bar:** Peak voltage, peak current, active power dissipation, and probe target.
 
+### 4.5 Microcontroller MNA Companion Modeling & IoT Subsystem
+Embedded boards (Arduino Uno R3 and ESP32 NodeMCU) and IoT peripherals interface with the linear MNA solver through physical companion network equations:
+1. **Regulated DC Power Rails:** Arduino `5V` and `3V3` and ESP32 `3V3` pins are stamped into the matrix as independent DC voltage sources with small internal series output impedance ($R_{out} = 0.1\ \Omega$).
+2. **Digital GPIO Output Drives:** Arduino `D13`, `D9`, `D2` and ESP32 `D2`, `D4` are stamped as voltage sources referenced to circuit GND with $25\ \Omega$ CMOS output drive resistance:
+   - D13 blinks at $1\text{ Hz}$ or stays static (HIGH $5\text{V}$, LOW $0\text{V}$), synchronized with an onboard teal 'L' LED indicator.
+   - D9 outputs PWM duty-proportional potential ($V_{eff} = 5.0\text{V} \times \text{duty}/100$).
+3. **High-Impedance ADC Sampling Nodes:** Arduino `A0` and ESP32 `VN` (GPIO36) are stamped with $10\text{ M}\Omega$ input impedance conductances ($G = 10^{-7}\ \mho$). The post-solve node potential is sampled and quantized:
+   - Arduino A0 (10-bit): $\text{Code} = \text{round}\left(\text{clamp}\left(\frac{V_{A0}}{5.0}, 0, 1\right) \times 1023\right)$.
+   - ESP32 VN (12-bit SAR): $\text{Code} = \text{round}\left(\text{clamp}\left(\frac{V_{VN}}{3.3}, 0, 1\right) \times 4095\right)$.
+4. **Photoconductive LDR Response:** The CdS photoresistor dynamically updates its channel conductance according to ambient illuminance ($E$, in lux):
+   $$R_{LDR} = \text{clamp}\left(500\text{ k}\Omega \cdot (E + 1)^{-0.65},\ 20\ \Omega,\ 500\text{ k}\Omega\right),\quad G_{LDR} = \frac{1}{R_{LDR}}$$
+5. **SPDT Relay Armature Isolation:** The 5V optocoupled relay models physical SPDT switching between Common (COM), Normally Open (NO), and Normally Closed (NC). When coil voltage exceeds pull-in threshold ($V_{coil} \ge 3.8\text{V}$):
+   - $G_{COM-NO} = 20\ \mho\ (0.05\ \Omega)$, $G_{COM-NC} = 10^{-7}\ \mho\ (10\text{ M}\Omega)$.
+   - When de-energized, conductances invert, maintaining complete galvanic isolation ($> 100\text{ M}\Omega$) between the control coil and load contacts.
+
+### 4.6 Web Audio API & Kinematic Synthesis
+1. **Acoustic Piezo Buzzer:** Uses the browser's native `AudioContext` to construct a real hardware tone generator. An `OscillatorNode` at $2.4\text{ kHz}$ connected to a soft `GainNode` ($0.035$) fires when the solved voltage drop satisfies $V_{drop} \ge 2.5\text{ V}$. An expanding ripple arc is rendered on canvas.
+2. **SG90 Micro Servo Motor:** Computes 50Hz control pulse widths ($1.0\text{ ms} - 2.0\text{ ms}$) corresponding to $0^\circ - 180^\circ$ angular horn rotation. Canvas transforms dynamically rotate the white servo horn arm in real time.
+
 ## 5. State Management & Data Flow
 
 State is managed through a centralized store (`state`):

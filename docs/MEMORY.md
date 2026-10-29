@@ -1,9 +1,9 @@
 # Agent Memory & Context Log
 
 ## 1. Active Session Context
-- **Current Milestone:** Milestone 4 Complete (Workstation UI/UX Redesign & Viewport Dock Action Integration)
-- **Active Focus:** Maintenance of comprehensive 6-file Vibe Coding documentation suite (`docs/`)
-- **Last Verified Step:** Automated verification of Floating Canvas Viewport Dock with icon-only Rotate & Delete buttons, 3-card telemetry grid, live oscilloscope, and 6 headless test suites passing.
+- **Current Milestone:** Milestone 5 Complete (Microcontrollers, Smart Sensors & IoT Actuators Integration)
+- **Active Focus:** Continuous documentation synchronization (`docs/`, `README.md`, `knowledge_transfer.md`)
+- **Last Verified Step:** Automated verification of all 9 IoT components, companion MNA models, ADC quantizations, Web Audio API synthesis, dynamic servo horn rotation, 5V optocoupled SPDT relay switching, and 4 pre-wired circuit presets via `scratch/test_iot_features.js` (25/25 assertions passing).
 
 ## 2. Architectural Decision Records (ADR)
 
@@ -31,11 +31,17 @@
 - **Decision:** Replaced stacked text with a standardized 3-card grid: Voltage in Cyan (`#live-vdrop`), Current in Emerald (`#live-current`), and Power in Purple (`#live-power`).
 - **Consequences:** Immediate visual scannability consistent with benchtop power analyzers and oscilloscopes.
 
-### ADR-005: Relocation of Action Buttons to Floating Canvas Viewport Dock
+### ADR-005: Dual Access for Component Actions (Viewport Dock & Inspector)
 - **Date:** 2026-10-28
-- **Context:** Placing large full-width Rotate and Delete buttons in the Component Inspector pushed technical details and color code graphics below the fold, while also requiring users to move their cursor between the canvas and inspector for every orientation change.
-- **Decision:** Removed Rotate and Delete buttons from the inspector template and integrated them as icon-only actions directly into the `<!-- Floating Canvas Viewport Dock -->` on the canvas alongside navigation tools (`S`, `H`, `W`).
-- **Consequences:** Component Inspector remains focused entirely on electrical parameters and specifications without clutter; users can rotate and delete components with one click directly on the canvas viewport.
+- **Context:** Quick component manipulation requires rapid access without excessive mouse movement across wide viewports.
+- **Decision:** Integrated icon-only Rotate 90° and Delete buttons into the Floating Canvas Viewport Dock (`#btn-rotate`, `#btn-delete`) and mirrored them at the bottom of the Component Inspector (`#btn-rotate-inspector`, `#btn-delete-inspector`).
+- **Consequences:** Maximizes ergonomics whether the user is actively working on the canvas schematic or tuning values in the inspector properties panel.
+
+### ADR-006: Microcontroller MNA Companion Modeling & IoT Actuator Synthesis
+- **Date:** 2026-10-29
+- **Context:** Simulating microcontrollers (Arduino Uno, ESP32) and IoT modules (DHT11, ultrasonic sonar, PIR, LDR, buzzer, servo, relay) within a linear MNA solver without heavy CPU instruction-set emulation.
+- **Decision:** Companion-modeled microcontroller power rails and GPIO outputs as regulated Thévenin DC voltage sources with realistic internal resistances ($0.1\ \Omega$ on power rails, $25\ \Omega$ on GPIO pins), stamped high-impedance ($10\text{ M}\Omega$) conductances for analog ADC inputs (quantizing post-solve potentials into 10-bit or 12-bit integer registers), utilized native Web Audio API for 2.4kHz piezo buzzer sound synthesis, and rendered dynamic canvas animations (radar pulses, sound waves, rotating servo horn).
+- **Consequences:** Delivers authentic electrical loading, voltage sag, ADC conversion, and real actuator behavior with zero performance penalty on the 60fps render loop.
 
 ## 3. Solved Traps & Gotchas
 
@@ -55,7 +61,13 @@
 
 ### Trap 4: Viewport Coordinate Offsets on Canvas Resize
 - **Description:** Canvas resizing using CSS styles caused schematic drawings to stretch and misalign mouse clicks.
+- **Root Cause:** Scaling CSS width/height without synchronizing canvas buffer resolution scales pixels instead of canvas coordinate units.
 - **Resolution Pattern:** Always set `canvas.width = container.clientWidth` and `canvas.height = container.clientHeight` directly on the canvas element, followed immediately by `renderCanvas()`.
+
+### Trap 5: Internal Source Resistance vs Bench Power Supply in Verification Tests
+- **Description:** A relay switched load test expecting $1.20\text{ A}$ from a $12\text{ V}$ source across a $10\ \Omega$ load yielded only $1.04\text{ A}$.
+- **Root Cause:** The default DC voltage source component is modeled after an alkaline battery with $R_{int} = 1.5\ \Omega$ ($12\text{V} / 11.5\ \Omega = 1.043\text{ A}$).
+- **Resolution Pattern:** For pure electrical load verification tests representing ideal laboratory benchtop power supplies, explicitly configure `internalR: 0.01` on the source.
 
 ## 4. Environment Notes
 - **Target Runtime:** Any modern evergreen web browser (Google Chrome, Microsoft Edge, Mozilla Firefox, Apple Safari).

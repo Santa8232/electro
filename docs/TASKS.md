@@ -65,7 +65,30 @@
 - [x] Implement dual-trace virtual bench oscilloscope ($8 \times 4$ graticule, tick marks, phosphor glow, digital readouts).
 - [x] Implement keyboard shortcuts: `Space` (Sim), `S` (Select), `H` (Pan), `W` (Wire), `R` (Rotate), `Del` (Delete), `[` (Left panel), `]` (Right panel).
 
-## Milestone 5: Future Capabilities & Enhancements
+## Milestone 5: Microcontrollers, Smart Sensors & IoT Actuators (Completed)
+- [x] **Microcontroller Boards:**
+  - [x] Arduino Uno R3 ATmega328P with regulated 5V and 3.3V rails, 10-bit quantized ADC A0, synchronized D13 'L' LED indicator, and D9 PWM.
+  - [x] ESP32 NodeMCU 240MHz SoC with regulated 3.3V rail, 12-bit SAR ADC on VN ($0-4095$), GPIO2 blue status LED, and Wi-Fi/MQTT telemetry streams.
+- [x] **Smart Environmental Sensors:**
+  - [x] DHT11 temperature ($-20^\circ\text{C} - +60^\circ\text{C}$) and relative humidity ($20\% - 90\%$) sensor with dew point calculation.
+  - [x] HC-SR04 ultrasonic sonar ($2\text{ cm} - 400\text{ cm}$) with echo pulse duration calculation and canvas radar emission waves.
+  - [x] HC-SR501 PIR passive infrared motion detector with simulation trigger and 3.3V TTL active output.
+  - [x] CdS photoresistor (LDR) with logarithmic photoconductive response ($500\text{ k}\Omega$ to $500\ \Omega$) and lux slider.
+- [x] **Interactive Actuators & Audio Synthesis:**
+  - [x] Active piezo buzzer with Web Audio API sound synthesis ($2.4\text{ kHz}$ tone), expanding canvas ripple arcs, and mute toggle.
+  - [x] SG90 micro servo motor with dynamically rotating white horn arm ($0^\circ - 180^\circ$) and 50Hz PWM pulse width calculations.
+  - [x] 5V optocoupled SPDT relay module (Songle SRD-05VDC-SL-C) with $1500\text{ V}$ galvanic isolation and armature contact switching.
+- [x] **Integrated Workstation Features:**
+  - [x] Component palette category pill `IoT & MCU` (`data-cat="iot"`).
+  - [x] Complete manufacturer datasheets for all 9 IoT components.
+  - [x] High-fidelity custom canvas schematic symbols and multi-pin geometry routing.
+  - [x] Interactive inspector cards with telemetry, sliders, steppers, and triggers.
+  - [x] Dual action buttons (Rotate & Delete) accessible in both Floating Viewport Dock and Inspector.
+  - [x] 4 pre-wired IoT circuit presets: `arduino_alarm`, `esp32_weather`, `ultrasonic_radar`, `relay_mains_driver`.
+- [x] **Verification:**
+  - [x] Headless test suite `scratch/test_iot_features.js` (9/9 suites passing, 25/25 assertions).
+
+## Milestone 6: Future Capabilities & Enhancements
 - [ ] Implement hierarchical sub-circuits and custom IC chip packaging.
 - [ ] Add dual-probe digital multimeter (DMM) with draggable positive and negative leads.
 - [ ] Add AC frequency sweep simulation with Bode magnitude and phase plots.

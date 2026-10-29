@@ -96,6 +96,12 @@
                         <option value="rc_filter">RC Low-Pass Filter (AC)</option>
                         <option value="ac_bulb">AC Sine Wave & Resistor</option>
                     </optgroup>
+                    <optgroup label="Microcontrollers &amp; IoT Systems">
+                        <option value="arduino_alarm">Arduino Uno Smart Security Alarm (PIR + Buzzer + LED)</option>
+                        <option value="esp32_weather">ESP32 IoT Weather Station (DHT11 + LDR + Wi-Fi MQTT)</option>
+                        <option value="ultrasonic_radar">Ultrasonic Radar Scanner (HC-SR04 + SG90 Servo)</option>
+                        <option value="relay_mains_driver">Optocoupled 5V Relay AC Load Controller</option>
+                    </optgroup>
                 </select>
             </div>
 
@@ -166,6 +172,7 @@
                     <button onclick="setPaletteCategory('passive')" data-cat="passive" class="cat-pill px-2 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-200 transition-all">Passives</button>
                     <button onclick="setPaletteCategory('semi')" data-cat="semi" class="cat-pill px-2 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-200 transition-all">Semis</button>
                     <button onclick="setPaletteCategory('control')" data-cat="control" class="cat-pill px-2 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-200 transition-all">Control</button>
+                    <button onclick="setPaletteCategory('iot')" data-cat="iot" class="cat-pill px-2 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-200 transition-all">IoT &amp; MCU</button>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto p-2.5 space-y-1.5" id="component-palette">
@@ -456,7 +463,16 @@
             npn_bjt:    { name: 'NPN Transistor', symbol: 'Q', desc: '2N2222 Switching BJT', category: 'semi', terminals: 3, defaultVal: 100, unit: 'hFE' },
             fuse:       { name: 'Fuse / Polyfuse', symbol: 'FUSE', desc: 'Circuit Overcurrent Protection', category: 'control', terminals: 2, defaultVal: 0.5, unit: 'A' },
             switch:     { name: 'Switch',     symbol: 'SW',   desc: 'Toggle Switch', category: 'control', terminals: 2, defaultVal: 1, unit: 'State' },
-            ground:     { name: 'Ground',     symbol: 'GND',  desc: 'Reference 0V Node', category: 'power', terminals: 1, defaultVal: 0, unit: 'V' }
+            ground:     { name: 'Ground',     symbol: 'GND',  desc: 'Reference 0V Node', category: 'power', terminals: 1, defaultVal: 0, unit: 'V' },
+            arduino_uno:{ name: 'Arduino Uno R3', symbol: 'UNO R3', desc: 'ATmega328P 16MHz MCU (5V, 3.3V, D13, D9, A0)', category: 'iot', terminals: 7, defaultVal: 5, unit: 'V' },
+            esp32:      { name: 'ESP32 NodeMCU', symbol: 'ESP32',  desc: 'Dual-Core 240MHz Wi-Fi/BLE IoT SoC (3.3V, VN, D2, D4)', category: 'iot', terminals: 7, defaultVal: 3.3, unit: 'V' },
+            dht11:      { name: 'DHT11 Sensor',  symbol: 'DHT11',  desc: 'Digital Relative Humidity & Temp Sensor', category: 'iot', terminals: 3, defaultVal: 24, unit: '°C' },
+            hc_sr04:    { name: 'HC-SR04 Sonar', symbol: 'HC-SR04',desc: 'Ultrasonic Distance Ranging Module (2-400cm)', category: 'iot', terminals: 4, defaultVal: 25, unit: 'cm' },
+            pir_sensor: { name: 'HC-SR501 PIR',  symbol: 'PIR',    desc: 'Pyroelectric Infrared Motion Sensor', category: 'iot', terminals: 3, defaultVal: 3.3, unit: 'V' },
+            ldr:        { name: 'Photoresistor', symbol: 'LDR',    desc: 'Light-Dependent Resistor (CdS 500Ω-500kΩ)', category: 'iot', terminals: 2, defaultVal: 300, unit: 'lux' },
+            buzzer:     { name: 'Piezo Buzzer',  symbol: 'BUZZ',   desc: 'Active 2.4kHz Acoustic Sounder', category: 'iot', terminals: 2, defaultVal: 5, unit: 'V' },
+            servo:      { name: 'SG90 Servo',    symbol: 'SG90',   desc: '9g Position Micro Servo Motor (0° - 180°)', category: 'iot', terminals: 3, defaultVal: 90, unit: 'deg' },
+            relay:      { name: '5V Relay Module',symbol: 'RELAY', desc: '10A SPDT Optocoupled Isolation Relay', category: 'iot', terminals: 6, defaultVal: 5, unit: 'V' }
         };
 
         // --- AUTHENTIC COMPONENT DATASHEETS ARCHIVE ---
@@ -742,6 +758,241 @@
                     { param: 'Opening Time (@ 200% Load)', symbol: 't_clear', min: '-', typ: '< 5.0', max: '10.0', unit: 's' }
                 ],
                 appNotes: 'Mandatory for battery safety. When the fuse trips under a short-circuit condition, it opens into an infinite resistance state. In ElectroSim Pro, click "Reset / Replace Fuse" to restore continuity once the fault is cleared.'
+            },
+            arduino_uno: {
+                partNumber: 'ATmega328P-PU (Microchip / Arduino)',
+                title: 'Arduino Uno R3 8-bit AVR RISC Microcontroller Board',
+                category: 'Microcontrollers / Embedded Systems',
+                package: 'DIP-28 / Standard Arduino Uno R3 Form Factor (68.6mm × 53.4mm)',
+                description: 'The Arduino Uno R3 is an open-source microcontroller board based on the Microchip ATmega328P. Features 14 digital input/output pins (6 PWM outputs), 6 analog inputs, 16 MHz ceramic resonator, USB connection, power barrel jack, ICSP header, and reset button. Operates at 5V logic with integrated 5V and 3.3V low-dropout voltage regulators.',
+                pinout: [
+                    { pin: 0, name: '5V (Power Output)', desc: 'Regulated +5.0V DC supply output rail from on-board LDO regulator (500mA max)' },
+                    { pin: 1, name: '3V3 (Power Output)', desc: 'Regulated +3.3V DC supply rail from LP2985-33 LDO regulator (150mA max)' },
+                    { pin: 2, name: 'GND (Common Ground)', desc: 'System common reference ground (0V)' },
+                    { pin: 3, name: 'A0 (Analog Input 0)', desc: '10-bit Successive Approximation ADC input (0-5V range, 1024 discrete steps)' },
+                    { pin: 4, name: 'D13 (Digital I/O / LED)', desc: 'Digital GPIO pin tied to on-board yellow "L" LED with internal current limiter' },
+                    { pin: 5, name: 'D9 (Digital PWM Output)', desc: '8-bit Timer/Counter1 Fast PWM output channel A / general GPIO' },
+                    { pin: 6, name: 'D2 (Digital Interrupt)', desc: 'Digital GPIO supporting external hardware interrupt INT0' }
+                ],
+                maxRatings: [
+                    { param: 'Recommended Supply Input (VIN / Barrel)', symbol: 'V_IN', max: '7.0 - 12.0', unit: 'V' },
+                    { param: 'DC Current per I/O Pin', symbol: 'I_IO', max: '40', unit: 'mA' },
+                    { param: 'DC Current for 3.3V Pin', symbol: 'I_3V3', max: '150', unit: 'mA' },
+                    { param: 'Flash Memory (Bootloader uses 0.5KB)', symbol: 'Flash', max: '32', unit: 'KB' },
+                    { param: 'Internal SRAM / EEPROM', symbol: 'SRAM', max: '2 KB / 1 KB', unit: 'RAM' }
+                ],
+                characteristics: [
+                    { param: 'Operating Logic Voltage', symbol: 'V_CC', min: '4.85', typ: '5.0', max: '5.15', unit: 'V' },
+                    { param: 'Clock Speed / Quartz Frequency', symbol: 'f_clk', min: '-', typ: '16.0', max: '-', unit: 'MHz' },
+                    { param: 'ADC Resolution / Quantization', symbol: 'ADC_res', min: '-', typ: '10 (1024 steps)', max: '-', unit: 'Bits' },
+                    { param: 'ADC Conversion Time', symbol: 't_ADC', min: '13', typ: '65', max: '260', unit: 'µs' }
+                ],
+                appNotes: 'When interfacing 5V Arduino Uno pins to 3.3V sensors (e.g. ESP32, HC-SR04 Echo into 3.3V MCU), always employ a resistive voltage divider or bidirectional logic level shifter to protect 3.3V inputs from overvoltage breakdown.'
+            },
+            esp32: {
+                partNumber: 'ESP-WROOM-32 (Espressif Systems)',
+                title: 'Dual-Core 240MHz Wi-Fi & Bluetooth IoT System-on-Chip Module',
+                category: 'IoT Compute / RF Transceiver SoC',
+                package: '38-Pin SMD Module / NodeMCU-32S Form Factor (25.5mm × 18.0mm)',
+                description: 'The ESP-WROOM-32 is a powerful Wi-Fi+BT+BLE MCU module targeting high-performance IoT applications. Built around the dual-core Tensilica Xtensa 32-bit LX6 microprocessor operating up to 240 MHz. Features 520 KB SRAM, 4 MB SPI Flash, integrated antenna switch, RF balun, power amplifier, low-noise receive amplifier, and power management modules.',
+                pinout: [
+                    { pin: 0, name: '3V3 (Power Output)', desc: 'Regulated +3.3V DC power rail from on-board AMS1117-3.3 regulator (600mA peak)' },
+                    { pin: 1, name: 'GND (System Ground)', desc: 'Ground return path and RF reference' },
+                    { pin: 2, name: 'VN (GPIO36 / SENSOR_VN)', desc: 'Low-noise 12-bit ADC1_CH0 input (0-3.3V, 4096 levels)' },
+                    { pin: 3, name: 'D2 (GPIO2 / Blue LED)', desc: 'Strapping pin & general GPIO tied to on-board blue status LED' },
+                    { pin: 4, name: 'D4 (GPIO4 / ADC2_CH0)', desc: 'General purpose digital I/O with internal weak pull-up/pull-down' },
+                    { pin: 5, name: 'D18 (GPIO18 / VSPI CLK)', desc: 'Hardware SPI bus clock pin / general digital GPIO' },
+                    { pin: 6, name: 'D21 (GPIO21 / I2C SDA)', desc: 'Hardware I2C serial data interface / open-drain bus' }
+                ],
+                maxRatings: [
+                    { param: 'Operating Logic Voltage (VCC)', symbol: 'V_DD', max: '3.6', unit: 'V' },
+                    { param: 'Cumulative GPIO Output Current', symbol: 'I_total', max: '120', unit: 'mA' },
+                    { param: 'Per-Pin GPIO Sink/Source Current', symbol: 'I_pin', max: '12', unit: 'mA' },
+                    { param: 'Deep Sleep Current Consumption', symbol: 'I_sleep', max: '5', unit: 'µA' },
+                    { param: 'Operating Temperature Range', symbol: 'T_OP', max: '-40 to +125', unit: '°C' }
+                ],
+                characteristics: [
+                    { param: 'Wi-Fi Protocol 802.11 b/g/n Speed', symbol: 'PHY_rate', min: '1.0', typ: '72.2', max: '150.0', unit: 'Mbps' },
+                    { param: 'RF Frequency Spectrum', symbol: 'f_RF', min: '2412', typ: '2442', max: '2484', unit: 'MHz' },
+                    { param: 'RF Output Power (802.11b, CCK 1Mbps)', symbol: 'P_out', min: '-', typ: '+20', max: '-', unit: 'dBm' },
+                    { param: 'ADC Resolution (Successive Approx)', symbol: 'ADC_bit', min: '-', typ: '12 (4096 steps)', max: '-', unit: 'Bits' }
+                ],
+                appNotes: 'ESP32 GPIO pins operate at 3.3V and are NOT 5V tolerant! Applying 5V directly to GPIO2, GPIO4, or VN will permanently damage the silicon gate oxide. Always verify power isolation before energizing circuit.'
+            },
+            dht11: {
+                partNumber: 'DHT11 (Aosong Electronics)',
+                title: 'Calibrated Digital Temperature & Relative Humidity Sensor Module',
+                category: 'Sensors / Environmental Transducers',
+                package: '4-Pin Single-Row Leaded (Body 15.5mm × 12.0mm × 5.5mm)',
+                description: 'The DHT11 is a basic, low-cost digital temperature and humidity sensor. Utilizes a resistive-type humidity measurement component and an NTC temperature measurement component connected to an 8-bit microcontroller. Communicates over a single-wire bi-directional serial bus protocol transmitting 40-bit data packets.',
+                pinout: [
+                    { pin: 0, name: 'VCC (Supply Rail)', desc: 'Power supply input (+3.3V to +5.5V DC)' },
+                    { pin: 1, name: 'DATA (Serial Single-Bus)', desc: 'Single-wire bidirectional serial bus. Requires 4.7k - 10kΩ pull-up resistor to VCC' },
+                    { pin: 2, name: 'GND (Ground)', desc: 'Power ground return' }
+                ],
+                maxRatings: [
+                    { param: 'Supply Voltage', symbol: 'V_DD', max: '5.5', unit: 'V' },
+                    { param: 'Operating Humidity Range', symbol: 'RH_range', max: '20 to 90', unit: '%RH' },
+                    { param: 'Operating Temperature Range', symbol: 'T_range', max: '0 to 50', unit: '°C' },
+                    { param: 'Quiescent Supply Current', symbol: 'I_Q', max: '100', unit: 'µA' }
+                ],
+                characteristics: [
+                    { param: 'Humidity Accuracy (@ 25°C)', symbol: 'ΔRH', min: '-5.0', typ: '±4.0', max: '+5.0', unit: '%RH' },
+                    { param: 'Temperature Accuracy', symbol: 'ΔT', min: '-2.0', typ: '±1.0', max: '+2.0', unit: '°C' },
+                    { param: 'Sampling Period Interval', symbol: 't_sample', min: '1.0', typ: '1.0', max: '2.0', unit: 's' },
+                    { param: 'Active Measuring Current', symbol: 'I_active', min: '0.5', typ: '1.0', max: '2.5', unit: 'mA' }
+                ],
+                appNotes: 'Single-bus transmission consists of an 18ms LOW start signal from MCU, followed by DHT response (80µs low, 80µs high), and 40 data bits: 16-bit RH integer/decimal, 16-bit Temp integer/decimal, and 8-bit Parity Checksum.'
+            },
+            hc_sr04: {
+                partNumber: 'HC-SR04 (Cytron / Osepp)',
+                title: 'Ultrasonic Sonar Non-Contact Distance Measuring Transducer',
+                category: 'Sensors / Acoustic Sonar Ranging',
+                package: 'Dual Transducer PCB Assembly (45.0mm × 20.0mm × 15.0mm)',
+                description: 'The HC-SR04 ultrasonic distance sensor provides 2cm to 400cm non-contact distance measurement with accuracy down to 3mm. Module incorporates dual piezoelectric ceramic transducers (40 kHz transmitter and receiver) along with receiver amplifier and threshold detector circuitry.',
+                pinout: [
+                    { pin: 0, name: 'VCC (Supply Power)', desc: '+5.0V DC regulated power input' },
+                    { pin: 1, name: 'TRIG (Trigger Input)', desc: '10µs TTL pulse input initiates 8-cycle 40kHz sonic burst' },
+                    { pin: 2, name: 'ECHO (Echo Output)', desc: 'TTL pulse output whose high duration equals sonic flight time (t = 2*d / v_sound)' },
+                    { pin: 3, name: 'GND (Ground)', desc: 'Common 0V ground connection' }
+                ],
+                maxRatings: [
+                    { param: 'Operating Supply Voltage', symbol: 'V_CC', max: '5.5', unit: 'V' },
+                    { param: 'Quiescent Standby Current', symbol: 'I_Q', max: '2', unit: 'mA' },
+                    { param: 'Working Active Current', symbol: 'I_work', max: '15', unit: 'mA' },
+                    { param: 'Maximum Sonar Range', symbol: 'D_max', max: '400', unit: 'cm' }
+                ],
+                characteristics: [
+                    { param: 'Ultrasonic Burst Frequency', symbol: 'f_sound', min: '-', typ: '40', max: '-', unit: 'kHz' },
+                    { param: 'Effective Measuring Angle', symbol: 'θ_beam', min: '-', typ: '15', max: '-', unit: 'deg' },
+                    { param: 'Ranging Conversion Constant', symbol: 'K_dist', min: '-', typ: '58.3 (µs/cm)', max: '-', unit: 'µs/cm' },
+                    { param: 'Measurement Resolution', symbol: 'Res', min: '-', typ: '0.3', max: '-', unit: 'cm' }
+                ],
+                appNotes: 'Distance formula: Distance (cm) = (Echo High Time in µs) / 58.0, or Distance (inch) = Time / 148.0. Maintain at least 60ms between trigger pulses to prevent measurement overlap from reflected secondary echoes.'
+            },
+            pir_sensor: {
+                partNumber: 'HC-SR501 (Nisheng / BISS0001)',
+                title: 'Pyroelectric Passive Infrared (PIR) Human Motion Sensor Module',
+                category: 'Sensors / Infrared Security',
+                package: 'PCB with Faceted Polyethylene Fresnel Dome (32.0mm × 24.0mm)',
+                description: 'The HC-SR501 PIR sensor detects human and animal infrared motion within a 7-meter cone using a dual-element pyroelectric sensor and a BISS0001 micro-power PIR motion detector IC. Includes adjustable trimpots for sensitivity (distance) and output delay timing (0.3s - 5min).',
+                pinout: [
+                    { pin: 0, name: 'VCC (Input Power)', desc: 'DC supply voltage (+4.5V to +12.0V DC, onboard 3.3V regulator)' },
+                    { pin: 1, name: 'OUT (Digital Output)', desc: '3.3V TTL active HIGH pulse when motion detected; 0V when standby' },
+                    { pin: 2, name: 'GND (System Ground)', desc: 'Ground reference return' }
+                ],
+                maxRatings: [
+                    { param: 'DC Input Voltage Rail', symbol: 'V_IN', max: '12.0', unit: 'V' },
+                    { param: 'Quiescent Drain Current', symbol: 'I_drain', max: '65', unit: 'µA' },
+                    { param: 'Output Signal High Level', symbol: 'V_OH', max: '3.3', unit: 'V' },
+                    { param: 'Detection Range Angle', symbol: 'θ_cone', max: '110', unit: 'deg' }
+                ],
+                characteristics: [
+                    { param: 'Maximum Detection Distance', symbol: 'D_detect', min: '3', typ: '5 - 7', max: '7', unit: 'm' },
+                    { param: 'Output Delay Adjustment Range', symbol: 't_delay', min: '0.3', typ: '3.0', max: '300.0', unit: 's' },
+                    { param: 'Blockade Time After Pulse', symbol: 't_block', min: '2.5', typ: '2.5', max: '2.5', unit: 's' },
+                    { param: 'Pyroelectric Spectral Response', symbol: 'λ_IR', min: '7', typ: '10', max: '14', unit: 'µm' }
+                ],
+                appNotes: 'The Fresnel lens splits the detection area into optical zones. When a warm body moves between zones, differential IR radiation triggers the BISS0001 band-pass filter and comparator. Avoid mounting directly facing heat vents or incandescent lights.'
+            },
+            ldr: {
+                partNumber: 'GL5528 (Senba Sensing)',
+                title: 'Cadmium Sulfide (CdS) Photoresistor / Light-Dependent Resistor',
+                category: 'Sensors / Optoelectronic Transducers',
+                package: '5mm Epoxy Resin Encapsulated Ceramic Substrate',
+                description: 'The GL5528 is a CdS photoconductive cell whose bulk semiconductor resistance decreases non-linearly with increasing incident ambient light illumination. Features wide spectral response peaking near 540nm, closely matching the human photopic eye response curve.',
+                pinout: [
+                    { pin: 0, name: 'Terminal A (Pin 1)', desc: 'Symmetrical non-polarized photoconductive lead' },
+                    { pin: 1, name: 'Terminal B (Pin 2)', desc: 'Symmetrical non-polarized photoconductive lead' }
+                ],
+                maxRatings: [
+                    { param: 'Maximum Operating Voltage (DC/AC)', symbol: 'V_max', max: '150', unit: 'V' },
+                    { param: 'Maximum Power Dissipation (@ 25°C)', symbol: 'P_max', max: '100', unit: 'mW' },
+                    { param: 'Operating Ambient Temperature', symbol: 'T_OP', max: '-30 to +70', unit: '°C' }
+                ],
+                characteristics: [
+                    { param: 'Light Resistance (@ 10 Lux daylight)', symbol: 'R_10', min: '10', typ: '15', max: '20', unit: 'kΩ' },
+                    { param: 'Dark Resistance (@ 0 Lux pitch dark)', symbol: 'R_dark', min: '1.0', typ: '2.0', max: '10.0', unit: 'MΩ' },
+                    { param: 'Gamma Sensitivity Characteristic (10-100 Lux)', symbol: 'γ', min: '0.6', typ: '0.7', max: '0.8', unit: '-' },
+                    { param: 'Peak Spectral Sensitivity Wavelength', symbol: 'λ_max', min: '-', typ: '540', max: '-', unit: 'nm' }
+                ],
+                appNotes: 'Ideal for voltage divider circuits: Connect LDR in series with a fixed 10kΩ resistor. Output voltage V_out = V_supply * (R_fixed / (R_ldr + R_fixed)). High voltage corresponds to high light level when fixed resistor is pulled down to GND.'
+            },
+            buzzer: {
+                partNumber: 'TMB12A05 (Sonitron / CUI Devices)',
+                title: '5V Active Electromagnetic Piezoelectric Sounder & Buzzer',
+                category: 'Acoustic / Piezoelectric Transducers',
+                package: '12mm Sealed Cylindrical Housing with Top Sound Port',
+                description: 'The TMB12A05 is an active electromagnetic acoustic indicator with built-in internal oscillator circuit. Produces a loud, penetrating 2400 Hz continuous sound tone when supplied with a constant DC voltage across its polarized terminals.',
+                pinout: [
+                    { pin: 0, name: 'Positive Lead (+)', desc: 'Anode terminal with (+) mark on top of casing; connects to switched 5V rail' },
+                    { pin: 1, name: 'Negative Lead (-)', desc: 'Cathode terminal; connects to system ground (0V)' }
+                ],
+                maxRatings: [
+                    { param: 'Rated DC Operating Voltage', symbol: 'V_rated', max: '5.0', unit: 'V' },
+                    { param: 'Operating Voltage Range', symbol: 'V_op', max: '4.0 - 7.0', unit: 'V' },
+                    { param: 'Maximum Current Consumption', symbol: 'I_max', max: '30', unit: 'mA' },
+                    { param: 'Operating Temperature', symbol: 'T_OP', max: '-20 to +70', unit: '°C' }
+                ],
+                characteristics: [
+                    { param: 'Oscillator Resonant Frequency', symbol: 'f_res', min: '2100', typ: '2400', max: '2700', unit: 'Hz' },
+                    { param: 'Sound Pressure Level (@ 10cm, 5V)', symbol: 'SPL', min: '85', typ: '88', max: '-', unit: 'dBA' },
+                    { param: 'Internal Coil Direct Current Resistance', symbol: 'R_dc', min: '28', typ: '32', max: '36', unit: 'Ω' }
+                ],
+                appNotes: 'Active buzzers contain internal drive circuitry and sound continuously upon DC power application. Passive buzzers lack internal oscillators and require external AC/PWM wave signals. ElectroSim Pro utilizes Web Audio API synthesis to render real acoustic sound.'
+            },
+            servo: {
+                partNumber: 'SG90 (TowerPro)',
+                title: '9g Precision Micro Position Servo Motor with Feedback Potentiometer',
+                category: 'Actuators / Mechatronic Servomechanisms',
+                package: 'Sub-Micro Nylon Geared Actuator (22.2mm × 11.8mm × 31.0mm, 9g)',
+                description: 'The TowerPro SG90 is the global hobby and robotics standard 9-gram analog micro servo motor. Delivers 1.8 kg·cm stall torque with 180° rotation capability. Includes internal DC motor, gear reduction train, potentiometer feedback, and proportional-integral servo control amplifier circuit.',
+                pinout: [
+                    { pin: 0, name: 'GND (Brown / Black)', desc: 'Power and signal reference ground' },
+                    { pin: 1, name: 'VCC (Red Lead)', desc: 'Motor power supply rail (+4.8V to +6.0V DC)' },
+                    { pin: 2, name: 'PWM (Orange / Yellow)', desc: 'Standard 50Hz (20ms period) PPM/PWM position control signal pulse (1.0ms - 2.0ms)' }
+                ],
+                maxRatings: [
+                    { param: 'Operating Voltage Supply', symbol: 'V_CC', max: '6.0', unit: 'V' },
+                    { param: 'Stall Current (@ 4.8V supply)', symbol: 'I_stall', max: '550', unit: 'mA' },
+                    { param: 'Running Idle Current', symbol: 'I_idle', max: '20', unit: 'mA' },
+                    { param: 'Stall Torque (@ 4.8V)', symbol: 'τ_stall', max: '1.8', unit: 'kg·cm' }
+                ],
+                characteristics: [
+                    { param: 'Operating Speed (No Load @ 4.8V)', symbol: 'v_rot', min: '-', typ: '0.12 (s/60°)', max: '0.10', unit: 's/60°' },
+                    { param: 'PWM Control Frame Frequency', symbol: 'f_PWM', min: '40', typ: '50', max: '60', unit: 'Hz' },
+                    { param: 'Pulse Width Range (0° to 180°)', symbol: 't_pulse', min: '1.0', typ: '1.5 (center)', max: '2.0', unit: 'ms' },
+                    { param: 'Dead Band Width', symbol: 't_db', min: '-', typ: '5', max: '10', unit: 'µs' }
+                ],
+                appNotes: 'Position angle is controlled by the pulse duration: 1.0ms pulse corresponds to 0° (full left), 1.5ms pulse corresponds to 90° (neutral center), and 2.0ms pulse corresponds to 180° (full right). When powered from MCU, add a 100µF decoupling capacitor to suppress motor surge transients.'
+            },
+            relay: {
+                partNumber: 'SRD-05VDC-SL-C (Songle / Omron)',
+                title: '5V Single-Pole Double-Throw (SPDT) 10A Optocoupled Power Relay',
+                category: 'Electromechanical / Galvanic Isolation Switches',
+                package: 'Sealed Sugar-Cube Sealed Relay (19.0mm × 15.5mm × 15.0mm)',
+                description: 'The SRD-05VDC-SL-C relay module provides safe galvanic electrical isolation between low-power microcontroller logic (Arduino/ESP32) and high-power AC or DC electrical loads up to 250VAC @ 10A. Built with an on-board PC817 optocoupler, flyback suppression diode, transistor driver, and switching indicator LED.',
+                pinout: [
+                    { pin: 0, name: 'VCC (Coil Power Rail)', desc: '+5.0V DC supply to power electromagnet relay coil' },
+                    { pin: 1, name: 'IN (Digital Trigger Input)', desc: 'Control signal input; activates coil through optocoupler (Active HIGH / LOW selectable)' },
+                    { pin: 2, name: 'GND (Ground)', desc: 'Coil supply ground reference' },
+                    { pin: 3, name: 'NO (Normally Open Contact)', desc: 'Load terminal connected to COM ONLY when relay is energized' },
+                    { pin: 4, name: 'COM (Common Contact)', desc: 'Common switch pole connected to load supply or hot line' },
+                    { pin: 5, name: 'NC (Normally Closed Contact)', desc: 'Load terminal connected to COM when relay coil is de-energized' }
+                ],
+                maxRatings: [
+                    { param: 'Maximum Contact Switching Voltage', symbol: 'V_sw', max: '250VAC / 30VDC', unit: 'V' },
+                    { param: 'Maximum Continuous Contact Current', symbol: 'I_contact', max: '10', unit: 'A' },
+                    { param: 'Dielectric Insulation Voltage', symbol: 'V_iso', max: '1500', unit: 'VAC' },
+                    { param: 'Nominal Coil Voltage', symbol: 'V_coil', max: '5.0', unit: 'V' }
+                ],
+                characteristics: [
+                    { param: 'Nominal Coil Resistance (@ 20°C)', symbol: 'R_coil', min: '63', typ: '70', max: '77', unit: 'Ω' },
+                    { param: 'Coil Operating Current (@ 5V)', symbol: 'I_coil', min: '65', typ: '71.4', max: '80', unit: 'mA' },
+                    { param: 'Pull-in Pickup Voltage (Max)', symbol: 'V_pull', min: '-', typ: '3.75 (75%)', max: '3.75', unit: 'V' },
+                    { param: 'Contact Operate / Release Time', symbol: 't_sw', min: '-', typ: '10 / 5', max: '15', unit: 'ms' }
+                ],
+                appNotes: 'Galvanic isolation protects delicate digital processors from mains spikes, noise, and back-EMF surges. Always observe electrical safety clearance rules when switching 120V/240V AC mains lines.'
             }
         };
 
@@ -805,6 +1056,75 @@
             };
 
         
+        }
+
+        // --- WEB AUDIO API BUZZER SOUND SYNTHESIZER ---
+        let audioCtx = null;
+        let buzzerOscillator = null;
+        let buzzerGain = null;
+        let isAudioMuted = false;
+
+        function initAudio() {
+            if (!audioCtx && typeof window !== 'undefined') {
+                const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtxClass) {
+                    audioCtx = new AudioCtxClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+        }
+
+        function toggleAudioMute() {
+            isAudioMuted = !isAudioMuted;
+            if (isAudioMuted && buzzerOscillator) {
+                try {
+                    buzzerOscillator.stop();
+                    buzzerOscillator.disconnect();
+                } catch(e) {}
+                buzzerOscillator = null;
+                buzzerGain = null;
+            }
+            if (typeof showToast === 'function') {
+                showToast(isAudioMuted ? '🔇 Audio sound muted' : '🔊 Audio sound enabled', 'info');
+            }
+            const muteBtn = document.getElementById('btn-mute-audio');
+            if (muteBtn) {
+                muteBtn.innerHTML = `<i class="fa-solid ${isAudioMuted ? 'fa-volume-xmark text-rose-400' : 'fa-volume-high text-emerald-400'}"></i> <span>${isAudioMuted ? 'Unmute Sound' : 'Mute Sound'}</span>`;
+            }
+        }
+
+        function updateBuzzerAudio(isActive, freq = 2400) {
+            if (isAudioMuted || !isActive) {
+                if (buzzerOscillator) {
+                    try {
+                        buzzerOscillator.stop();
+                        buzzerOscillator.disconnect();
+                    } catch(e) {}
+                    buzzerOscillator = null;
+                    buzzerGain = null;
+                }
+                return;
+            }
+            initAudio();
+            if (!audioCtx) return;
+            if (!buzzerOscillator) {
+                try {
+                    buzzerOscillator = audioCtx.createOscillator();
+                    buzzerGain = audioCtx.createGain();
+                    buzzerOscillator.type = 'square';
+                    buzzerOscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                    buzzerGain.gain.setValueAtTime(0.035, audioCtx.currentTime);
+                    buzzerOscillator.connect(buzzerGain);
+                    buzzerGain.connect(audioCtx.destination);
+                    buzzerOscillator.start();
+                } catch(e) {}
+            } else {
+                try {
+                    buzzerOscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                } catch(e) {}
+            }
         }
 
         // --- CIRCUIT SOLVER (MODIFIED NODAL ANALYSIS) ---
@@ -910,6 +1230,70 @@
                             val = comp.value * Math.sin(2 * Math.PI * freq * time);
                         }
                         vSources.push({ comp, nPos, nNeg, val });
+                    } else if (comp.type === 'arduino_uno') {
+                        // 0:5V, 1:3V3, 2:GND, 3:A0, 4:D13, 5:D9, 6:D2
+                        const nGND = termToNet.get(`${comp.id}_2`);
+                        const n5V  = termToNet.get(`${comp.id}_0`);
+                        const n3V3 = termToNet.get(`${comp.id}_1`);
+                        const nD13 = termToNet.get(`${comp.id}_4`);
+                        const nD9  = termToNet.get(`${comp.id}_5`);
+                        const nD2  = termToNet.get(`${comp.id}_6`);
+
+                        if (n5V !== undefined && nGND !== undefined) {
+                            vSources.push({ comp, nPos: n5V, nNeg: nGND, val: 5.0, rInt: 0.1 });
+                        }
+                        if (n3V3 !== undefined && nGND !== undefined) {
+                            vSources.push({ comp, nPos: n3V3, nNeg: nGND, val: 3.3, rInt: 0.1 });
+                        }
+                        if (nD13 !== undefined && nGND !== undefined) {
+                            let d13Val = 0;
+                            if (comp.d13Mode === 'high') d13Val = 5.0;
+                            else if (comp.d13Mode === 'blink') d13Val = (Math.floor(time * 2) % 2 === 0) ? 5.0 : 0.0;
+                            vSources.push({ comp, nPos: nD13, nNeg: nGND, val: d13Val, rInt: 25.0 });
+                        }
+                        if (nD9 !== undefined && nGND !== undefined) {
+                            const duty = comp.d9Duty !== undefined ? comp.d9Duty : 100;
+                            const d9Val = 5.0 * (duty / 100);
+                            vSources.push({ comp, nPos: nD9, nNeg: nGND, val: d9Val, rInt: 25.0 });
+                        }
+                        if (nD2 !== undefined && nGND !== undefined && (comp.d2Mode === 'high' || comp.d2Mode === 'low')) {
+                            const d2Val = comp.d2Mode === 'high' ? 5.0 : 0.0;
+                            vSources.push({ comp, nPos: nD2, nNeg: nGND, val: d2Val, rInt: 25.0 });
+                        }
+                    } else if (comp.type === 'esp32') {
+                        // 0:3V3, 1:GND, 2:VN, 3:D2, 4:D4, 5:D18, 6:D21
+                        const nGND = termToNet.get(`${comp.id}_1`);
+                        const n3V3 = termToNet.get(`${comp.id}_0`);
+                        const nD2  = termToNet.get(`${comp.id}_3`);
+                        const nD4  = termToNet.get(`${comp.id}_4`);
+
+                        if (n3V3 !== undefined && nGND !== undefined) {
+                            vSources.push({ comp, nPos: n3V3, nNeg: nGND, val: 3.3, rInt: 0.1 });
+                        }
+                        if (nD2 !== undefined && nGND !== undefined) {
+                            let d2Val = 0;
+                            if (comp.d2Mode === 'high') d2Val = 3.3;
+                            else if (comp.d2Mode === 'blink') d2Val = (Math.floor(time * 3) % 2 === 0) ? 3.3 : 0.0;
+                            vSources.push({ comp, nPos: nD2, nNeg: nGND, val: d2Val, rInt: 35.0 });
+                        }
+                        if (nD4 !== undefined && nGND !== undefined && comp.d4Mode !== 'input') {
+                            vSources.push({ comp, nPos: nD4, nNeg: nGND, val: 3.3, rInt: 35.0 });
+                        }
+                    } else if (comp.type === 'pir_sensor') {
+                        // 0:VCC, 1:OUT, 2:GND
+                        const nGND = termToNet.get(`${comp.id}_2`);
+                        const nOUT = termToNet.get(`${comp.id}_1`);
+                        if (nOUT !== undefined && nGND !== undefined) {
+                            const outVal = comp.motionDetected ? 3.3 : 0.0;
+                            vSources.push({ comp, nPos: nOUT, nNeg: nGND, val: outVal, rInt: 100.0 });
+                        }
+                    } else if (comp.type === 'hc_sr04') {
+                        // 0:VCC, 1:TRIG, 2:ECHO, 3:GND
+                        const nGND  = termToNet.get(`${comp.id}_3`);
+                        const nECHO = termToNet.get(`${comp.id}_2`);
+                        if (nECHO !== undefined && nGND !== undefined) {
+                            vSources.push({ comp, nPos: nECHO, nNeg: nGND, val: 5.0, rInt: 50.0 });
+                        }
                     }
                 }
 
@@ -1038,6 +1422,64 @@
                                 addConductance(nB, nE, 1e-8);
                                 addConductance(nC, nE, 1e-8);
                             }
+                        } else if (comp.type === 'arduino_uno') {
+                            const nGND = termToNet.get(`${comp.id}_2`);
+                            const nA0  = termToNet.get(`${comp.id}_3`);
+                            if (nA0 !== undefined && nGND !== undefined) addConductance(nA0, nGND, 1e-7);
+                        } else if (comp.type === 'esp32') {
+                            const nGND = termToNet.get(`${comp.id}_1`);
+                            const nVN  = termToNet.get(`${comp.id}_2`);
+                            if (nVN !== undefined && nGND !== undefined) addConductance(nVN, nGND, 1e-7);
+                        } else if (comp.type === 'dht11') {
+                            const nVCC  = termToNet.get(`${comp.id}_0`);
+                            const nDATA = termToNet.get(`${comp.id}_1`);
+                            const nGND  = termToNet.get(`${comp.id}_2`);
+                            if (nVCC !== undefined && nGND !== undefined) addConductance(nVCC, nGND, 1 / 500);
+                            if (nDATA !== undefined && nGND !== undefined) addConductance(nDATA, nGND, 1 / 10000);
+                        } else if (comp.type === 'hc_sr04') {
+                            const nVCC  = termToNet.get(`${comp.id}_0`);
+                            const nTRIG = termToNet.get(`${comp.id}_1`);
+                            const nGND  = termToNet.get(`${comp.id}_3`);
+                            if (nVCC !== undefined && nGND !== undefined) addConductance(nVCC, nGND, 1 / 330);
+                            if (nTRIG !== undefined && nGND !== undefined) addConductance(nTRIG, nGND, 1 / 10000);
+                        } else if (comp.type === 'pir_sensor') {
+                            const nVCC = termToNet.get(`${comp.id}_0`);
+                            const nGND = termToNet.get(`${comp.id}_2`);
+                            if (nVCC !== undefined && nGND !== undefined) addConductance(nVCC, nGND, 1 / 7500);
+                        } else if (comp.type === 'ldr') {
+                            const lux = comp.lux !== undefined ? comp.lux : 300;
+                            const normLux = Math.min(1000, Math.max(0, lux));
+                            const ratio = Math.log10(1 + normLux) / Math.log10(1001);
+                            const rLdr = Math.max(500, Math.min(500000, 500 + 499500 * Math.pow(1 - ratio, 2)));
+                            comp.calculatedResistance = rLdr;
+                            comp.value = Math.round(rLdr);
+                            addConductance(n0, n1, 1 / rLdr);
+                        } else if (comp.type === 'buzzer') {
+                            addConductance(n0, n1, 1 / 32);
+                        } else if (comp.type === 'servo') {
+                            const nGND = termToNet.get(`${comp.id}_0`);
+                            const nVCC = termToNet.get(`${comp.id}_1`);
+                            const nPWM = termToNet.get(`${comp.id}_2`);
+                            if (nVCC !== undefined && nGND !== undefined) addConductance(nVCC, nGND, 1 / 250);
+                            if (nPWM !== undefined && nGND !== undefined) addConductance(nPWM, nGND, 1 / 100000);
+                        } else if (comp.type === 'relay') {
+                            const nVCC = termToNet.get(`${comp.id}_0`);
+                            const nIN  = termToNet.get(`${comp.id}_1`);
+                            const nGND = termToNet.get(`${comp.id}_2`);
+                            const nNO  = termToNet.get(`${comp.id}_3`);
+                            const nCOM = termToNet.get(`${comp.id}_4`);
+                            const nNC  = termToNet.get(`${comp.id}_5`);
+                            if (nVCC !== undefined && nGND !== undefined) addConductance(nVCC, nGND, 1 / 70);
+                            if (nIN !== undefined && nGND !== undefined) addConductance(nIN, nGND, 1 / 1000);
+                            const vVCC = (voltages[nVCC] || 0) - (voltages[nGND] || 0);
+                            const vIN  = (voltages[nIN] || 0) - (voltages[nGND] || 0);
+                            const isTrigHigh = comp.triggerLevel !== 'low';
+                            const energized = (vVCC >= 3.5) && (isTrigHigh ? (vIN >= 2.0) : (vIN <= 1.0));
+                            comp.isEnergized = energized;
+                            const rNO = energized ? 0.05 : 1e7;
+                            const rNC = energized ? 1e7 : 0.05;
+                            if (nCOM !== undefined && nNO !== undefined) addConductance(nCOM, nNO, 1 / rNO);
+                            if (nCOM !== undefined && nNC !== undefined) addConductance(nCOM, nNC, 1 / rNC);
                         } else if (comp.type && comp.type.startsWith('custom_')) {
                             // Custom component default resistance
                             const r = Math.max(0.01, comp.value || 100);
@@ -1057,7 +1499,7 @@
                             A[nNeg - 1][eqIdx] -= 1;
                             A[eqIdx][nNeg - 1] -= 1;
                         }
-                        const rInt = sComp && sComp.type === 'dc_voltage' ? (sComp.internalR !== undefined ? sComp.internalR : 1.5) : 0.001;
+                        const rInt = vSources[k].rInt !== undefined ? vSources[k].rInt : (sComp && sComp.type === 'dc_voltage' ? (sComp.internalR !== undefined ? sComp.internalR : 1.5) : 0.001);
                         A[eqIdx][eqIdx] = -Math.max(0.001, rInt);
                         z[eqIdx] = val;
                     }
@@ -1144,6 +1586,74 @@
                     } else if (comp.type === 'dc_voltage' || comp.type === 'ac_voltage') {
                         const srcIdx = vSources.findIndex(s => s.comp.id === comp.id);
                         current = srcIdx >= 0 ? srcCurrents[srcIdx] : 0;
+                    } else if (comp.type === 'arduino_uno') {
+                        let totalI = 0;
+                        for (let k = 0; k < vSources.length; k++) {
+                            if (vSources[k].comp.id === comp.id) totalI += Math.abs(srcCurrents[k]);
+                        }
+                        current = totalI;
+                        const nGND = termToNet.get(`${comp.id}_2`);
+                        const nA0  = termToNet.get(`${comp.id}_3`);
+                        const vGND = voltages[nGND] || 0;
+                        const vA0  = (voltages[nA0] || 0) - vGND;
+                        comp.adcA0 = Math.min(1023, Math.max(0, Math.round((Math.max(0, vA0) / 5.0) * 1023)));
+                        comp.vA0   = Math.max(0, vA0);
+                        comp.d13Active = (comp.d13Mode === 'high') || (comp.d13Mode === 'blink' && (Math.floor(time * 2) % 2 === 0));
+                    } else if (comp.type === 'esp32') {
+                        let totalI = 0;
+                        for (let k = 0; k < vSources.length; k++) {
+                            if (vSources[k].comp.id === comp.id) totalI += Math.abs(srcCurrents[k]);
+                        }
+                        current = totalI;
+                        const nGND = termToNet.get(`${comp.id}_1`);
+                        const nVN  = termToNet.get(`${comp.id}_2`);
+                        const vGND = voltages[nGND] || 0;
+                        const vVN  = (voltages[nVN] || 0) - vGND;
+                        comp.adcVN = Math.min(4095, Math.max(0, Math.round((Math.max(0, vVN) / 3.3) * 4095)));
+                        comp.vVN   = Math.max(0, vVN);
+                        comp.d2Active = (comp.d2Mode === 'high') || (comp.d2Mode === 'blink' && (Math.floor(time * 3) % 2 === 0));
+                    } else if (comp.type === 'ldr') {
+                        const r = comp.calculatedResistance || 10000;
+                        current = (v0 - v1) / r;
+                    } else if (comp.type === 'buzzer') {
+                        const vDrop = v0 - v1;
+                        current = vDrop / 32;
+                        comp.isBeeping = state.isRunning && (vDrop >= 2.5);
+                        updateBuzzerAudio(comp.isBeeping, comp.frequency || 2400);
+                    } else if (comp.type === 'servo') {
+                        const nGND = termToNet.get(`${comp.id}_0`);
+                        const nVCC = termToNet.get(`${comp.id}_1`);
+                        const vVCC = (voltages[nVCC] || 0) - (voltages[nGND] || 0);
+                        comp.isPowered = vVCC >= 4.5;
+                        current = comp.isPowered ? vVCC / 250 : 0;
+                    } else if (comp.type === 'relay') {
+                        const nGND = termToNet.get(`${comp.id}_2`);
+                        const nVCC = termToNet.get(`${comp.id}_0`);
+                        const vCoil = (voltages[nVCC] || 0) - (voltages[nGND] || 0);
+                        const coilI = vCoil / 70;
+                        const nCOM = termToNet.get(`${comp.id}_4`);
+                        const nNO  = termToNet.get(`${comp.id}_3`);
+                        const nNC  = termToNet.get(`${comp.id}_5`);
+                        const vCOM = voltages[nCOM] || 0;
+                        const vNO  = voltages[nNO] || 0;
+                        const vNC  = voltages[nNC] || 0;
+                        const contactI = comp.isEnergized ? (vCOM - vNO) / 0.05 : (vCOM - vNC) / 0.05;
+                        current = Math.abs(coilI) + Math.abs(contactI);
+                    } else if (comp.type === 'dht11') {
+                        const nGND = termToNet.get(`${comp.id}_2`);
+                        const nVCC = termToNet.get(`${comp.id}_0`);
+                        const vVCC = (voltages[nVCC] || 0) - (voltages[nGND] || 0);
+                        current = vVCC / 500;
+                    } else if (comp.type === 'hc_sr04') {
+                        const nGND = termToNet.get(`${comp.id}_3`);
+                        const nVCC = termToNet.get(`${comp.id}_0`);
+                        const vVCC = (voltages[nVCC] || 0) - (voltages[nGND] || 0);
+                        current = vVCC / 330;
+                    } else if (comp.type === 'pir_sensor') {
+                        const nGND = termToNet.get(`${comp.id}_2`);
+                        const nVCC = termToNet.get(`${comp.id}_0`);
+                        const vVCC = (voltages[nVCC] || 0) - (voltages[nGND] || 0);
+                        current = vVCC / 7500;
                     } else if (comp.type === 'capacitor') {
                         const c = (comp.value || 100) * 1e-6;
                         const vPrev = comp.prevV || 0;
@@ -1344,6 +1854,7 @@
                 else if (compCat === 'passive') colorClasses = 'bg-cyan-950/40 border-cyan-800/50 text-cyan-400 group-hover:text-cyan-300';
                 else if (compCat === 'semi') colorClasses = 'bg-purple-950/40 border-purple-800/50 text-purple-400 group-hover:text-purple-300';
                 else if (compCat === 'control') colorClasses = 'bg-emerald-950/40 border-emerald-800/50 text-emerald-400 group-hover:text-emerald-300';
+                else if (compCat === 'iot') colorClasses = 'bg-teal-950/40 border-teal-800/50 text-teal-400 group-hover:text-teal-300';
 
                 item.innerHTML = `
                     <div class="w-8 h-8 rounded-lg border flex items-center justify-center font-mono font-bold text-xs shrink-0 ${colorClasses}">
@@ -1963,8 +2474,18 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 const c = state.components[i];
                 // Rotate query coordinate back into local component space
                 const r = rotatePoint(wx - c.x, wy - c.y, -(c.rotation || 0));
-                // 60x40 body with generous 35x25 grab bounds
-                if (Math.abs(r.x) <= 35 && Math.abs(r.y) <= 25) {
+                let hw = 35;
+                let hh = 25;
+                if (c.type === 'arduino_uno' || c.type === 'esp32') {
+                    hw = 65; hh = 45;
+                } else if (c.type === 'relay') {
+                    hw = 45; hh = 35;
+                } else if (c.type === 'hc_sr04') {
+                    hw = 42; hh = 28;
+                } else if (c.type === 'servo' || c.type === 'pir_sensor' || c.type === 'dht11') {
+                    hw = 35; hh = 35;
+                }
+                if (Math.abs(r.x) <= hw && Math.abs(r.y) <= hh) {
                     return c;
                 }
             }
@@ -1980,6 +2501,60 @@ Generated by ElectroSim Pro Engineering CAD Engine
             let base = [];
             if (comp.type === 'ground') {
                 base = [{ x: 0, y: -20, nx: 0, ny: -1 }];
+            } else if (comp.type === 'arduino_uno') {
+                base = [
+                    { x: -60, y: -20, nx: -1, ny: 0 },  // 0: 5V
+                    { x: -60, y: 0,   nx: -1, ny: 0 },  // 1: 3V3
+                    { x: -60, y: 20,  nx: -1, ny: 0 },  // 2: GND
+                    { x: -20, y: 40,  nx: 0,  ny: 1 },  // 3: A0 (ADC Input)
+                    { x: 60,  y: -20, nx: 1,  ny: 0 },  // 4: D13 (Built-in LED)
+                    { x: 60,  y: 0,   nx: 1,  ny: 0 },  // 5: D9 (PWM)
+                    { x: 60,  y: 20,  nx: 1,  ny: 0 }   // 6: D2 (Interrupt)
+                ];
+            } else if (comp.type === 'esp32') {
+                base = [
+                    { x: -60, y: -20, nx: -1, ny: 0 },  // 0: 3V3
+                    { x: -60, y: 0,   nx: -1, ny: 0 },  // 1: GND
+                    { x: -60, y: 20,  nx: -1, ny: 0 },  // 2: VN (ADC1_CH0)
+                    { x: 60,  y: -20, nx: 1,  ny: 0 },  // 3: D2 (Blue LED)
+                    { x: 60,  y: 0,   nx: 1,  ny: 0 },  // 4: D4 (GPIO4)
+                    { x: 60,  y: 20,  nx: 1,  ny: 0 },  // 5: D18 (GPIO18 / SPI)
+                    { x: 20,  y: 40,  nx: 0,  ny: 1 }   // 6: D21 (GPIO21 / I2C)
+                ];
+            } else if (comp.type === 'dht11') {
+                base = [
+                    { x: -25, y: -12, nx: -1, ny: 0 },  // 0: VCC
+                    { x: 25,  y: 0,   nx: 1,  ny: 0 },  // 1: DATA
+                    { x: -25, y: 12,  nx: -1, ny: 0 }   // 2: GND
+                ];
+            } else if (comp.type === 'hc_sr04') {
+                base = [
+                    { x: -24, y: 24, nx: 0, ny: 1 },    // 0: VCC
+                    { x: -8,  y: 24, nx: 0, ny: 1 },    // 1: TRIG
+                    { x: 8,   y: 24, nx: 0, ny: 1 },    // 2: ECHO
+                    { x: 24,  y: 24, nx: 0, ny: 1 }     // 3: GND
+                ];
+            } else if (comp.type === 'pir_sensor') {
+                base = [
+                    { x: -20, y: 26, nx: 0, ny: 1 },    // 0: VCC
+                    { x: 0,   y: 26, nx: 0, ny: 1 },    // 1: OUT
+                    { x: 20,  y: 26, nx: 0, ny: 1 }     // 2: GND
+                ];
+            } else if (comp.type === 'servo') {
+                base = [
+                    { x: -20, y: 30, nx: 0, ny: 1 },    // 0: GND
+                    { x: 0,   y: 30, nx: 0, ny: 1 },    // 1: VCC
+                    { x: 20,  y: 30, nx: 0, ny: 1 }     // 2: PWM
+                ];
+            } else if (comp.type === 'relay') {
+                base = [
+                    { x: -40, y: -18, nx: -1, ny: 0 },  // 0: VCC
+                    { x: -40, y: 0,   nx: -1, ny: 0 },  // 1: IN
+                    { x: -40, y: 18,  nx: -1, ny: 0 },  // 2: GND
+                    { x: 40,  y: -18, nx: 1,  ny: 0 },  // 3: NO
+                    { x: 40,  y: 0,   nx: 1,  ny: 0 },  // 4: COM
+                    { x: 40,  y: 18,  nx: 1,  ny: 0 }   // 5: NC
+                ];
             } else if (comp.type === 'npn_bjt' || numTerms === 3) {
                 base = [
                     { x: -30, y: 0, nx: -1, ny: 0 },    // Pin 0: Base (B) on the left
@@ -2018,8 +2593,19 @@ Generated by ElectroSim Pro Engineering CAD Engine
         function getComponentBox(comp) {
             const rot = comp.rotation || 0;
             const isRot = (rot === 90 || rot === 270);
-            const hw = isRot ? 20 : 30;
-            const hh = isRot ? 30 : 20;
+            let baseHw = 30;
+            let baseHh = 20;
+            if (comp.type === 'arduino_uno' || comp.type === 'esp32') {
+                baseHw = 60; baseHh = 40;
+            } else if (comp.type === 'relay') {
+                baseHw = 40; baseHh = 30;
+            } else if (comp.type === 'hc_sr04') {
+                baseHw = 36; baseHh = 24;
+            } else if (comp.type === 'servo' || comp.type === 'pir_sensor' || comp.type === 'dht11') {
+                baseHw = 30; baseHh = 30;
+            }
+            const hw = isRot ? baseHh : baseHw;
+            const hh = isRot ? baseHw : baseHh;
             const margin = 8;
             return {
                 id: comp.id,
@@ -2030,8 +2616,6 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 cx: comp.x,
                 cy: comp.y
             };
-
-        
         }
 
         // --- SCHEMATIC ORTHOGONAL WIRE ROUTER WITH CLEARANCE & OBSTACLE AVOIDANCE ---
@@ -2555,7 +3139,36 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 state: type === 'switch' ? 1 : 0
             };
 
-        
+            if (type === 'arduino_uno') {
+                newComp.d13Mode = 'blink';
+                newComp.d9Duty = 100;
+                newComp.d2Mode = 'input';
+                newComp.v5V = 5.0;
+                newComp.v3V3 = 3.3;
+                newComp.adcA0 = 0;
+            } else if (type === 'esp32') {
+                newComp.d2Mode = 'blink';
+                newComp.d4Mode = 'output';
+                newComp.v3V3 = 3.3;
+                newComp.adcVN = 0;
+            } else if (type === 'dht11') {
+                newComp.temperature = 24;
+                newComp.humidity = 55;
+            } else if (type === 'hc_sr04') {
+                newComp.distance = 25;
+            } else if (type === 'pir_sensor') {
+                newComp.motionDetected = false;
+            } else if (type === 'ldr') {
+                newComp.lux = 300;
+            } else if (type === 'buzzer') {
+                newComp.frequency = 2400;
+                newComp.isBeeping = false;
+            } else if (type === 'servo') {
+                newComp.angle = 90;
+            } else if (type === 'relay') {
+                newComp.triggerLevel = 'high';
+                newComp.isEnergized = false;
+            }
 
             state.components.push(newComp);
             state.selectedId = newComp.id;
@@ -3078,6 +3691,13 @@ Generated by ElectroSim Pro Engineering CAD Engine
             }
         }
 
+        function formatResistance(ohms) {
+            if (!ohms || isNaN(ohms)) return '10 kΩ';
+            if (ohms >= 1e6) return (ohms / 1e6).toFixed(1) + ' MΩ';
+            if (ohms >= 1e3) return (ohms / 1e3).toFixed(1) + ' kΩ';
+            return Math.round(ohms) + ' Ω';
+        }
+
         // --- SCHEMATIC SYMBOL COMPONENT RENDERING ---
         function drawComponent(comp) {
             const isSelected = state.selectedId === comp.id;
@@ -3098,6 +3718,20 @@ Generated by ElectroSim Pro Engineering CAD Engine
             ctx.save();
             ctx.translate(comp.x, comp.y);
 
+            // Calculate half-width and half-height for component body
+            let bw = 30, bh = 20;
+            if (comp.type === 'arduino_uno' || comp.type === 'esp32') {
+                bw = 60; bh = 40;
+            } else if (comp.type === 'relay') {
+                bw = 40; bh = 30;
+            } else if (comp.type === 'hc_sr04') {
+                bw = 36; bh = 24;
+            } else if (comp.type === 'servo' || comp.type === 'pir_sensor' || comp.type === 'dht11') {
+                bw = 30; bh = 30;
+            } else if (comp.type === 'buzzer') {
+                bw = 25; bh = 25;
+            }
+
             // Selection box
             if (isSelected) {
                 ctx.save();
@@ -3105,7 +3739,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 ctx.lineWidth = 2;
                 ctx.shadowColor = '#6366f1';
                 ctx.shadowBlur = 10;
-                ctx.strokeRect(-36, -26, 72, 52);
+                ctx.strokeRect(-(bw + 6), -(bh + 6), (bw + 6) * 2, (bh + 6) * 2);
                 ctx.restore();
             }
 
@@ -3131,7 +3765,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
             ctx.strokeStyle = isSelected ? '#818cf8' : (isLedLit ? '#ef4444' : '#334155');
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.roundRect(-30, -20, 60, 40, 8);
+            ctx.roundRect(-bw, -bh, bw * 2, bh * 2, 8);
             ctx.fill();
             ctx.stroke();
 
@@ -3314,6 +3948,424 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 ctx.moveTo(-9, 5); ctx.lineTo(9, 5);
                 ctx.moveTo(-4, 10); ctx.lineTo(4, 10);
                 ctx.stroke();
+            } else if (comp.type === 'arduino_uno') {
+                // Arduino Uno Board Graphic
+                ctx.fillStyle = '#005f6b';
+                ctx.beginPath();
+                ctx.roundRect(-58, -38, 116, 76, 6);
+                ctx.fill();
+
+                // Gold edge traces
+                ctx.strokeStyle = '#eab308';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(-56, -36, 112, 72);
+
+                // Silver USB-B connector on left edge
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillRect(-58, -14, 12, 28);
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(-54, -8, 6, 16);
+
+                // Black DC power jack
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-58, 16, 14, 18);
+
+                // ATmega328P DIP IC Chip
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(-12, -26, 44, 22);
+                ctx.strokeStyle = '#475569';
+                ctx.strokeRect(-12, -26, 44, 22);
+                // IC notch
+                ctx.beginPath();
+                ctx.arc(-12, -15, 3, -Math.PI / 2, Math.PI / 2);
+                ctx.fillStyle = '#0f172a';
+                ctx.fill();
+
+                // IC pin legs
+                ctx.fillStyle = '#cbd5e1';
+                for (let px = -8; px <= 26; px += 6) {
+                    ctx.fillRect(px, -29, 3, 3);
+                    ctx.fillRect(px, -4, 3, 3);
+                }
+
+                // Silk text
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 8px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText('ARDUINO', 10, -12);
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillText('UNO R3', 10, 4);
+
+                // Power ON LED (green)
+                ctx.fillStyle = '#22c55e';
+                ctx.beginPath();
+                ctx.arc(-24, -18, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Built-in 'L' LED (amber) tied to D13
+                const lLit = comp.d13Active;
+                ctx.fillStyle = lLit ? '#fbbf24' : '#78350f';
+                if (lLit) {
+                    ctx.shadowColor = '#fbbf24';
+                    ctx.shadowBlur = 8;
+                }
+                ctx.beginPath();
+                ctx.arc(-24, 0, 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Pin text markings next to pins
+                ctx.font = 'bold 7px JetBrains Mono';
+                ctx.fillStyle = '#e2e8f0';
+                ctx.textAlign = 'left';
+                ctx.fillText('5V', -54, -18);
+                ctx.fillText('3V3', -54, 2);
+                ctx.fillText('GND', -54, 22);
+                ctx.textAlign = 'center';
+                ctx.fillText('A0', -20, 34);
+
+                ctx.textAlign = 'right';
+                ctx.fillText('D13', 54, -18);
+                ctx.fillText('D9', 54, 2);
+                ctx.fillText('D2', 54, 22);
+
+            } else if (comp.type === 'esp32') {
+                // ESP32 NodeMCU Board Graphic
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath();
+                ctx.roundRect(-58, -38, 116, 76, 6);
+                ctx.fill();
+
+                // Gold mounting holes
+                ctx.fillStyle = '#eab308';
+                ctx.beginPath(); ctx.arc(-50, -30, 2.5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(50, -30, 2.5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(-50, 30, 2.5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(50, 30, 2.5, 0, Math.PI*2); ctx.fill();
+
+                // Meander PCB antenna at top
+                ctx.strokeStyle = '#d97706';
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.moveTo(-16, -34); ctx.lineTo(-16, -26); ctx.lineTo(-8, -26); ctx.lineTo(-8, -34);
+                ctx.lineTo(0, -34); ctx.lineTo(0, -26); ctx.lineTo(8, -26); ctx.lineTo(8, -34);
+                ctx.lineTo(16, -34);
+                ctx.stroke();
+
+                // ESP-WROOM-32 metal shield
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(-24, -20, 48, 36);
+                ctx.strokeStyle = '#64748b';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(-24, -20, 48, 36);
+
+                // Silkscreen on shield
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'bold 8px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText('ESP-WROOM-32', 0, -6);
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillText('Wi-Fi + BLE', 0, 4);
+
+                // Blue status LED on D2
+                const d2Lit = comp.d2Active;
+                ctx.fillStyle = d2Lit ? '#38bdf8' : '#1e3a8a';
+                if (d2Lit) {
+                    ctx.shadowColor = '#38bdf8';
+                    ctx.shadowBlur = 8;
+                }
+                ctx.beginPath();
+                ctx.arc(-34, 4, 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Pin labels
+                ctx.font = 'bold 7px JetBrains Mono';
+                ctx.fillStyle = '#cbd5e1';
+                ctx.textAlign = 'left';
+                ctx.fillText('3V3', -54, -18);
+                ctx.fillText('GND', -54, 2);
+                ctx.fillText('VN', -54, 22);
+
+                ctx.textAlign = 'right';
+                ctx.fillText('D2', 54, -18);
+                ctx.fillText('D4', 54, 2);
+                ctx.fillText('D18', 54, 22);
+                ctx.textAlign = 'center';
+                ctx.fillText('D21', 20, 34);
+
+            } else if (comp.type === 'dht11') {
+                // DHT11 Sensor
+                ctx.fillStyle = '#0284c7';
+                ctx.beginPath();
+                ctx.roundRect(-24, -26, 48, 52, 4);
+                ctx.fill();
+
+                // Vent grille lines
+                ctx.fillStyle = '#0369a1';
+                for (let gy = -18; gy <= 10; gy += 6) {
+                    ctx.fillRect(-18, gy, 36, 2.5);
+                }
+
+                // DHT11 label
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 8px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText('DHT11', 0, 20);
+
+                // Pin markings
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillStyle = '#bae6fd';
+                ctx.textAlign = 'left';
+                ctx.fillText('VCC', -22, -10);
+                ctx.fillText('GND', -22, 14);
+                ctx.textAlign = 'right';
+                ctx.fillText('DATA', 22, 2);
+
+            } else if (comp.type === 'hc_sr04') {
+                // HC-SR04 Ultrasonic Sensor
+                ctx.fillStyle = '#1e3a8a';
+                ctx.beginPath();
+                ctx.roundRect(-34, -20, 68, 40, 4);
+                ctx.fill();
+
+                // Ultrasonic Transducers: T and R
+                ctx.fillStyle = '#94a3b8';
+                ctx.beginPath(); ctx.arc(-16, -2, 13, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5; ctx.stroke();
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 8px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText('T', -16, 1);
+
+                ctx.fillStyle = '#94a3b8';
+                ctx.beginPath(); ctx.arc(16, -2, 13, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5; ctx.stroke();
+                ctx.fillStyle = '#0f172a';
+                ctx.fillText('R', 16, 1);
+
+                // Sonic radar wave animation
+                if (state.isRunning) {
+                    ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.arc(0, -18, 14, -Math.PI * 0.75, -Math.PI * 0.25);
+                    ctx.stroke();
+                }
+
+                // Pin markings
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillStyle = '#bfdbfe';
+                ctx.fillText('VCC', -24, 18);
+                ctx.fillText('TRG', -8, 18);
+                ctx.fillText('ECH', 8, 18);
+                ctx.fillText('GND', 24, 18);
+
+            } else if (comp.type === 'pir_sensor') {
+                // PIR HC-SR501 Sensor
+                ctx.fillStyle = '#15803d';
+                ctx.beginPath();
+                ctx.roundRect(-26, -26, 52, 52, 4);
+                ctx.fill();
+
+                // White faceted Fresnel dome lens
+                ctx.fillStyle = '#f8fafc';
+                ctx.beginPath();
+                ctx.arc(0, -4, 16, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 0.8;
+                ctx.beginPath(); ctx.arc(0, -4, 10, 0, Math.PI * 2); ctx.stroke();
+                ctx.beginPath(); ctx.arc(0, -4, 5, 0, Math.PI * 2); ctx.stroke();
+
+                // Motion radar alert wave
+                if (comp.motionDetected) {
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(0, -4, 22, -Math.PI * 0.8, -Math.PI * 0.2);
+                    ctx.stroke();
+                }
+
+                // Pin markings
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillStyle = '#dcfce7';
+                ctx.textAlign = 'center';
+                ctx.fillText('VCC', -20, 20);
+                ctx.fillText('OUT', 0, 20);
+                ctx.fillText('GND', 20, 20);
+
+            } else if (comp.type === 'ldr') {
+                // Cadmium Sulfide (CdS) Photoresistor
+                ctx.moveTo(-30, 0); ctx.lineTo(-14, 0);
+                ctx.moveTo(14, 0); ctx.lineTo(30, 0);
+                ctx.stroke();
+
+                // Ceramic base disc
+                ctx.fillStyle = '#d97706';
+                ctx.beginPath();
+                ctx.arc(0, 0, 13, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+
+                // Serpentine photoconductive track (red)
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                ctx.moveTo(-7, -8); ctx.lineTo(7, -8); ctx.lineTo(7, -4);
+                ctx.lineTo(-7, -4); ctx.lineTo(-7, 0);
+                ctx.lineTo(7, 0); ctx.lineTo(7, 4);
+                ctx.lineTo(-7, 4); ctx.lineTo(-7, 8); ctx.lineTo(7, 8);
+                ctx.stroke();
+
+                // Incident photon arrows (yellow)
+                ctx.strokeStyle = '#fde047';
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.moveTo(-16, -14); ctx.lineTo(-10, -8);
+                ctx.moveTo(-12, -8); ctx.lineTo(-10, -8); ctx.lineTo(-10, -10);
+                ctx.moveTo(-10, -16); ctx.lineTo(-4, -10);
+                ctx.moveTo(-6, -10); ctx.lineTo(-4, -10); ctx.lineTo(-4, -12);
+                ctx.stroke();
+
+            } else if (comp.type === 'buzzer') {
+                // Active Piezo Buzzer
+                ctx.moveTo(-25, 0); ctx.lineTo(-14, 0);
+                ctx.moveTo(14, 0); ctx.lineTo(25, 0);
+                ctx.stroke();
+
+                // Acoustic cylinder case
+                ctx.fillStyle = '#1e293b';
+                ctx.beginPath();
+                ctx.arc(0, 0, 14, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#475569';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Top sound port hole
+                ctx.fillStyle = '#020617';
+                ctx.beginPath();
+                ctx.arc(0, 0, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Polarity + sign
+                ctx.fillStyle = '#ef4444';
+                ctx.font = 'bold 9px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText('+', -8, -6);
+
+                // Animated sound ripple waves when beeping
+                if (comp.isBeeping) {
+                    ctx.save();
+                    ctx.strokeStyle = '#fbbf24';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath(); ctx.arc(0, 0, 18, -Math.PI * 0.4, Math.PI * 0.4); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(0, 0, 22, -Math.PI * 0.35, Math.PI * 0.35); ctx.stroke();
+                    ctx.restore();
+                }
+
+            } else if (comp.type === 'servo') {
+                // SG90 Micro Servo Motor
+                ctx.fillStyle = '#0284c7';
+                ctx.beginPath();
+                ctx.roundRect(-24, -22, 48, 44, 4);
+                ctx.fill();
+
+                // Gear turret spline
+                ctx.fillStyle = '#0369a1';
+                ctx.beginPath();
+                ctx.arc(0, -6, 12, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Rotating white servo horn
+                const hornAngle = (((comp.angle || 90) - 90) * Math.PI) / 180;
+                ctx.save();
+                ctx.translate(0, -6);
+                ctx.rotate(hornAngle);
+                ctx.fillStyle = '#f8fafc';
+                ctx.beginPath();
+                ctx.roundRect(-4, -18, 8, 36, 3);
+                ctx.fill();
+                ctx.fillStyle = '#94a3b8';
+                ctx.beginPath(); ctx.arc(0, -12, 1.5, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(0, 0, 2.5, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(0, 12, 1.5, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+
+                // Pin markings
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillStyle = '#e0f2fe';
+                ctx.textAlign = 'center';
+                ctx.fillText('GND', -18, 16);
+                ctx.fillText('5V', 0, 16);
+                ctx.fillText('PWM', 18, 16);
+
+            } else if (comp.type === 'relay') {
+                // 5V Optocoupled Relay Module
+                ctx.fillStyle = '#1d4ed8';
+                ctx.fillRect(-22, -26, 44, 52);
+                ctx.strokeStyle = '#3b82f6';
+                ctx.lineWidth = 1.2;
+                ctx.strokeRect(-22, -26, 44, 52);
+
+                // Silkscreen
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 7px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText('SONGLE', 0, -14);
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillText('5VDC', 0, -6);
+
+                // Optocoupler chip
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-36, -8, 10, 16);
+
+                // Coil status LED
+                const isRelayOn = comp.isEnergized;
+                ctx.fillStyle = isRelayOn ? '#22c55e' : '#14532d';
+                if (isRelayOn) {
+                    ctx.shadowColor = '#22c55e';
+                    ctx.shadowBlur = 8;
+                }
+                ctx.beginPath();
+                ctx.arc(-28, 14, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Internal SPDT switch contact representation
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(34, 0); // COM
+                if (isRelayOn) {
+                    ctx.lineTo(34, -18); // Connected to NO
+                } else {
+                    ctx.lineTo(34, 18);  // Connected to NC
+                }
+                ctx.stroke();
+
+                // Pin markings
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillStyle = '#cbd5e1';
+                ctx.textAlign = 'left';
+                ctx.fillText('VCC', -36, -16);
+                ctx.fillText('IN', -36, 2);
+                ctx.fillText('GND', -36, 20);
+
+                ctx.textAlign = 'right';
+                ctx.fillText('NO', 36, -16);
+                ctx.fillText('COM', 36, 2);
+                ctx.fillText('NC', 36, 20);
+
             } else {
                 // Custom IC Box
                 ctx.strokeRect(-24, -14, 48, 28);
@@ -3371,8 +4423,17 @@ Generated by ElectroSim Pro Engineering CAD Engine
             else if (comp.type === 'led') label = isLedLit ? '💡 LIT' : '🔌 LED';
             else if (comp.type === 'switch') label = comp.state ? 'CLOSED' : 'OPEN';
             else if (comp.type === 'ground') label = '0V GND';
+            else if (comp.type === 'arduino_uno') label = `Arduino Uno (${comp.d13Active ? 'D13:HIGH' : 'D13:LOW'})`;
+            else if (comp.type === 'esp32') label = `ESP32 (${comp.adcVN || 0} ADC)`;
+            else if (comp.type === 'dht11') label = `${comp.temperature || 24}°C / ${comp.humidity || 55}%`;
+            else if (comp.type === 'hc_sr04') label = `${comp.distance || 25}cm Sonar`;
+            else if (comp.type === 'pir_sensor') label = comp.motionDetected ? '🚨 MOTION!' : 'PIR Standby';
+            else if (comp.type === 'ldr') label = `${comp.lux || 300} lx (${formatResistance(comp.calculatedResistance || 10000)})`;
+            else if (comp.type === 'buzzer') label = comp.isBeeping ? '🔊 BEEPING' : 'Piezo Buzzer';
+            else if (comp.type === 'servo') label = `SG90: ${comp.angle || 90}°`;
+            else if (comp.type === 'relay') label = comp.isEnergized ? '⚡ RELAY (NO)' : 'RELAY (NC)';
 
-            ctx.fillText(label, 0, 28);
+            ctx.fillText(label, 0, (typeof bh !== 'undefined' ? bh : 20) + 14);
             ctx.restore();
         }
 
@@ -4245,6 +5306,539 @@ Generated by ElectroSim Pro Engineering CAD Engine
             }
         }
 
+        function renderArduinoUnoDetailsHtml(comp) {
+            const d13Mode = comp.d13Mode || 'blink';
+            const d9Duty = comp.d9Duty !== undefined ? comp.d9Duty : 100;
+            const adcA0 = comp.adcA0 || 0;
+            const vA0 = (comp.vA0 || 0).toFixed(2);
+            const a0Pct = Math.min(100, (adcA0 / 1023) * 100);
+
+            return `
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
+                            <i class="fa-solid fa-microchip text-teal-400"></i>
+                            <span>Arduino Uno R3 (ATmega328P)</span>
+                        </span>
+                        <span class="bg-teal-950/70 text-teal-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-teal-800/60">16 MHz AVR</span>
+                    </div>
+
+                    <!-- D13 Built-in LED & Output Control -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-slate-300 font-medium flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full ${comp.d13Active ? 'bg-amber-400 animate-pulse' : 'bg-slate-600'}"></span>
+                                <span>Digital Pin 13 ('L' LED)</span>
+                            </span>
+                            <span class="text-amber-400 font-mono font-bold">${comp.d13Active ? 'HIGH (+5V)' : 'LOW (0V)'}</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 text-[10px]">
+                            <button onclick="setArduinoD13Mode('blink')" class="py-1 px-2 rounded-lg font-semibold transition-all ${d13Mode === 'blink' ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}">Blink 1Hz</button>
+                            <button onclick="setArduinoD13Mode('high')" class="py-1 px-2 rounded-lg font-semibold transition-all ${d13Mode === 'high' ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}">Force HIGH</button>
+                            <button onclick="setArduinoD13Mode('low')" class="py-1 px-2 rounded-lg font-semibold transition-all ${d13Mode === 'low' ? 'bg-slate-700 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}">Force LOW</button>
+                        </div>
+                    </div>
+
+                    <!-- D9 PWM Duty Cycle Slider -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-slate-300 font-medium">D9 PWM Duty Cycle</span>
+                            <span class="text-cyan-400 font-mono font-bold" id="d9-duty-label">${d9Duty}% (${(5 * d9Duty / 100).toFixed(2)}V avg)</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="${d9Duty}" oninput="setArduinoD9Duty(this.value)" class="w-full accent-cyan-500 cursor-pointer">
+                    </div>
+
+                    <!-- 10-bit Analog ADC Input (A0) -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-slate-300 font-medium">Analog A0 ADC (0 - 5V)</span>
+                            <span class="text-emerald-400 font-mono font-bold">${vA0} V • [ ${adcA0} / 1023 ]</span>
+                        </div>
+                        <div class="h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                            <div class="h-full bg-emerald-500 transition-all duration-150" style="width: ${a0Pct}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">5V Rail Limit</span>
+                            <span class="text-slate-200 font-bold">500 mA (LDO)</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">3.3V Rail Limit</span>
+                            <span class="text-slate-200 font-bold">150 mA (LP2985)</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderEsp32DetailsHtml(comp) {
+            const adcVN = comp.adcVN || 0;
+            const vVN = (comp.vVN || 0).toFixed(2);
+            const vnPct = Math.min(100, (adcVN / 4095) * 100);
+            const d2Mode = comp.d2Mode || 'blink';
+
+            return `
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
+                            <i class="fa-solid fa-wifi text-sky-400"></i>
+                            <span>ESP32 NodeMCU (Xtensa LX6)</span>
+                        </span>
+                        <span class="bg-sky-950/70 text-sky-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-sky-800/60">240 MHz SoC</span>
+                    </div>
+
+                    <!-- 12-bit ADC VN Input -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-slate-300 font-medium">ADC VN (GPIO36 / 12-bit)</span>
+                            <span class="text-sky-400 font-mono font-bold">${vVN} V • [ ${adcVN} / 4095 ]</span>
+                        </div>
+                        <div class="h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                            <div class="h-full bg-sky-500 transition-all duration-150" style="width: ${vnPct}%"></div>
+                        </div>
+                    </div>
+
+                    <!-- D2 Blue LED Mode -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-slate-300 font-medium flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full ${comp.d2Active ? 'bg-sky-400 animate-pulse' : 'bg-slate-600'}"></span>
+                                <span>GPIO2 Status LED</span>
+                            </span>
+                            <span class="text-sky-400 font-mono font-bold">${comp.d2Active ? 'HIGH (3.3V)' : 'LOW (0V)'}</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 text-[10px]">
+                            <button onclick="setEsp32D2Mode('blink')" class="py-1 px-2 rounded-lg font-semibold transition-all ${d2Mode === 'blink' ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}">Blink 1.5Hz</button>
+                            <button onclick="setEsp32D2Mode('high')" class="py-1 px-2 rounded-lg font-semibold transition-all ${d2Mode === 'high' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}">Force HIGH</button>
+                            <button onclick="setEsp32D2Mode('low')" class="py-1 px-2 rounded-lg font-semibold transition-all ${d2Mode === 'low' ? 'bg-slate-700 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}">Force LOW</button>
+                        </div>
+                    </div>
+
+                    <!-- Simulated Wi-Fi & MQTT Telemetry Stream -->
+                    <div class="bg-slate-900/90 rounded-xl p-2.5 border border-slate-800 space-y-1.5 text-[10px] font-mono">
+                        <div class="flex items-center justify-between text-slate-400">
+                            <span class="text-slate-300 font-semibold"><i class="fa-solid fa-satellite-dish text-emerald-400 mr-1"></i> Wi-Fi Telemetry</span>
+                            <span class="text-emerald-400">CONNECTED</span>
+                        </div>
+                        <div class="text-slate-400 truncate">SSID: <span class="text-slate-200">ElectroNet-IoT</span> | RSSI: <span class="text-slate-200">-62 dBm</span></div>
+                        <div class="bg-slate-950 p-1.5 rounded border border-slate-800/80 text-[9px] text-cyan-300 truncate">
+                            MQTT: tele/esp32/sensors {"adc":${adcVN},"v":"${vVN}"}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDht11DetailsHtml(comp) {
+            const temp = comp.temperature !== undefined ? comp.temperature : 24;
+            const rh = comp.humidity !== undefined ? comp.humidity : 55;
+            const dewPoint = (temp - ((100 - rh) / 5)).toFixed(1);
+
+            return `
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
+                            <i class="fa-solid fa-temperature-half text-cyan-400"></i>
+                            <span>DHT11 Environmental Sensor</span>
+                        </span>
+                        <span class="bg-cyan-950/70 text-cyan-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-cyan-800/60">Single-Wire Bus</span>
+                    </div>
+
+                    <!-- Temperature Slider -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-slate-300 font-medium">Simulated Temperature</span>
+                            <span class="text-amber-400 font-mono font-bold" id="dht-temp-label">${temp} °C (${((temp * 9/5) + 32).toFixed(1)} °F)</span>
+                        </div>
+                        <input type="range" min="-20" max="60" value="${temp}" oninput="updateDhtTemp(this.value)" class="w-full accent-amber-500 cursor-pointer">
+                    </div>
+
+                    <!-- Humidity Slider -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-slate-300 font-medium">Relative Humidity</span>
+                            <span class="text-cyan-400 font-mono font-bold" id="dht-rh-label">${rh} %RH</span>
+                        </div>
+                        <input type="range" min="20" max="90" value="${rh}" oninput="updateDhtHumidity(this.value)" class="w-full accent-cyan-500 cursor-pointer">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Calculated Dew Point</span>
+                            <span class="text-slate-200 font-bold">${dewPoint} °C</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Packet Format</span>
+                            <span class="text-slate-200 font-bold">40-Bit Digital</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderHcSr04DetailsHtml(comp) {
+            const dist = comp.distance !== undefined ? comp.distance : 25;
+            const echoUS = (dist * 58.3).toFixed(0);
+
+            return `
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
+                            <i class="fa-solid fa-bullseye text-blue-400"></i>
+                            <span>HC-SR04 Ultrasonic Sonar</span>
+                        </span>
+                        <span class="bg-blue-950/70 text-blue-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-blue-800/60">40 kHz Sonar</span>
+                    </div>
+
+                    <!-- Distance Slider -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-slate-300 font-medium">Target Obstacle Distance</span>
+                            <span class="text-blue-400 font-mono font-bold" id="sonar-dist-label">${dist} cm (${(dist / 2.54).toFixed(1)} in)</span>
+                        </div>
+                        <input type="range" min="2" max="400" value="${dist}" oninput="updateHcSr04Dist(this.value)" class="w-full accent-blue-500 cursor-pointer">
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-1 text-[10px]">
+                        <button onclick="updateHcSr04Dist(5)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">5cm</button>
+                        <button onclick="updateHcSr04Dist(25)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">25cm</button>
+                        <button onclick="updateHcSr04Dist(100)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">1m</button>
+                        <button onclick="updateHcSr04Dist(300)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">3m</button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Echo Pulse Duration</span>
+                            <span class="text-cyan-400 font-bold">${echoUS} µs</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Conversion Constant</span>
+                            <span class="text-slate-200 font-bold">58.3 µs / cm</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPirSensorDetailsHtml(comp) {
+            const isMotion = !!comp.motionDetected;
+
+            return `
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
+                            <i class="fa-solid fa-person-walking text-emerald-400"></i>
+                            <span>HC-SR501 PIR Motion Sensor</span>
+                        </span>
+                        <span class="bg-emerald-950/70 text-emerald-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-emerald-800/60">BISS0001</span>
+                    </div>
+
+                    <!-- Motion Trigger Simulation Button -->
+                    <button onclick="triggerPirMotion('${comp.id}')" class="w-full py-2.5 rounded-xl font-semibold text-xs transition-all flex items-center justify-center space-x-2 ${isMotion ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-500/30 animate-pulse' : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md'}">
+                        <i class="fa-solid fa-person-walking-dashed-line-arrow-right text-sm"></i>
+                        <span>${isMotion ? '🚨 Motion Active (OUT = +3.3V)' : 'Simulate Person Walking Past'}</span>
+                    </button>
+
+                    <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Output Signal (OUT)</span>
+                            <span class="${isMotion ? 'text-rose-400' : 'text-slate-400'} font-bold">${isMotion ? '+3.3V (HIGH)' : '0.0V (LOW)'}</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Fresnel Cone Angle</span>
+                            <span class="text-slate-200 font-bold">110° (up to 7m)</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLdrDetailsHtml(comp) {
+            const lux = comp.lux !== undefined ? comp.lux : 300;
+            const r = comp.calculatedResistance || 10000;
+
+            return `
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
+                            <i class="fa-solid fa-sun text-amber-400"></i>
+                            <span>CdS Photoresistor (GL5528)</span>
+                        </span>
+                        <span class="bg-amber-950/70 text-amber-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-800/60">Light Dependent</span>
+                    </div>
+
+                    <!-- Lux Slider -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-slate-300 font-medium">Ambient Illuminance</span>
+                            <span class="text-amber-400 font-mono font-bold" id="ldr-lux-label">${lux} Lux</span>
+                        </div>
+                        <input type="range" min="0" max="1000" value="${lux}" oninput="updateLdrLux(this.value)" class="w-full accent-amber-500 cursor-pointer">
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-1 text-[10px]">
+                        <button onclick="updateLdrLux(0)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">0 lx Dark</button>
+                        <button onclick="updateLdrLux(100)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">100 lx Dim</button>
+                        <button onclick="updateLdrLux(300)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">300 lx Office</button>
+                        <button onclick="updateLdrLux(1000)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">1k lx Sun</button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Calculated Resistance</span>
+                            <span class="text-emerald-400 font-bold">${formatResistance(r)}</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Peak Response</span>
+                            <span class="text-slate-200 font-bold">540 nm (Human Eye)</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderBuzzerDetailsHtml(comp) {
+            const isBeeping = !!comp.isBeeping;
+
+            return `
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
+                            <i class="fa-solid fa-volume-high text-amber-400"></i>
+                            <span>Active 5V Piezo Buzzer</span>
+                        </span>
+                        <span class="bg-amber-950/70 text-amber-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-800/60">2400 Hz Audio</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-slate-300">Acoustic Sound Output:</span>
+                        <span class="text-xs font-mono font-bold ${isBeeping ? 'text-amber-400 animate-pulse' : 'text-slate-500'}">
+                            ${isBeeping ? '🔊 SOUNDING (88 dBA)' : 'SILENT (Standby)'}
+                        </span>
+                    </div>
+
+                    <!-- Mute / Unmute Button -->
+                    <button id="btn-mute-audio" onclick="toggleAudioMute()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition-all">
+                        <i class="fa-solid ${isAudioMuted ? 'fa-volume-xmark text-rose-400' : 'fa-volume-high text-emerald-400'}"></i>
+                        <span>${isAudioMuted ? 'Unmute Sound' : 'Mute Sound'}</span>
+                    </button>
+
+                    <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Trigger Voltage</span>
+                            <span class="text-slate-200 font-bold">≥ 2.50 V drop</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Internal Resistance</span>
+                            <span class="text-slate-200 font-bold">32 Ω coil</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderServoDetailsHtml(comp) {
+            const angle = comp.angle !== undefined ? comp.angle : 90;
+            const pulseWidth = (1.0 + (angle / 180) * 1.0).toFixed(2);
+
+            return `
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
+                            <i class="fa-solid fa-arrows-spin text-sky-400"></i>
+                            <span>SG90 Micro Servo (0° - 180°)</span>
+                        </span>
+                        <span class="bg-sky-950/70 text-sky-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-sky-800/60">50 Hz PWM</span>
+                    </div>
+
+                    <!-- Angle Slider -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-1.5">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-slate-300 font-medium">Shaft Horn Angle</span>
+                            <span class="text-sky-400 font-mono font-bold" id="servo-angle-label">${angle}°</span>
+                        </div>
+                        <input type="range" min="0" max="180" value="${angle}" oninput="updateServoAngle(this.value)" class="w-full accent-sky-500 cursor-pointer">
+                    </div>
+
+                    <div class="grid grid-cols-5 gap-1 text-[10px]">
+                        <button onclick="updateServoAngle(0)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">0°</button>
+                        <button onclick="updateServoAngle(45)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">45°</button>
+                        <button onclick="updateServoAngle(90)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">90°</button>
+                        <button onclick="updateServoAngle(135)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">135°</button>
+                        <button onclick="updateServoAngle(180)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono">180°</button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">PWM Pulse Width</span>
+                            <span class="text-cyan-400 font-bold">${pulseWidth} ms</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Stall Torque</span>
+                            <span class="text-slate-200 font-bold">1.8 kg·cm</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRelayDetailsHtml(comp) {
+            const isEnergized = !!comp.isEnergized;
+            const isHighTrig = comp.triggerLevel !== 'low';
+
+            return `
+                <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
+                            <i class="fa-solid fa-bolt text-indigo-400"></i>
+                            <span>5V Optocoupled Relay Module</span>
+                        </span>
+                        <span class="bg-indigo-950/70 text-indigo-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-indigo-800/60">10A 250VAC</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 flex items-center justify-between">
+                        <span class="text-xs text-slate-300">Relay Armature State:</span>
+                        <span class="text-xs font-mono font-bold ${isEnergized ? 'text-emerald-400 animate-pulse' : 'text-slate-400'}">
+                            ${isEnergized ? '⚡ ENERGIZED (COM -> NO)' : 'DE-ENERGIZED (COM -> NC)'}
+                        </span>
+                    </div>
+
+                    <!-- Trigger Polarity Selector -->
+                    <button onclick="toggleRelayTrigger('${comp.id}')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition-all">
+                        <i class="fa-solid fa-sliders text-indigo-400"></i>
+                        <span>Trigger Mode: ${isHighTrig ? 'Active HIGH (IN > 2V)' : 'Active LOW (IN < 1V)'}</span>
+                    </button>
+
+                    <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Galvanic Isolation</span>
+                            <span class="text-slate-200 font-bold">1500 Vrms (PC817)</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">Contact Rating</span>
+                            <span class="text-emerald-400 font-bold">10A @ 250VAC</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- IOT EVENT HANDLERS ---
+        function setArduinoD13Mode(mode) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.d13Mode = mode;
+                recordHistory();
+                updateInspector();
+                if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+            }
+        }
+
+        function setArduinoD9Duty(val) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.d9Duty = parseInt(val, 10);
+                const lbl = document.getElementById('d9-duty-label');
+                if (lbl) lbl.textContent = `${comp.d9Duty}% (${(5 * comp.d9Duty / 100).toFixed(2)}V avg)`;
+                if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+            }
+        }
+
+        function setEsp32D2Mode(mode) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.d2Mode = mode;
+                recordHistory();
+                updateInspector();
+                if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+            }
+        }
+
+        function updateDhtTemp(val) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.temperature = parseFloat(val);
+                const lbl = document.getElementById('dht-temp-label');
+                if (lbl) lbl.textContent = `${comp.temperature} °C (${((comp.temperature * 9/5) + 32).toFixed(1)} °F)`;
+                if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+            }
+        }
+
+        function updateDhtHumidity(val) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.humidity = parseFloat(val);
+                const lbl = document.getElementById('dht-rh-label');
+                if (lbl) lbl.textContent = `${comp.humidity} %RH`;
+                if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+            }
+        }
+
+        function updateHcSr04Dist(val) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.distance = parseFloat(val);
+                const lbl = document.getElementById('sonar-dist-label');
+                if (lbl) lbl.textContent = `${comp.distance} cm (${(comp.distance / 2.54).toFixed(1)} in)`;
+                const detailsEl = document.getElementById('component-details-container');
+                if (detailsEl) detailsEl.innerHTML = renderComponentDetailsCard(comp);
+                if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+            }
+        }
+
+        function triggerPirMotion(id) {
+            const comp = state.components.find(c => c.id === id);
+            if (comp) {
+                comp.motionDetected = true;
+                if (typeof showToast === 'function') {
+                    showToast('🚨 PIR Motion Detected! Outputting 3.3V', 'info');
+                }
+                updateInspector();
+                if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+                setTimeout(() => {
+                    comp.motionDetected = false;
+                    updateInspector();
+                    if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+                }, 3000);
+            }
+        }
+
+        function updateLdrLux(val) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.lux = parseFloat(val);
+                const lbl = document.getElementById('ldr-lux-label');
+                if (lbl) lbl.textContent = `${comp.lux} Lux`;
+                const detailsEl = document.getElementById('component-details-container');
+                if (detailsEl) detailsEl.innerHTML = renderComponentDetailsCard(comp);
+                if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+            }
+        }
+
+        function updateServoAngle(val) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.angle = parseInt(val, 10);
+                const lbl = document.getElementById('servo-angle-label');
+                if (lbl) lbl.textContent = `${comp.angle}°`;
+                const detailsEl = document.getElementById('component-details-container');
+                if (detailsEl) detailsEl.innerHTML = renderComponentDetailsCard(comp);
+                if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+            }
+        }
+
+        function toggleRelayTrigger(id) {
+            const comp = state.components.find(c => c.id === id);
+            if (comp) {
+                comp.triggerLevel = comp.triggerLevel === 'low' ? 'high' : 'low';
+                recordHistory();
+                updateInspector();
+                if (typeof renderCanvas === 'function' && typeof ctx !== 'undefined' && ctx) renderCanvas();
+            }
+        }
+
         function renderComponentDetailsCard(comp) {
             if (!comp) return '';
             if (comp.type === 'resistor') return renderResistorDetailsHtml(comp);
@@ -4259,6 +5853,15 @@ Generated by ElectroSim Pro Engineering CAD Engine
             if (comp.type === 'ac_voltage') return renderAcVoltageDetailsHtml(comp);
             if (comp.type === 'switch') return renderSwitchDetailsHtml(comp);
             if (comp.type === 'ground') return renderGroundDetailsHtml(comp);
+            if (comp.type === 'arduino_uno') return renderArduinoUnoDetailsHtml(comp);
+            if (comp.type === 'esp32') return renderEsp32DetailsHtml(comp);
+            if (comp.type === 'dht11') return renderDht11DetailsHtml(comp);
+            if (comp.type === 'hc_sr04') return renderHcSr04DetailsHtml(comp);
+            if (comp.type === 'pir_sensor') return renderPirSensorDetailsHtml(comp);
+            if (comp.type === 'ldr') return renderLdrDetailsHtml(comp);
+            if (comp.type === 'buzzer') return renderBuzzerDetailsHtml(comp);
+            if (comp.type === 'servo') return renderServoDetailsHtml(comp);
+            if (comp.type === 'relay') return renderRelayDetailsHtml(comp);
             return '';
         }
 
@@ -4413,6 +6016,60 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 val1 = currentMA >= 1000 ? `${(currentMA / 1000).toFixed(2)} A` : `${currentMA.toFixed(1)} mA`;
                 label2 = 'Contact Rating';
                 val2 = '5.0 A max';
+            } else if (comp.type === 'arduino_uno') {
+                const maxI = 500.0; // 500 mA
+                pct = (currentMA / maxI) * 100;
+                isOver = pct > 100;
+                label1 = '5V Rail Current';
+                val1 = `${currentMA.toFixed(1)} / ${maxI.toFixed(0)} mA`;
+                label2 = 'ATmega328P Core';
+                val2 = currentMA > 500 ? 'OVERCURRENT' : '16MHz OK';
+            } else if (comp.type === 'esp32') {
+                const maxI = 500.0;
+                pct = (currentMA / maxI) * 100;
+                isOver = pct > 100;
+                label1 = '3.3V Rail Current';
+                val1 = `${currentMA.toFixed(1)} / ${maxI.toFixed(0)} mA`;
+                label2 = 'Xtensa Dual-Core';
+                val2 = currentMA > 500 ? 'OVERLOAD' : '240MHz Active';
+            } else if (comp.type === 'ldr') {
+                const maxP = 100.0;
+                pct = (powerMW / maxP) * 100;
+                isOver = pct > 100;
+                label1 = 'Power Dissipation';
+                val1 = `${powerMW.toFixed(1)} / ${maxP.toFixed(0)} mW`;
+                label2 = 'Ambient Light';
+                val2 = `${comp.lux !== undefined ? comp.lux : 300} Lux`;
+            } else if (comp.type === 'buzzer') {
+                const maxI = 30.0;
+                pct = (currentMA / maxI) * 100;
+                isOver = pct > 100;
+                label1 = 'Buzzer Current';
+                val1 = `${currentMA.toFixed(1)} / ${maxI.toFixed(0)} mA`;
+                label2 = 'Acoustic Sound';
+                val2 = comp.isBeeping ? '2.4 kHz (88 dB)' : 'Silent';
+            } else if (comp.type === 'servo') {
+                const maxI = 500.0;
+                pct = (currentMA / maxI) * 100;
+                isOver = pct > 100;
+                label1 = 'Motor Current';
+                val1 = `${currentMA.toFixed(1)} / ${maxI.toFixed(0)} mA`;
+                label2 = 'Horn Angle';
+                val2 = `${comp.angle !== undefined ? comp.angle : 90}°`;
+            } else if (comp.type === 'relay') {
+                const maxI = 10000.0;
+                pct = (currentMA / maxI) * 100;
+                isOver = pct > 100;
+                label1 = 'Contact Load';
+                val1 = currentMA >= 1000 ? `${(currentMA / 1000).toFixed(2)} / 10 A` : `${currentMA.toFixed(1)} mA`;
+                label2 = 'Coil State';
+                val2 = comp.isEnergized ? 'ENERGIZED (71mA)' : 'DE-ENERGIZED';
+            } else if (comp.type === 'dht11' || comp.type === 'hc_sr04' || comp.type === 'pir_sensor') {
+                pct = Math.min(100, (currentMA / 20.0) * 100);
+                label1 = 'Module Current';
+                val1 = `${currentMA.toFixed(2)} mA`;
+                label2 = 'Operating State';
+                val2 = currentMA > 0.05 ? 'Powered Active' : 'Unpowered';
             } else {
                 pct = 0;
                 label1 = 'Node Potential';
@@ -4616,6 +6273,16 @@ Generated by ElectroSim Pro Engineering CAD Engine
                             </button>
                         </div>
                         ` : ''}
+
+                        <!-- Component Actions: Rotate & Delete (Action Row) -->
+                        <div class="flex items-center space-x-2 pt-2 border-t border-slate-800">
+                            <button onclick="rotateSelected()" title="Rotate 90° (Orientation: ${comp.rotation || 0}°)" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-indigo-600 border border-slate-700 text-slate-300 hover:text-white transition-all flex items-center justify-center group shadow-sm" id="btn-rotate-inspector">
+                                <i class="fa-solid fa-rotate text-indigo-400 text-base group-hover:rotate-90 transition-transform duration-300"></i>
+                            </button>
+                            <button onclick="deleteSelected()" title="Delete Component (Del / Backspace)" class="flex-1 py-2.5 rounded-xl bg-red-950/40 hover:bg-red-900/50 active:bg-red-800/60 border border-red-800/50 text-red-400 hover:text-red-300 transition-all flex items-center justify-center group shadow-sm" id="btn-delete-inspector">
+                                <i class="fa-solid fa-trash-can text-base group-hover:scale-110 transition-transform"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             } else if (state.selectedType === 'wire') {
@@ -4627,6 +6294,11 @@ Generated by ElectroSim Pro Engineering CAD Engine
                             <label class="text-xs text-slate-400 font-medium">Connection Wire</label>
                             <div class="text-sm font-semibold text-white mt-0.5">Orthogonal Manhattan Link</div>
                             <div class="text-xs text-slate-400">Ideal zero-resistance conductor link.</div>
+                        </div>
+                        <div class="pt-2 border-t border-slate-800">
+                            <button onclick="deleteSelected()" title="Remove Wire (Del / Backspace)" class="w-full bg-red-950/40 hover:bg-red-900/50 active:bg-red-800/60 border border-red-800/50 text-red-400 hover:text-red-300 py-2.5 rounded-xl transition-all flex items-center justify-center group shadow-sm" id="btn-delete-wire-inspector">
+                                <i class="fa-solid fa-trash-can text-base group-hover:scale-110 transition-transform"></i>
+                            </button>
                         </div>
                     </div>
                 `;
@@ -4807,6 +6479,86 @@ Generated by ElectroSim Pro Engineering CAD Engine
                     { id: 'w8', fromComp: 'c7', fromTerm: 0, toComp: 'c1', toTerm: 0 }
                 ];
                 showToast('Loaded Interactive Switch & Dual LEDs circuit', 'success');
+            } else if (presetName === 'arduino_alarm') {
+                // Arduino Uno Smart Security Alarm (PIR + Buzzer + LED)
+                state.components = [
+                    { id: 'c1', type: 'arduino_uno', x: 200, y: 240, rotation: 0, value: 5, d13Mode: 'blink', d9Duty: 100 },
+                    { id: 'c2', type: 'pir_sensor',  x: 440, y: 140, rotation: 0, value: 3.3, motionDetected: false },
+                    { id: 'c3', type: 'buzzer',      x: 440, y: 260, rotation: 0, value: 5, frequency: 2400 },
+                    { id: 'c4', type: 'resistor',    x: 340, y: 360, rotation: 0, value: 220 },
+                    { id: 'c5', type: 'led',         x: 460, y: 360, rotation: 0, value: 2.0 },
+                    { id: 'c6', type: 'ground',      x: 200, y: 380, rotation: 0, value: 0 }
+                ];
+                state.wires = [
+                    { id: 'w1', fromComp: 'c1', fromTerm: 0, toComp: 'c2', toTerm: 0 }, // Arduino 5V -> PIR VCC
+                    { id: 'w2', fromComp: 'c1', fromTerm: 2, toComp: 'c6', toTerm: 0 }, // Arduino GND -> Common GND
+                    { id: 'w3', fromComp: 'c2', fromTerm: 2, toComp: 'c6', toTerm: 0 }, // PIR GND -> Common GND
+                    { id: 'w4', fromComp: 'c2', fromTerm: 1, toComp: 'c1', toTerm: 6 }, // PIR OUT -> Arduino D2
+                    { id: 'w5', fromComp: 'c1', fromTerm: 5, toComp: 'c3', toTerm: 0 }, // Arduino D9 -> Buzzer +
+                    { id: 'w6', fromComp: 'c3', fromTerm: 1, toComp: 'c6', toTerm: 0 }, // Buzzer - -> Common GND
+                    { id: 'w7', fromComp: 'c1', fromTerm: 4, toComp: 'c4', toTerm: 0 }, // Arduino D13 -> R1
+                    { id: 'w8', fromComp: 'c4', fromTerm: 1, toComp: 'c5', toTerm: 0 }, // R1 -> LED Anode
+                    { id: 'w9', fromComp: 'c5', fromTerm: 1, toComp: 'c6', toTerm: 0 }  // LED Cathode -> Common GND
+                ];
+                showToast('Loaded Arduino Uno Smart Alarm (PIR + Buzzer + LED)', 'success');
+            } else if (presetName === 'esp32_weather') {
+                // ESP32 IoT Weather Station (DHT11 + LDR + Wi-Fi MQTT)
+                state.components = [
+                    { id: 'c1', type: 'esp32',   x: 220, y: 240, rotation: 0, value: 3.3, d2Mode: 'blink' },
+                    { id: 'c2', type: 'dht11',   x: 440, y: 140, rotation: 0, value: 24, temperature: 24, humidity: 55 },
+                    { id: 'c3', type: 'ldr',     x: 400, y: 280, rotation: 0, value: 10000, lux: 350 },
+                    { id: 'c4', type: 'resistor',x: 400, y: 380, rotation: 0, value: 10000 },
+                    { id: 'c5', type: 'ground',  x: 220, y: 380, rotation: 0, value: 0 }
+                ];
+                state.wires = [
+                    { id: 'w1', fromComp: 'c1', fromTerm: 0, toComp: 'c2', toTerm: 0 }, // ESP32 3V3 -> DHT11 VCC
+                    { id: 'w2', fromComp: 'c1', fromTerm: 0, toComp: 'c3', toTerm: 0 }, // ESP32 3V3 -> LDR Lead 1
+                    { id: 'w3', fromComp: 'c1', fromTerm: 1, toComp: 'c5', toTerm: 0 }, // ESP32 GND -> Common GND
+                    { id: 'w4', fromComp: 'c2', fromTerm: 2, toComp: 'c5', toTerm: 0 }, // DHT11 GND -> Common GND
+                    { id: 'w5', fromComp: 'c2', fromTerm: 1, toComp: 'c1', toTerm: 4 }, // DHT11 DATA -> ESP32 D4
+                    { id: 'w6', fromComp: 'c3', fromTerm: 1, toComp: 'c4', toTerm: 0 }, // LDR Lead 2 -> R_pull Lead 1
+                    { id: 'w7', fromComp: 'c3', fromTerm: 1, toComp: 'c1', toTerm: 2 }, // Divider midpoint -> ESP32 VN ADC
+                    { id: 'w8', fromComp: 'c4', fromTerm: 1, toComp: 'c5', toTerm: 0 }  // R_pull Lead 2 -> Common GND
+                ];
+                showToast('Loaded ESP32 IoT Weather Station (DHT11 + LDR + Wi-Fi)', 'success');
+            } else if (presetName === 'ultrasonic_radar') {
+                // Ultrasonic Radar Scanner (HC-SR04 + SG90 Servo)
+                state.components = [
+                    { id: 'c1', type: 'arduino_uno', x: 200, y: 240, rotation: 0, value: 5, d13Mode: 'high', d9Duty: 80 },
+                    { id: 'c2', type: 'hc_sr04',     x: 440, y: 140, rotation: 0, value: 25, distance: 35 },
+                    { id: 'c3', type: 'servo',       x: 440, y: 300, rotation: 0, value: 90, angle: 90 },
+                    { id: 'c4', type: 'ground',      x: 200, y: 380, rotation: 0, value: 0 }
+                ];
+                state.wires = [
+                    { id: 'w1', fromComp: 'c1', fromTerm: 0, toComp: 'c2', toTerm: 0 }, // Arduino 5V -> Sonar VCC
+                    { id: 'w2', fromComp: 'c1', fromTerm: 0, toComp: 'c3', toTerm: 1 }, // Arduino 5V -> Servo 5V
+                    { id: 'w3', fromComp: 'c1', fromTerm: 2, toComp: 'c4', toTerm: 0 }, // Arduino GND -> Common GND
+                    { id: 'w4', fromComp: 'c2', fromTerm: 3, toComp: 'c4', toTerm: 0 }, // Sonar GND -> Common GND
+                    { id: 'w5', fromComp: 'c3', fromTerm: 0, toComp: 'c4', toTerm: 0 }, // Servo GND -> Common GND
+                    { id: 'w6', fromComp: 'c1', fromTerm: 6, toComp: 'c2', toTerm: 1 }, // Arduino D2 -> Sonar TRIG
+                    { id: 'w7', fromComp: 'c1', fromTerm: 4, toComp: 'c2', toTerm: 2 }, // Arduino D13 -> Sonar ECHO
+                    { id: 'w8', fromComp: 'c1', fromTerm: 5, toComp: 'c3', toTerm: 2 }  // Arduino D9 -> Servo PWM
+                ];
+                showToast('Loaded Ultrasonic Radar Scanner (Sonar + Servo)', 'success');
+            } else if (presetName === 'relay_mains_driver') {
+                // Optocoupled 5V Relay AC Load Controller
+                state.components = [
+                    { id: 'c1', type: 'arduino_uno', x: 180, y: 240, rotation: 0, value: 5, d13Mode: 'high' },
+                    { id: 'c2', type: 'relay',       x: 400, y: 240, rotation: 0, value: 5, triggerLevel: 'high' },
+                    { id: 'c3', type: 'ground',      x: 180, y: 360, rotation: 0, value: 0 },
+                    { id: 'c4', type: 'dc_voltage',  x: 600, y: 160, rotation: 0, value: 12 }, // 12V High-power load supply
+                    { id: 'c5', type: 'resistor',    x: 600, y: 320, rotation: 0, value: 24 }  // 24Ω Lamp Load (0.5A @ 12V = 6W)
+                ];
+                state.wires = [
+                    { id: 'w1', fromComp: 'c1', fromTerm: 0, toComp: 'c2', toTerm: 0 }, // Arduino 5V -> Relay VCC
+                    { id: 'w2', fromComp: 'c1', fromTerm: 4, toComp: 'c2', toTerm: 1 }, // Arduino D13 -> Relay IN
+                    { id: 'w3', fromComp: 'c1', fromTerm: 2, toComp: 'c3', toTerm: 0 }, // Arduino GND -> Common GND
+                    { id: 'w4', fromComp: 'c2', fromTerm: 2, toComp: 'c3', toTerm: 0 }, // Relay GND -> Common GND
+                    { id: 'w5', fromComp: 'c4', fromTerm: 1, toComp: 'c2', toTerm: 4 }, // 12V (+) -> Relay COM
+                    { id: 'w6', fromComp: 'c2', fromTerm: 3, toComp: 'c5', toTerm: 0 }, // Relay NO -> Lamp Load Pin 0
+                    { id: 'w7', fromComp: 'c5', fromTerm: 1, toComp: 'c4', toTerm: 0 }  // Lamp Load Pin 1 -> 12V (-)
+                ];
+                showToast('Loaded Optocoupled Relay Load Controller preset', 'success');
             }
 
             recordHistory();

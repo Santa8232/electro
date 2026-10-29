@@ -24,6 +24,7 @@
 13. [Troubleshooting & Maintenance FAQ](#13-troubleshooting--maintenance-faq)
 14. [Workstation UI/UX Redesign & Modern EDA Layout](#14-workstation-uiux-redesign--modern-eda-layout)
 15. [Documentation Suite (Vibe Coding Standard)](#15-documentation-suite-vibe-coding-standard)
+16. [IoT Microcontrollers, Smart Sensors & Actuators](#16-iot-microcontrollers-smart-sensors--actuators)
 
 ---
 
@@ -408,5 +409,50 @@ ElectroSim Pro is maintained under the continuous **Vibe Coding** documentation 
 6. **`docs/MEMORY.md`**: Architectural Decision Records (ADRs `001` through `005`) and solved traps.
 
 ---
-*Document Version: 2.2 — Prepared by Senior Electronics Engineer, Software Architect & UI/UX Designer*
+
+## 16. IoT Microcontrollers, Smart Sensors & Actuators
+
+ElectroSim Pro v3.0 expands the discrete analog simulation engine into an interactive embedded systems and IoT engineering workbench.
+
+### 16.1 Supported Hardware Modules & Pinouts
+
+| Component | Type Key | Category | Pins | Functionality & Simulation Companion Model |
+| :--- | :--- | :--- | :--- | :--- |
+| **Arduino Uno R3** | `arduino_uno` | `iot` | 7 | ATmega328P 16MHz AVR board. Regulated 5V & 3.3V power rails, 10-bit Successive Approximation ADC on A0 ($0-1023$, $5\text{V}$ scale), D13 digital pin with synchronized blinking 'L' LED, D9 PWM output, D2 interrupt. |
+| **ESP32 NodeMCU** | `esp32` | `iot` | 7 | Tensilica Xtensa dual-core 240MHz SoC. Regulated 3.3V rail, 12-bit SAR ADC on VN/GPIO36 ($0-4095$, $3.3\text{V}$ scale), GPIO2 blue status LED, GPIO4/18/21 digital I/O, simulated Wi-Fi telemetry & MQTT packet broadcast. |
+| **DHT11 Sensor** | `dht11` | `iot` | 3 | Digital temperature ($-20^\circ\text{C}$ to $+60^\circ\text{C}$) and relative humidity ($20\%$ to $90\%$) sensor. Interactive sliders, dew point calculation, single-wire serial framing. |
+| **HC-SR04 Sonar** | `hc_sr04` | `iot` | 4 | Ultrasonic distance sensor ($2\text{ cm} - 400\text{ cm}$). Dual piezoelectric transducers (T & R), echo pulse calculation ($t = d \times 58.3\ \mu\text{s}$), forward radar emission wave on canvas. |
+| **HC-SR501 PIR** | `pir_sensor` | `iot` | 3 | Pyroelectric passive infrared human motion sensor with BISS0001 IC. Interactive human motion trigger button, 3.3V TTL active output pulse, radar arcs. |
+| **CdS Photoresistor** | `ldr` | `iot` | 2 | Cadmium-sulfide light-dependent resistor. Logarithmic resistance response ($500\text{ k}\Omega$ dark to $500\ \Omega$ bright sunlight @ 1000 lx), ambient illuminance slider. |
+| **Piezo Buzzer** | `buzzer` | `iot` | 2 | Active 2.4 kHz acoustic transducer ($32\ \Omega$ coil). Synthesizes real acoustic sound via Web Audio API (`AudioContext`) when voltage drop $\ge 2.5\text{V}$, animated ripple sound rings, mute toggle. |
+| **SG90 Servo Motor** | `servo` | `iot` | 3 | 9g micro position servo ($0^\circ - 180^\circ$). Interactive angle slider, animated rotating horn arm with eyelet mounting holes, calculated 50Hz PWM pulse duration ($1.0\text{ ms} - 2.0\text{ ms}$). |
+| **5V Relay Module** | `relay` | `iot` | 6 | 1-channel SPDT optocoupled 10A relay (Songle `SRD-05VDC-SL-C`). 5V coil ($71.4\text{ mA}$), optoisolation ($1500\text{ V}$), flips COM contact between NC and NO, switches high-current AC/DC loads. |
+
+### 16.2 Mathematical Companion Formulations in MNA
+
+1. **Regulated Microcontroller Power Rails**:
+   $$\mathbf{A} \text{ row/col stamps for } V_{5V} - V_{GND} = 5.0\text{ V}, \quad R_{int} = 0.1\ \Omega$$
+   $$\mathbf{A} \text{ row/col stamps for } V_{3V3} - V_{GND} = 3.3\text{ V}, \quad R_{int} = 0.1\ \Omega$$
+2. **Quantized ADC Sensing**:
+   $$\text{ADC}_{10\text{-bit Uno}} = \text{round}\left(\frac{\max(0, V_{A0} - V_{GND})}{5.0} \times 1023\right)$$
+   $$\text{ADC}_{12\text{-bit ESP32}} = \text{round}\left(\frac{\max(0, V_{VN} - V_{GND})}{3.3} \times 4095\right)$$
+3. **Logarithmic CdS Photoconductive Resistance**:
+   $$R(lux) = 500 + 499500 \times \left(1 - \frac{\log_{10}(1 + lux)}{\log_{10}(1001)}\right)^{2} \quad [\Omega]$$
+4. **Ultrasonic Flight-Time Pulse Calculation**:
+   $$\tau_{echo} = \frac{2 \times d}{v_{sound}} = d \times 58.3\ \mu\text{s/cm}$$
+5. **Servo Motor Angular Position & PWM Frame Timing**:
+   $$\tau_{pulse} = 1.0\text{ ms} + \left(\frac{\theta}{180^\circ}\right) \times 1.0\text{ ms}$$
+6. **Relay Armature Matrix Conductance Flipping**:
+   $$G_{COM-NO} = \begin{cases} \frac{1}{0.05\ \Omega} = 20\ \mho & \text{if energized} \\ \frac{1}{10^7\ \Omega} = 10^{-7}\ \mho & \text{if de-energized} \end{cases}$$
+   $$G_{COM-NC} = \begin{cases} \frac{1}{10^7\ \Omega} = 10^{-7}\ \mho & \text{if energized} \\ \frac{1}{0.05\ \Omega} = 20\ \mho & \text{if de-energized} \end{cases}$$
+
+### 16.3 Pre-wired IoT Circuit Presets
+
+- **`arduino_alarm`**: Arduino Uno R3 + HC-SR501 PIR sensor + Piezo Buzzer + Red LED alert.
+- **`esp32_weather`**: ESP32 NodeMCU + DHT11 Temp/Humidity + LDR Divider into VN ADC + Wi-Fi MQTT telemetry stream.
+- **`ultrasonic_radar`**: Arduino Uno + HC-SR04 Ultrasonic Sonar + SG90 Servo scanner.
+- **`relay_mains_driver`**: Arduino Uno + 5V Relay + Isolated 12V High-Power Load Lamp.
+
+---
+*Document Version: 3.0 — Prepared by Senior Electronics Engineer, Embedded Systems Architect & UI/UX Designer*
 
