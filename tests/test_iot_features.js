@@ -161,8 +161,8 @@ for (const compType of requiredIotComponents) {
 // Test 3: Verify getComponentTerminals pin counts & normal vectors
 console.log('\n--- 3. Testing getComponentTerminals & Pin Geometries ---');
 const expectedPinCounts = {
-    arduino_uno: 7,
-    esp32: 7,
+    arduino_uno: 29,
+    esp32: 30,
     dht11: 3,
     hc_sr04: 4,
     pir_sensor: 3,

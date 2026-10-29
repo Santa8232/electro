@@ -78,6 +78,16 @@
   - [x] Active piezo buzzer with Web Audio API sound synthesis ($2.4\text{ kHz}$ tone), expanding canvas ripple arcs, and mute toggle.
   - [x] SG90 micro servo motor with dynamically rotating white horn arm ($0^\circ - 180^\circ$) and 50Hz PWM pulse width calculations.
   - [x] 5V optocoupled SPDT relay module (Songle SRD-05VDC-SL-C) with $1500\text{ V}$ galvanic isolation and armature contact switching.
+- [x] **Microcontroller Real Datasheet Pinout Expansion:**
+  - [x] Expand Arduino Uno R3 to full 29 authentic pins (14 digital I/O D0-D13, 6 analog ADCs A0-A5, 5V, 3V3, VIN, IOREF, AREF, 3 GNDs).
+  - [x] Expand ESP32 NodeMCU to full 30 authentic DIP pins (18 GPIOs, 6 SAR ADCs, 2 DACs, dual 3V3, dual GND, VIN).
+  - [x] Add high-contrast glassmorphic hover HUD tooltips displaying pin names and alternate hardware functions (PWM, ADC, SPI, I2C, UART).
+- [x] **Embedded Microcontroller Code IDE & Virtual Firmware Subsystem:**
+  - [x] In-browser code editor IDE modal (`#embedded-ide-modal`) with line numbers, tab indentation, and fullscreen toggle (`F7`).
+  - [x] Arduino C++ to asynchronous JavaScript transpiler supporting standard Arduino APIs (`setup`, `loop`, `pinMode`, `digitalWrite`, `digitalRead`, `analogRead`, `analogWrite`, `delay`, `millis`, `Serial`).
+  - [x] Live firmware compilation with Flash ROM & SRAM footprint estimation.
+  - [x] Bidirectional Serial Monitor console with baud rate selection ($9600 - 115200$), autoscroll, and serial command transmitter.
+  - [x] Library of 7 interactive engineering example sketches.
 - [x] **Integrated Workstation Features:**
   - [x] Component palette category pill `IoT & MCU` (`data-cat="iot"`).
   - [x] Complete manufacturer datasheets for all 9 IoT components.
@@ -86,7 +96,8 @@
   - [x] Dual action buttons (Rotate & Delete) accessible in both Floating Viewport Dock and Inspector.
   - [x] 4 pre-wired IoT circuit presets: `arduino_alarm`, `esp32_weather`, `ultrasonic_radar`, `relay_mains_driver`.
 - [x] **Verification:**
-  - [x] Headless test suite `scratch/test_iot_features.js` (9/9 suites passing, 25/25 assertions).
+  - [x] Headless test suite `tests/test_iot_features.js` (9/9 suites passing, 25/25 assertions).
+  - [x] Headless test suite `tests/test_embedded_ide.js` (8/8 test suites passing).
 
 ## Milestone 6: Future Capabilities & Enhancements
 - [ ] Implement hierarchical sub-circuits and custom IC chip packaging.

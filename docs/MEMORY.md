@@ -43,6 +43,18 @@
 - **Decision:** Companion-modeled microcontroller power rails and GPIO outputs as regulated Thévenin DC voltage sources with realistic internal resistances ($0.1\ \Omega$ on power rails, $25\ \Omega$ on GPIO pins), stamped high-impedance ($10\text{ M}\Omega$) conductances for analog ADC inputs (quantizing post-solve potentials into 10-bit or 12-bit integer registers), utilized native Web Audio API for 2.4kHz piezo buzzer sound synthesis, and rendered dynamic canvas animations (radar pulses, sound waves, rotating servo horn).
 - **Consequences:** Delivers authentic electrical loading, voltage sag, ADC conversion, and real actuator behavior with zero performance penalty on the 60fps render loop.
 
+### ADR-007: Authentic 29/30-Pin Microcontroller Pinouts & Backward Compatibility
+- **Date:** 2026-10-29
+- **Context:** Users required real datasheet pinout configurations for Arduino Uno R3 (29 pins) and ESP32 NodeMCU (30 pins) rather than simplified 7-pin abstractions.
+- **Decision:** Expanded component terminal geometry while preserving terminal indices `0..6` (`5V, 3V3, GND, A0, D13, D9, D2` on Uno; `3V3, GND, VN, D2, D4, D18, D21` on ESP32) ensuring 100% backward compatibility with pre-existing circuit presets and user saves. Stamped low-resistance ($0.005\ \Omega$) equipotential conductances between board ground terminals to model ground plane continuity.
+- **Consequences:** Provides exact physical datasheet correspondence for breadboard wiring without breaking existing schematics or test suites.
+
+### ADR-008: Embedded Microcontroller Code IDE & Asynchronous Transpiler Runtime
+- **Date:** 2026-10-29
+- **Context:** Enabling users to write and execute custom Arduino C++ programs within an interactive browser circuit simulator without freezing the UI or requiring an external toolchain.
+- **Decision:** Built an integrated code editor IDE (`#embedded-ide-modal`, `F7`) with an in-browser C++ to asynchronous JavaScript transpiler (`transpileArduinoC`). Mapped blocking calls `delay(ms)` to non-blocking microtask yields (`await delay(ms)`) scaled by simulation speed, provided standard Arduino APIs (`pinMode`, `digitalWrite`, `digitalRead`, `analogRead`, `analogWrite`, `Serial`), and integrated a real-time Serial Monitor with baud rate control.
+- **Consequences:** True virtual firmware execution directly interfacing with circuit components in real time with zero external compiler dependencies.
+
 ## 3. Solved Traps & Gotchas
 
 ### Trap 1: HTML Tag Extraction in Test Harness

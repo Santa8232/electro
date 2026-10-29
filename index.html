@@ -118,8 +118,12 @@
 
         <!-- Utility Actions & Right Sidebar Toggle -->
         <div class="flex items-center space-x-1.5">
-            <button onclick="openCustomComponentModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center space-x-1.5 shadow-sm" title="Upload or Create Custom Component">
-                <i class="fa-solid fa-plus-circle"></i>
+            <button id="btn-open-ide" onclick="openEmbeddedIDE()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center space-x-1.5 shadow-sm border border-indigo-500/50" title="Open Embedded Microcontroller Code IDE (F7)">
+                <i class="fa-solid fa-code text-indigo-200"></i>
+                <span class="hidden xl:inline">Code IDE</span>
+            </button>
+            <button onclick="openCustomComponentModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center space-x-1.5 shadow-sm" title="Upload or Create Custom Component">
+                <i class="fa-solid fa-plus-circle text-indigo-400"></i>
                 <span class="hidden xl:inline">New Component</span>
             </button>
             <button id="btn-save" onclick="saveCircuitToStorage()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white p-2 rounded-xl text-xs transition-all shadow-sm" title="Save to Browser Storage">
@@ -210,6 +214,9 @@
                 </button>
                 <button onclick="deleteSelected()" id="btn-delete" class="p-2 rounded-xl bg-red-950/40 hover:bg-red-900/50 active:bg-red-800/60 border border-red-800/50 text-red-400 hover:text-red-300 text-xs transition-all flex items-center justify-center group shadow-sm" title="Delete Selected Component / Wire (Del / Backspace)">
                     <i class="fa-solid fa-trash-can group-hover:scale-110 transition-transform"></i>
+                </button>
+                <button onclick="openEmbeddedIDE()" id="btn-ide-dock" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-indigo-600 border border-slate-700/80 text-slate-300 hover:text-white text-xs transition-all flex items-center justify-center group shadow-sm" title="Open Microcontroller Code IDE (F7)">
+                    <i class="fa-solid fa-code text-indigo-400 group-hover:scale-110 transition-transform"></i>
                 </button>
                 <div class="h-4 w-px bg-slate-800 mx-1"></div>
                 <button onclick="zoomCanvas(1.2)" class="p-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs transition-all" title="Zoom In (+)">
@@ -442,6 +449,178 @@
         </div>
     </div>
 
+    <!-- Embedded Microcontroller Code IDE Modal -->
+    <div id="embedded-ide-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center hidden p-3 sm:p-5">
+        <div id="ide-window" class="bg-slate-900 border border-slate-700/80 w-full max-w-5xl rounded-2xl shadow-2xl relative flex flex-col h-[88vh] overflow-hidden transition-all duration-200">
+            <!-- IDE Title Bar & Target Selector -->
+            <div class="bg-slate-950/90 px-4 py-2.5 border-b border-slate-800 flex items-center justify-between select-none">
+                <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500 cursor-pointer transition-colors" onclick="closeEmbeddedIDE()" title="Close IDE"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500/80 hover:bg-amber-500 cursor-pointer transition-colors" onclick="minimizeIdeConsole()" title="Minimize / Restore Console"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500/80 hover:bg-emerald-500 cursor-pointer transition-colors" onclick="toggleIdeMaximize()" title="Toggle Maximize"></span>
+                    </div>
+                    <div class="h-4 w-px bg-slate-800"></div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-code text-indigo-400 text-sm"></i>
+                        <span class="font-bold text-xs text-white tracking-wide">ElectroSim Embedded IDE</span>
+                        <span class="text-[9px] font-mono bg-indigo-950 text-indigo-300 px-1.5 py-0.5 rounded border border-indigo-800/60">v1.0 Virtual AVR/ESP</span>
+                    </div>
+                </div>
+
+                <!-- Target MCU Board Selector & Status Badge -->
+                <div class="flex items-center space-x-2">
+                    <div class="flex items-center space-x-1.5 bg-slate-900 px-2.5 py-1 rounded-xl border border-slate-800 text-xs">
+                        <i class="fa-solid fa-microchip text-slate-400 text-[11px]"></i>
+                        <span class="text-slate-400 text-[11px] font-medium hidden sm:inline">Target:</span>
+                        <select id="ide-target-board" onchange="onIdeTargetBoardChanged(this.value)" class="bg-slate-950 text-indigo-300 font-semibold text-xs rounded px-2 py-0.5 outline-none border border-slate-800 cursor-pointer font-mono">
+                            <!-- Populated dynamically with canvas microcontrollers -->
+                        </select>
+                    </div>
+                    <span id="ide-exec-status" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center space-x-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="ide-status-dot"></span>
+                        <span id="ide-status-text">IDLE</span>
+                    </span>
+                    <button onclick="toggleIdeMaximize()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 text-xs transition-all" title="Toggle Fullscreen">
+                        <i class="fa-solid fa-expand" id="ide-maximize-icon"></i>
+                    </button>
+                    <button onclick="closeEmbeddedIDE()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 text-xs transition-all" title="Close IDE (Esc)">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- IDE Toolbar Actions & Example Library -->
+            <div class="bg-slate-900/90 px-4 py-2 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div class="flex items-center space-x-2">
+                    <!-- Compile / Verify Button -->
+                    <button id="btn-ide-compile" onclick="compileIdeSketch()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 border border-slate-700 font-medium transition-all flex items-center space-x-1.5 shadow-sm group" title="Verify & Compile Code (Ctrl+R)">
+                        <i class="fa-solid fa-check text-emerald-400 group-hover:scale-110 transition-transform"></i>
+                        <span>Verify</span>
+                    </button>
+
+                    <!-- Flash & Run Button -->
+                    <button id="btn-ide-upload" onclick="uploadAndRunSketch()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:from-indigo-700 text-white font-medium transition-all flex items-center space-x-1.5 shadow-md group" title="Upload Firmware to Virtual Board & Run (Ctrl+U / Ctrl+Enter)">
+                        <i class="fa-solid fa-arrow-right text-indigo-200 group-hover:translate-x-0.5 transition-transform"></i>
+                        <span>Upload & Run</span>
+                    </button>
+
+                    <!-- Stop Button -->
+                    <button id="btn-ide-stop" onclick="stopIdeSketch()" class="px-3 py-1.5 rounded-xl bg-red-950/40 hover:bg-red-900/60 active:bg-red-800 border border-red-800/60 text-red-300 font-medium transition-all flex items-center space-x-1.5 shadow-sm" title="Stop Virtual Firmware Execution">
+                        <i class="fa-solid fa-stop text-red-400"></i>
+                        <span>Stop</span>
+                    </button>
+
+                    <div class="h-4 w-px bg-slate-800 mx-1"></div>
+
+                    <!-- Example Sketches Library Dropdown -->
+                    <div class="flex items-center space-x-1.5">
+                        <span class="text-slate-400 text-[11px] hidden md:inline">Examples:</span>
+                        <select id="ide-example-selector" onchange="loadIdeExample(this.value)" class="bg-slate-950 hover:bg-slate-900 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 outline-none border border-slate-700 cursor-pointer transition-all">
+                            <option value="" disabled selected>💡 Select Example Sketch...</option>
+                            <option value="blink">1. Blink (D13 Built-in LED)</option>
+                            <option value="analog_sensor">2. Analog Light Sensor Reader (A0 LDR)</option>
+                            <option value="pwm_sweep">3. PWM Brightness Sweep (D9)</option>
+                            <option value="pir_alarm">4. PIR Motion Security Alarm (D2 & D8 Buzzer)</option>
+                            <option value="radar_scanner">5. Ultrasonic Radar Ping (HC-SR04 & Servo D10)</option>
+                            <option value="relay_switch">6. 5V Relay Threshold Controller (D7 Relay)</option>
+                            <option value="esp32_mqtt">7. ESP32 Wi-Fi & MQTT Telemetry (ESP32 D2 & VN)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Right Toolbar: Console Toggles & Serial Monitor Button -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="toggleIdeConsoleTab('serial')" id="btn-ide-tab-serial-nav" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center space-x-1.5" title="Open Serial Monitor (Ctrl+Shift+M)">
+                        <i class="fa-solid fa-terminal text-cyan-400"></i>
+                        <span>Serial Monitor</span>
+                    </button>
+                    <button onclick="resetIdeEditorToDefault()" class="p-1.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700/80 transition-all text-xs" title="Reset Code to Default Template">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Bar -->
+            <div class="bg-slate-950 px-4 py-1.5 border-b border-slate-800/80 flex items-center justify-between text-xs">
+                <div class="flex items-center space-x-1">
+                    <div class="flex items-center space-x-2 px-3 py-1 bg-slate-900 text-indigo-300 font-mono text-[11px] rounded-t-lg border-t-2 border-indigo-500 border-x border-slate-800">
+                        <i class="fa-solid fa-file-code text-teal-400"></i>
+                        <span id="ide-filename">sketch.ino</span>
+                        <span id="ide-modified-dot" class="w-1.5 h-1.5 rounded-full bg-amber-400 hidden" title="Unsaved changes"></span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3 text-[10px] font-mono text-slate-500">
+                    <span id="ide-cursor-pos">Ln 1, Col 1</span>
+                    <span id="ide-spec-info">ATmega328P • 16MHz • 5V</span>
+                </div>
+            </div>
+
+            <!-- Editor Main Area (Line Numbers + Textarea) -->
+            <div class="flex-1 flex overflow-hidden relative bg-slate-950 font-mono text-xs">
+                <!-- Line Numbers Gutter -->
+                <div id="ide-gutter" class="w-12 bg-slate-950 border-r border-slate-800/80 py-3 pr-2 text-right text-slate-600 select-none overflow-hidden text-[11px] leading-relaxed">
+                    1
+                </div>
+                <!-- Textarea Code Input -->
+                <textarea id="ide-code-editor" spellcheck="false" oninput="onIdeCodeInput()" onscroll="syncIdeScroll()" onkeydown="handleIdeKeyDown(event)" onkeyup="updateIdeCursorPos()" onclick="updateIdeCursorPos()" class="flex-1 bg-slate-950 text-slate-100 p-3 outline-none resize-none leading-relaxed border-none focus:ring-0 text-xs font-mono selection:bg-indigo-600/40" placeholder="// Write your Arduino C++ sketch or ESP32 program here..."></textarea>
+            </div>
+
+            <!-- Bottom Console / Serial Monitor Drawer -->
+            <div id="ide-console-drawer" class="h-48 border-t border-slate-800 bg-slate-900/95 flex flex-col transition-all duration-200">
+                <!-- Console Tabs Header -->
+                <div class="bg-slate-950/80 px-3 py-1.5 border-b border-slate-800 flex items-center justify-between select-none">
+                    <div class="flex items-center space-x-2">
+                        <button onclick="toggleIdeConsoleTab('compiler')" id="ide-tab-btn-compiler" class="px-2.5 py-1 rounded-lg text-xs font-medium text-white bg-slate-800 transition-all flex items-center space-x-1.5">
+                            <i class="fa-solid fa-terminal text-slate-400"></i>
+                            <span>Compiler Output</span>
+                        </button>
+                        <button onclick="toggleIdeConsoleTab('serial')" id="ide-tab-btn-serial" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-all flex items-center space-x-1.5">
+                            <i class="fa-solid fa-satellite-dish text-cyan-400"></i>
+                            <span>Serial Monitor</span>
+                            <span id="ide-serial-badge" class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse hidden"></span>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center space-x-2">
+                        <!-- Baud Rate Selector (for Serial) -->
+                        <div id="ide-baud-selector-container" class="hidden items-center space-x-1 text-[11px]">
+                            <span class="text-slate-400">Baud:</span>
+                            <select id="ide-baud-rate" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-1.5 py-0.5 outline-none font-mono">
+                                <option value="9600" selected>9600</option>
+                                <option value="19200">19200</option>
+                                <option value="38400">38400</option>
+                                <option value="57600">57600</option>
+                                <option value="115200">115200</option>
+                            </select>
+                        </div>
+                        <label class="flex items-center space-x-1 text-[11px] text-slate-400 cursor-pointer">
+                            <input type="checkbox" id="ide-autoscroll" checked class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-0">
+                            <span>Autoscroll</span>
+                        </label>
+                        <button onclick="clearIdeConsole()" class="text-slate-400 hover:text-white p-1 rounded hover:bg-slate-800 text-xs transition-all" title="Clear Console Output">
+                            <i class="fa-solid fa-eraser"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Console Log Output Area -->
+                <div id="ide-console-output" class="flex-1 p-2.5 bg-slate-950 font-mono text-[11px] overflow-y-auto space-y-1 text-slate-300 select-text leading-relaxed">
+                    <div class="text-slate-500">// ElectroSim Embedded Compiler &amp; Serial Monitor ready.</div>
+                </div>
+
+                <!-- Serial Input Bar (Visible only in Serial Monitor tab) -->
+                <div id="ide-serial-input-bar" class="hidden bg-slate-900 px-3 py-1.5 border-t border-slate-800 items-center space-x-2">
+                    <input type="text" id="ide-serial-input" onkeydown="handleSerialInputKeyDown(event)" placeholder="Send text to virtual board Serial (press Enter)..." class="flex-1 bg-slate-950 border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs text-white font-mono outline-none focus:border-indigo-500">
+                    <button onclick="sendSerialInput()" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-medium transition-all flex items-center space-x-1 shadow-sm">
+                        <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                        <span>Send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom Notification Toast -->
     <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 border border-slate-700 text-slate-200 px-4 py-3 rounded-xl shadow-2xl z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center space-x-3 pointer-events-none">
         <i id="toast-icon" class="fa-solid fa-check-circle text-emerald-400 text-lg"></i>
@@ -464,8 +643,8 @@
             fuse:       { name: 'Fuse / Polyfuse', symbol: 'FUSE', desc: 'Circuit Overcurrent Protection', category: 'control', terminals: 2, defaultVal: 0.5, unit: 'A' },
             switch:     { name: 'Switch',     symbol: 'SW',   desc: 'Toggle Switch', category: 'control', terminals: 2, defaultVal: 1, unit: 'State' },
             ground:     { name: 'Ground',     symbol: 'GND',  desc: 'Reference 0V Node', category: 'power', terminals: 1, defaultVal: 0, unit: 'V' },
-            arduino_uno:{ name: 'Arduino Uno R3', symbol: 'UNO R3', desc: 'ATmega328P 16MHz MCU (5V, 3.3V, D13, D9, A0)', category: 'iot', terminals: 7, defaultVal: 5, unit: 'V' },
-            esp32:      { name: 'ESP32 NodeMCU', symbol: 'ESP32',  desc: 'Dual-Core 240MHz Wi-Fi/BLE IoT SoC (3.3V, VN, D2, D4)', category: 'iot', terminals: 7, defaultVal: 3.3, unit: 'V' },
+            arduino_uno:{ name: 'Arduino Uno R3', symbol: 'UNO R3', desc: 'ATmega328P 16MHz AVR Board (29 Header Pins: 14 Digital, 6 Analog ADC, Power Rails)', category: 'iot', terminals: 29, defaultVal: 5, unit: 'V' },
+            esp32:      { name: 'ESP32 NodeMCU', symbol: 'ESP32',  desc: 'Dual-Core 240MHz Wi-Fi/BLE SoC (30 DIP Pins: 18 GPIOs, 6 ADCs, 2 DACs, Power)', category: 'iot', terminals: 30, defaultVal: 3.3, unit: 'V' },
             dht11:      { name: 'DHT11 Sensor',  symbol: 'DHT11',  desc: 'Digital Relative Humidity & Temp Sensor', category: 'iot', terminals: 3, defaultVal: 24, unit: '°C' },
             hc_sr04:    { name: 'HC-SR04 Sonar', symbol: 'HC-SR04',desc: 'Ultrasonic Distance Ranging Module (2-400cm)', category: 'iot', terminals: 4, defaultVal: 25, unit: 'cm' },
             pir_sensor: { name: 'HC-SR501 PIR',  symbol: 'PIR',    desc: 'Pyroelectric Infrared Motion Sensor', category: 'iot', terminals: 3, defaultVal: 3.3, unit: 'V' },
@@ -768,11 +947,33 @@
                 pinout: [
                     { pin: 0, name: '5V (Power Output)', desc: 'Regulated +5.0V DC supply output rail from on-board LDO regulator (500mA max)' },
                     { pin: 1, name: '3V3 (Power Output)', desc: 'Regulated +3.3V DC supply rail from LP2985-33 LDO regulator (150mA max)' },
-                    { pin: 2, name: 'GND (Common Ground)', desc: 'System common reference ground (0V)' },
-                    { pin: 3, name: 'A0 (Analog Input 0)', desc: '10-bit Successive Approximation ADC input (0-5V range, 1024 discrete steps)' },
-                    { pin: 4, name: 'D13 (Digital I/O / LED)', desc: 'Digital GPIO pin tied to on-board yellow "L" LED with internal current limiter' },
-                    { pin: 5, name: 'D9 (Digital PWM Output)', desc: '8-bit Timer/Counter1 Fast PWM output channel A / general GPIO' },
-                    { pin: 6, name: 'D2 (Digital Interrupt)', desc: 'Digital GPIO supporting external hardware interrupt INT0' }
+                    { pin: 2, name: 'GND (Power Ground 1)', desc: 'System common reference ground (0V)' },
+                    { pin: 3, name: 'A0 (Analog In 0 / ADC0)', desc: '10-bit Successive Approximation ADC input (0-5V, 1024 discrete steps)' },
+                    { pin: 4, name: 'D13 (SCK / "L" LED)', desc: 'Digital GPIO & SPI Clock tied to on-board yellow "L" LED with buffer' },
+                    { pin: 5, name: 'D9 (PWM ~ / OC1A)', desc: '8-bit Timer/Counter1 Fast PWM output channel A / general GPIO' },
+                    { pin: 6, name: 'D2 (INT0 / GPIO)', desc: 'Digital GPIO supporting external hardware interrupt INT0' },
+                    { pin: 7, name: 'VIN (Raw Power Input)', desc: 'Unregulated DC power input from external supply (7V - 12V DC recommended)' },
+                    { pin: 8, name: 'GND2 (Power Ground 2)', desc: 'Second system reference ground terminal' },
+                    { pin: 9, name: 'RESET (Master Reset)', desc: 'Active-LOW microcontroller master reset line' },
+                    { pin: 10, name: 'IOREF (I/O Reference)', desc: 'Operating voltage reference (5.0V) for attached shields' },
+                    { pin: 11, name: 'A1 (Analog In 1 / ADC1)', desc: '10-bit Successive Approximation ADC input channel 1' },
+                    { pin: 12, name: 'A2 (Analog In 2 / ADC2)', desc: '10-bit Successive Approximation ADC input channel 2' },
+                    { pin: 13, name: 'A3 (Analog In 3 / ADC3)', desc: '10-bit Successive Approximation ADC input channel 3' },
+                    { pin: 14, name: 'A4 (Analog In 4 / I2C SDA)', desc: '10-bit ADC channel 4 and hardware I2C Serial Data line' },
+                    { pin: 15, name: 'A5 (Analog In 5 / I2C SCL)', desc: '10-bit ADC channel 5 and hardware I2C Serial Clock line' },
+                    { pin: 16, name: 'D0 (USART RX / GPIO)', desc: 'Serial receiver pin for USB-to-UART bridge / general GPIO' },
+                    { pin: 17, name: 'D1 (USART TX / GPIO)', desc: 'Serial transmitter pin for USB-to-UART bridge / general GPIO' },
+                    { pin: 18, name: 'D3 (PWM ~ / INT1)', desc: '8-bit Timer2 PWM channel B and external hardware interrupt INT1' },
+                    { pin: 19, name: 'D4 (T0 / GPIO)', desc: 'Timer0 external clock input / general digital GPIO' },
+                    { pin: 20, name: 'D5 (PWM ~ / T1)', desc: '8-bit Timer0 PWM channel B and Timer1 clock input' },
+                    { pin: 21, name: 'D6 (PWM ~ / AIN0)', desc: '8-bit Timer0 PWM channel A and Analog Comparator input 0' },
+                    { pin: 22, name: 'D7 (AIN1 / GPIO)', desc: 'Analog Comparator input 1 / general digital GPIO' },
+                    { pin: 23, name: 'D8 (ICP1 / GPIO)', desc: 'Timer1 Input Capture pin / general digital GPIO' },
+                    { pin: 24, name: 'D10 (PWM ~ / SPI SS)', desc: '16-bit Timer1 PWM channel B and hardware SPI Slave Select' },
+                    { pin: 25, name: 'D11 (PWM ~ / SPI MOSI)', desc: '8-bit Timer2 PWM channel A and hardware SPI Master Out' },
+                    { pin: 26, name: 'D12 (SPI MISO / GPIO)', desc: 'Hardware SPI Master In Slave Out / general digital GPIO' },
+                    { pin: 27, name: 'AREF (ADC Reference)', desc: 'External reference voltage input for the ATmega328P ADC (0-5V)' },
+                    { pin: 28, name: 'GND3 (Digital Ground)', desc: 'Digital header reference ground terminal' }
                 ],
                 maxRatings: [
                     { param: 'Recommended Supply Input (VIN / Barrel)', symbol: 'V_IN', max: '7.0 - 12.0', unit: 'V' },
@@ -793,16 +994,39 @@
                 partNumber: 'ESP-WROOM-32 (Espressif Systems)',
                 title: 'Dual-Core 240MHz Wi-Fi & Bluetooth IoT System-on-Chip Module',
                 category: 'IoT Compute / RF Transceiver SoC',
-                package: '38-Pin SMD Module / NodeMCU-32S Form Factor (25.5mm × 18.0mm)',
-                description: 'The ESP-WROOM-32 is a powerful Wi-Fi+BT+BLE MCU module targeting high-performance IoT applications. Built around the dual-core Tensilica Xtensa 32-bit LX6 microprocessor operating up to 240 MHz. Features 520 KB SRAM, 4 MB SPI Flash, integrated antenna switch, RF balun, power amplifier, low-noise receive amplifier, and power management modules.',
+                package: '30-Pin NodeMCU-32S DIP Module (51.0mm × 28.5mm)',
+                description: 'The ESP-WROOM-32 is a powerful Wi-Fi+BT+BLE MCU module targeting high-performance IoT applications. Built around the dual-core Tensilica Xtensa 32-bit LX6 microprocessor operating up to 240 MHz. Features 520 KB SRAM, 4 MB SPI Flash, integrated antenna switch, RF balun, power amplifier, low-noise receive amplifier, and 30 DIP header pins.',
                 pinout: [
                     { pin: 0, name: '3V3 (Power Output)', desc: 'Regulated +3.3V DC power rail from on-board AMS1117-3.3 regulator (600mA peak)' },
                     { pin: 1, name: 'GND (System Ground)', desc: 'Ground return path and RF reference' },
-                    { pin: 2, name: 'VN (GPIO36 / SENSOR_VN)', desc: 'Low-noise 12-bit ADC1_CH0 input (0-3.3V, 4096 levels)' },
-                    { pin: 3, name: 'D2 (GPIO2 / Blue LED)', desc: 'Strapping pin & general GPIO tied to on-board blue status LED' },
-                    { pin: 4, name: 'D4 (GPIO4 / ADC2_CH0)', desc: 'General purpose digital I/O with internal weak pull-up/pull-down' },
-                    { pin: 5, name: 'D18 (GPIO18 / VSPI CLK)', desc: 'Hardware SPI bus clock pin / general digital GPIO' },
-                    { pin: 6, name: 'D21 (GPIO21 / I2C SDA)', desc: 'Hardware I2C serial data interface / open-drain bus' }
+                    { pin: 2, name: 'VN (GPIO39 / SENSOR_VN)', desc: 'Low-noise 12-bit ADC1_CH3 input (0-3.3V, 4096 levels)' },
+                    { pin: 3, name: 'D2 (GPIO2 / Blue LED)', desc: 'Strapping pin & general GPIO tied to on-board blue status LED / Touch 2' },
+                    { pin: 4, name: 'D4 (GPIO4 / ADC2_CH0)', desc: 'General purpose digital I/O / Capacitive Touch 0 / ADC2 channel 0' },
+                    { pin: 5, name: 'D18 (GPIO18 / VSPI CLK)', desc: 'Hardware VSPI bus clock pin / general digital GPIO' },
+                    { pin: 6, name: 'D21 (GPIO21 / I2C SDA)', desc: 'Hardware I2C serial data interface / wire bus' },
+                    { pin: 7, name: 'EN (Chip Enable / Reset)', desc: 'Active-HIGH chip enable with internal weak pull-up' },
+                    { pin: 8, name: 'VP (GPIO36 / SENSOR_VP)', desc: 'Low-noise 12-bit ADC1_CH0 input (0-3.3V range)' },
+                    { pin: 9, name: 'D34 (GPIO34 / ADC1_CH6)', desc: '12-bit ADC input channel 6 (Input-only pin, no pull-up)' },
+                    { pin: 10, name: 'D35 (GPIO35 / ADC1_CH7)', desc: '12-bit ADC input channel 7 (Input-only pin, no pull-up)' },
+                    { pin: 11, name: 'D32 (GPIO32 / ADC1_CH4)', desc: '12-bit ADC input channel 4 / Capacitive Touch 9' },
+                    { pin: 12, name: 'D33 (GPIO33 / ADC1_CH5)', desc: '12-bit ADC input channel 5 / Capacitive Touch 8' },
+                    { pin: 13, name: 'D25 (GPIO25 / DAC1)', desc: '8-bit Digital-to-Analog Converter 1 / ADC2_CH8' },
+                    { pin: 14, name: 'D26 (GPIO26 / DAC2)', desc: '8-bit Digital-to-Analog Converter 2 / ADC2_CH9' },
+                    { pin: 15, name: 'D27 (GPIO27 / Touch 7)', desc: 'General digital GPIO / Capacitive Touch 7' },
+                    { pin: 16, name: 'D14 (GPIO14 / HSPI CLK)', desc: 'Hardware HSPI clock / Capacitive Touch 6' },
+                    { pin: 17, name: 'D12 (GPIO12 / HSPI MISO)', desc: 'Hardware HSPI MISO / Capacitive Touch 5 (Strapping)' },
+                    { pin: 18, name: 'VIN (5V Input / VBUS)', desc: '5V power input from microUSB port (connected to LDO regulator)' },
+                    { pin: 19, name: 'D23 (GPIO23 / VSPI MOSI)', desc: 'Hardware VSPI Master Out Slave In / general GPIO' },
+                    { pin: 20, name: 'D22 (GPIO22 / I2C SCL)', desc: 'Hardware I2C serial clock line' },
+                    { pin: 21, name: 'TX0 (GPIO1 / U0TXD)', desc: 'Primary UART0 serial transmitter / USB programming console' },
+                    { pin: 22, name: 'RX0 (GPIO3 / U0RXD)', desc: 'Primary UART0 serial receiver / USB programming console' },
+                    { pin: 23, name: 'D19 (GPIO19 / VSPI MISO)', desc: 'Hardware VSPI Master In Slave Out / general GPIO' },
+                    { pin: 24, name: 'D5 (GPIO5 / VSPI CS)', desc: 'Hardware VSPI Chip Select / Strapping pin' },
+                    { pin: 25, name: 'TX2 (GPIO17 / U2TXD)', desc: 'Secondary UART2 serial transmitter' },
+                    { pin: 26, name: 'RX2 (GPIO16 / U2RXD)', desc: 'Secondary UART2 serial receiver' },
+                    { pin: 27, name: 'D15 (GPIO15 / HSPI CS)', desc: 'Hardware HSPI Chip Select / Capacitive Touch 3' },
+                    { pin: 28, name: 'GND2 (System Ground 2)', desc: 'Second system ground reference terminal' },
+                    { pin: 29, name: '3V3_2 (Power Output 2)', desc: 'Auxiliary +3.3V DC power rail connection' }
                 ],
                 maxRatings: [
                     { param: 'Operating Logic Voltage (VCC)', symbol: 'V_DD', max: '3.6', unit: 'V' },
@@ -1231,53 +1455,160 @@
                         }
                         vSources.push({ comp, nPos, nNeg, val });
                     } else if (comp.type === 'arduino_uno') {
+                        // Arduino Uno Pin Terminals:
                         // 0:5V, 1:3V3, 2:GND, 3:A0, 4:D13, 5:D9, 6:D2
-                        const nGND = termToNet.get(`${comp.id}_2`);
-                        const n5V  = termToNet.get(`${comp.id}_0`);
-                        const n3V3 = termToNet.get(`${comp.id}_1`);
-                        const nD13 = termToNet.get(`${comp.id}_4`);
-                        const nD9  = termToNet.get(`${comp.id}_5`);
-                        const nD2  = termToNet.get(`${comp.id}_6`);
+                        // 7:VIN, 8:GND2, 9:RESET, 10:IOREF, 11:A1, 12:A2, 13:A3, 14:A4, 15:A5
+                        // 16:D0, 17:D1, 18:D3, 19:D4, 20:D5, 21:D6, 22:D7, 23:D8, 24:D10, 25:D11, 26:D12, 27:AREF, 28:GND3
+                        const nGND1 = termToNet.get(`${comp.id}_2`);
+                        const nGND2 = termToNet.get(`${comp.id}_8`);
+                        const nGND3 = termToNet.get(`${comp.id}_28`);
+                        const refGND = nGND1 !== undefined ? nGND1 : (nGND2 !== undefined ? nGND2 : nGND3);
 
-                        if (n5V !== undefined && nGND !== undefined) {
-                            vSources.push({ comp, nPos: n5V, nNeg: nGND, val: 5.0, rInt: 0.1 });
-                        }
-                        if (n3V3 !== undefined && nGND !== undefined) {
-                            vSources.push({ comp, nPos: n3V3, nNeg: nGND, val: 3.3, rInt: 0.1 });
-                        }
-                        if (nD13 !== undefined && nGND !== undefined) {
-                            let d13Val = 0;
-                            if (comp.d13Mode === 'high') d13Val = 5.0;
-                            else if (comp.d13Mode === 'blink') d13Val = (Math.floor(time * 2) % 2 === 0) ? 5.0 : 0.0;
-                            vSources.push({ comp, nPos: nD13, nNeg: nGND, val: d13Val, rInt: 25.0 });
-                        }
-                        if (nD9 !== undefined && nGND !== undefined) {
-                            const duty = comp.d9Duty !== undefined ? comp.d9Duty : 100;
-                            const d9Val = 5.0 * (duty / 100);
-                            vSources.push({ comp, nPos: nD9, nNeg: nGND, val: d9Val, rInt: 25.0 });
-                        }
-                        if (nD2 !== undefined && nGND !== undefined && (comp.d2Mode === 'high' || comp.d2Mode === 'low')) {
-                            const d2Val = comp.d2Mode === 'high' ? 5.0 : 0.0;
-                            vSources.push({ comp, nPos: nD2, nNeg: nGND, val: d2Val, rInt: 25.0 });
+                        const n5V   = termToNet.get(`${comp.id}_0`);
+                        const n3V3  = termToNet.get(`${comp.id}_1`);
+                        const nVIN  = termToNet.get(`${comp.id}_7`);
+                        const nIOREF= termToNet.get(`${comp.id}_10`);
+                        const nD13  = termToNet.get(`${comp.id}_4`);
+                        const nD9   = termToNet.get(`${comp.id}_5`);
+                        const nD2   = termToNet.get(`${comp.id}_6`);
+
+                        if (refGND !== undefined) {
+                            if (n5V !== undefined) {
+                                vSources.push({ comp, nPos: n5V, nNeg: refGND, val: 5.0, rInt: 0.1 });
+                            }
+                            if (n3V3 !== undefined) {
+                                vSources.push({ comp, nPos: n3V3, nNeg: refGND, val: 3.3, rInt: 0.1 });
+                            }
+                            if (nIOREF !== undefined) {
+                                vSources.push({ comp, nPos: nIOREF, nNeg: refGND, val: 5.0, rInt: 0.1 });
+                            }
+                            if (nVIN !== undefined && comp.vinSupply) {
+                                vSources.push({ comp, nPos: nVIN, nNeg: refGND, val: 9.0, rInt: 0.5 });
+                            }
+                            if (nD13 !== undefined) {
+                                let d13Val = 0;
+                                if (comp.sketchControlled && comp.pinState && comp.pinState['D13'] !== undefined) {
+                                    d13Val = comp.pinState['D13'] ? 5.0 : 0.0;
+                                } else if (comp.d13Mode === 'high') d13Val = 5.0;
+                                else if (comp.d13Mode === 'blink') d13Val = (Math.floor(time * 2) % 2 === 0) ? 5.0 : 0.0;
+                                const mode = (comp.pinModes && comp.pinModes['D13']) || 'OUTPUT';
+                                if (mode === 'OUTPUT') {
+                                    vSources.push({ comp, nPos: nD13, nNeg: refGND, val: d13Val, rInt: 25.0 });
+                                }
+                            }
+                            if (nD9 !== undefined) {
+                                let duty = comp.d9Duty !== undefined ? comp.d9Duty : 100;
+                                if (comp.sketchControlled && comp.pinPwm && comp.pinPwm['D9'] !== undefined) {
+                                    duty = comp.pinPwm['D9'];
+                                } else if (comp.sketchControlled && comp.pinState && comp.pinState['D9'] !== undefined) {
+                                    duty = comp.pinState['D9'] ? 100 : 0;
+                                }
+                                const d9Val = 5.0 * (duty / 100);
+                                const mode = (comp.pinModes && comp.pinModes['D9']) || 'OUTPUT';
+                                if (mode === 'OUTPUT') {
+                                    vSources.push({ comp, nPos: nD9, nNeg: refGND, val: d9Val, rInt: 25.0 });
+                                }
+                            }
+                            if (nD2 !== undefined) {
+                                let d2Val = 0.0;
+                                let isOutput = false;
+                                if (comp.sketchControlled && comp.pinState && comp.pinState['D2'] !== undefined) {
+                                    d2Val = comp.pinState['D2'] ? 5.0 : 0.0;
+                                    isOutput = (comp.pinModes && comp.pinModes['D2']) === 'OUTPUT' || comp.pinModes === undefined;
+                                } else if (comp.d2Mode === 'high' || comp.d2Mode === 'low') {
+                                    d2Val = comp.d2Mode === 'high' ? 5.0 : 0.0;
+                                    isOutput = true;
+                                }
+                                if (isOutput) {
+                                    vSources.push({ comp, nPos: nD2, nNeg: refGND, val: d2Val, rInt: 25.0 });
+                                }
+                            }
+
+                            // Dynamic GPIO drive for remaining pins
+                            const unoGpios = [
+                                { pin: 'D0', idx: 16 }, { pin: 'D1', idx: 17 }, { pin: 'D3', idx: 18 },
+                                { pin: 'D4', idx: 19 }, { pin: 'D5', idx: 20 }, { pin: 'D6', idx: 21 },
+                                { pin: 'D7', idx: 22 }, { pin: 'D8', idx: 23 }, { pin: 'D10', idx: 24 },
+                                { pin: 'D11', idx: 25 }, { pin: 'D12', idx: 26 }
+                            ];
+                            unoGpios.forEach(g => {
+                                const nG = termToNet.get(`${comp.id}_${g.idx}`);
+                                if (nG !== undefined) {
+                                    const mode = (comp.pinModes && comp.pinModes[g.pin]) || 'OUTPUT';
+                                    if (mode === 'OUTPUT' && comp.pinState && comp.pinState[g.pin] !== undefined) {
+                                        const val = comp.pinState[g.pin] ? 5.0 : 0.0;
+                                        vSources.push({ comp, nPos: nG, nNeg: refGND, val, rInt: 25.0 });
+                                    }
+                                }
+                            });
                         }
                     } else if (comp.type === 'esp32') {
+                        // ESP32 NodeMCU Pin Terminals:
                         // 0:3V3, 1:GND, 2:VN, 3:D2, 4:D4, 5:D18, 6:D21
-                        const nGND = termToNet.get(`${comp.id}_1`);
-                        const n3V3 = termToNet.get(`${comp.id}_0`);
-                        const nD2  = termToNet.get(`${comp.id}_3`);
-                        const nD4  = termToNet.get(`${comp.id}_4`);
+                        // 7:EN, 8:VP, 9:D34, 10:D35, 11:D32, 12:D33, 13:D25, 14:D26, 15:D27, 16:D14, 17:D12, 18:VIN
+                        // 19:D23, 20:D22, 21:TX0, 22:RX0, 23:D19, 24:D5, 25:TX2, 26:RX2, 27:D15, 28:GND2, 29:3V3_2
+                        const nGND1 = termToNet.get(`${comp.id}_1`);
+                        const nGND2 = termToNet.get(`${comp.id}_28`);
+                        const refGND = nGND1 !== undefined ? nGND1 : nGND2;
 
-                        if (n3V3 !== undefined && nGND !== undefined) {
-                            vSources.push({ comp, nPos: n3V3, nNeg: nGND, val: 3.3, rInt: 0.1 });
-                        }
-                        if (nD2 !== undefined && nGND !== undefined) {
-                            let d2Val = 0;
-                            if (comp.d2Mode === 'high') d2Val = 3.3;
-                            else if (comp.d2Mode === 'blink') d2Val = (Math.floor(time * 3) % 2 === 0) ? 3.3 : 0.0;
-                            vSources.push({ comp, nPos: nD2, nNeg: nGND, val: d2Val, rInt: 35.0 });
-                        }
-                        if (nD4 !== undefined && nGND !== undefined && comp.d4Mode !== 'input') {
-                            vSources.push({ comp, nPos: nD4, nNeg: nGND, val: 3.3, rInt: 35.0 });
+                        const n3V3   = termToNet.get(`${comp.id}_0`);
+                        const n3V3_2 = termToNet.get(`${comp.id}_29`);
+                        const nVIN   = termToNet.get(`${comp.id}_18`);
+                        const nD2    = termToNet.get(`${comp.id}_3`);
+                        const nD4    = termToNet.get(`${comp.id}_4`);
+
+                        if (refGND !== undefined) {
+                            if (n3V3 !== undefined) {
+                                vSources.push({ comp, nPos: n3V3, nNeg: refGND, val: 3.3, rInt: 0.1 });
+                            }
+                            if (n3V3_2 !== undefined) {
+                                vSources.push({ comp, nPos: n3V3_2, nNeg: refGND, val: 3.3, rInt: 0.1 });
+                            }
+                            if (nVIN !== undefined) {
+                                vSources.push({ comp, nPos: nVIN, nNeg: refGND, val: 5.0, rInt: 0.1 });
+                            }
+                            if (nD2 !== undefined) {
+                                let d2Val = 0;
+                                if (comp.sketchControlled && comp.pinState && comp.pinState['D2'] !== undefined) {
+                                    d2Val = comp.pinState['D2'] ? 3.3 : 0.0;
+                                } else if (comp.d2Mode === 'high') d2Val = 3.3;
+                                else if (comp.d2Mode === 'blink') d2Val = (Math.floor(time * 3) % 2 === 0) ? 3.3 : 0.0;
+                                const mode = (comp.pinModes && comp.pinModes['D2']) || 'OUTPUT';
+                                if (mode === 'OUTPUT') {
+                                    vSources.push({ comp, nPos: nD2, nNeg: refGND, val: d2Val, rInt: 35.0 });
+                                }
+                            }
+                            if (nD4 !== undefined) {
+                                let d4Val = 3.3;
+                                let isOut = comp.d4Mode !== 'input';
+                                if (comp.sketchControlled && comp.pinState && comp.pinState['D4'] !== undefined) {
+                                    d4Val = comp.pinState['D4'] ? 3.3 : 0.0;
+                                    isOut = (comp.pinModes && comp.pinModes['D4']) !== 'INPUT';
+                                }
+                                if (isOut) {
+                                    vSources.push({ comp, nPos: nD4, nNeg: refGND, val: d4Val, rInt: 35.0 });
+                                }
+                            }
+
+                            // Dynamic GPIO drive for other ESP32 pins
+                            const espGpios = [
+                                { pin: 'D18', idx: 5 }, { pin: 'D21', idx: 6 }, { pin: 'D23', idx: 19 },
+                                { pin: 'D22', idx: 20 }, { pin: 'TX0', idx: 21 }, { pin: 'RX0', idx: 22 },
+                                { pin: 'D19', idx: 23 }, { pin: 'D5', idx: 24 }, { pin: 'TX2', idx: 25 },
+                                { pin: 'RX2', idx: 26 }, { pin: 'D15', idx: 27 }, { pin: 'D25', idx: 13 },
+                                { pin: 'D26', idx: 14 }, { pin: 'D27', idx: 15 }, { pin: 'D14', idx: 16 },
+                                { pin: 'D12', idx: 17 }
+                            ];
+                            espGpios.forEach(g => {
+                                const nG = termToNet.get(`${comp.id}_${g.idx}`);
+                                if (nG !== undefined) {
+                                    const mode = (comp.pinModes && comp.pinModes[g.pin]) || 'OUTPUT';
+                                    if (mode === 'OUTPUT' && comp.pinState && comp.pinState[g.pin] !== undefined) {
+                                        const val = comp.pinState[g.pin] ? 3.3 : 0.0;
+                                        vSources.push({ comp, nPos: nG, nNeg: refGND, val, rInt: 35.0 });
+                                    }
+                                }
+                            });
                         }
                     } else if (comp.type === 'pir_sensor') {
                         // 0:VCC, 1:OUT, 2:GND
@@ -1423,13 +1754,31 @@
                                 addConductance(nC, nE, 1e-8);
                             }
                         } else if (comp.type === 'arduino_uno') {
-                            const nGND = termToNet.get(`${comp.id}_2`);
-                            const nA0  = termToNet.get(`${comp.id}_3`);
-                            if (nA0 !== undefined && nGND !== undefined) addConductance(nA0, nGND, 1e-7);
+                            const nGND1 = termToNet.get(`${comp.id}_2`);
+                            const nGND2 = termToNet.get(`${comp.id}_8`);
+                            const nGND3 = termToNet.get(`${comp.id}_28`);
+                            if (nGND1 !== undefined && nGND2 !== undefined) addConductance(nGND1, nGND2, 200);
+                            if (nGND1 !== undefined && nGND3 !== undefined) addConductance(nGND1, nGND3, 200);
+                            const refGND = nGND1 !== undefined ? nGND1 : (nGND2 !== undefined ? nGND2 : nGND3);
+                            if (refGND !== undefined) {
+                                // 10 MΩ input impedance on all 6 ADC channels (A0:3, A1:11, A2:12, A3:13, A4:14, A5:15)
+                                [3, 11, 12, 13, 14, 15].forEach(termIdx => {
+                                    const nA = termToNet.get(`${comp.id}_${termIdx}`);
+                                    if (nA !== undefined) addConductance(nA, refGND, 1e-7);
+                                });
+                            }
                         } else if (comp.type === 'esp32') {
-                            const nGND = termToNet.get(`${comp.id}_1`);
-                            const nVN  = termToNet.get(`${comp.id}_2`);
-                            if (nVN !== undefined && nGND !== undefined) addConductance(nVN, nGND, 1e-7);
+                            const nGND1 = termToNet.get(`${comp.id}_1`);
+                            const nGND2 = termToNet.get(`${comp.id}_28`);
+                            if (nGND1 !== undefined && nGND2 !== undefined) addConductance(nGND1, nGND2, 200);
+                            const refGND = nGND1 !== undefined ? nGND1 : nGND2;
+                            if (refGND !== undefined) {
+                                // 10 MΩ input impedance on SAR ADC channels (VN:2, VP:8, D34:9, D35:10, D32:11, D33:12)
+                                [2, 8, 9, 10, 11, 12].forEach(termIdx => {
+                                    const nA = termToNet.get(`${comp.id}_${termIdx}`);
+                                    if (nA !== undefined) addConductance(nA, refGND, 1e-7);
+                                });
+                            }
                         } else if (comp.type === 'dht11') {
                             const nVCC  = termToNet.get(`${comp.id}_0`);
                             const nDATA = termToNet.get(`${comp.id}_1`);
@@ -1592,26 +1941,49 @@
                             if (vSources[k].comp.id === comp.id) totalI += Math.abs(srcCurrents[k]);
                         }
                         current = totalI;
-                        const nGND = termToNet.get(`${comp.id}_2`);
-                        const nA0  = termToNet.get(`${comp.id}_3`);
-                        const vGND = voltages[nGND] || 0;
-                        const vA0  = (voltages[nA0] || 0) - vGND;
-                        comp.adcA0 = Math.min(1023, Math.max(0, Math.round((Math.max(0, vA0) / 5.0) * 1023)));
-                        comp.vA0   = Math.max(0, vA0);
-                        comp.d13Active = (comp.d13Mode === 'high') || (comp.d13Mode === 'blink' && (Math.floor(time * 2) % 2 === 0));
+                        const nGND1 = termToNet.get(`${comp.id}_2`);
+                        const nGND2 = termToNet.get(`${comp.id}_8`);
+                        const nGND3 = termToNet.get(`${comp.id}_28`);
+                        const refGND = nGND1 !== undefined ? nGND1 : (nGND2 !== undefined ? nGND2 : nGND3);
+                        const vGND = voltages[refGND] || 0;
+
+                        // Sample all 6 Analog ADC Channels (A0:3, A1:11, A2:12, A3:13, A4:14, A5:15)
+                        comp.adc = {};
+                        const unoAdcMap = { A0: 3, A1: 11, A2: 12, A3: 13, A4: 14, A5: 15 };
+                        for (const [ch, idx] of Object.entries(unoAdcMap)) {
+                            const nA = termToNet.get(`${comp.id}_${idx}`);
+                            const vA = (voltages[nA] || 0) - vGND;
+                            const vClamped = Math.max(0, vA);
+                            const code = Math.min(1023, Math.max(0, Math.round((vClamped / 5.0) * 1023)));
+                            comp.adc[ch] = { v: vClamped, code };
+                        }
+                        comp.adcA0 = comp.adc.A0.code;
+                        comp.vA0   = comp.adc.A0.v;
+                        comp.d13Active = comp.sketchControlled ? !!(comp.pinState && comp.pinState['D13']) : ((comp.d13Mode === 'high') || (comp.d13Mode === 'blink' && (Math.floor(time * 2) % 2 === 0)));
                     } else if (comp.type === 'esp32') {
                         let totalI = 0;
                         for (let k = 0; k < vSources.length; k++) {
                             if (vSources[k].comp.id === comp.id) totalI += Math.abs(srcCurrents[k]);
                         }
                         current = totalI;
-                        const nGND = termToNet.get(`${comp.id}_1`);
-                        const nVN  = termToNet.get(`${comp.id}_2`);
-                        const vGND = voltages[nGND] || 0;
-                        const vVN  = (voltages[nVN] || 0) - vGND;
-                        comp.adcVN = Math.min(4095, Math.max(0, Math.round((Math.max(0, vVN) / 3.3) * 4095)));
-                        comp.vVN   = Math.max(0, vVN);
-                        comp.d2Active = (comp.d2Mode === 'high') || (comp.d2Mode === 'blink' && (Math.floor(time * 3) % 2 === 0));
+                        const nGND1 = termToNet.get(`${comp.id}_1`);
+                        const nGND2 = termToNet.get(`${comp.id}_28`);
+                        const refGND = nGND1 !== undefined ? nGND1 : nGND2;
+                        const vGND = voltages[refGND] || 0;
+
+                        // Sample 6 SAR ADC Channels (VN:2, VP:8, D34:9, D35:10, D32:11, D33:12)
+                        comp.espAdc = {};
+                        const espAdcMap = { VN: 2, VP: 8, D34: 9, D35: 10, D32: 11, D33: 12 };
+                        for (const [ch, idx] of Object.entries(espAdcMap)) {
+                            const nA = termToNet.get(`${comp.id}_${idx}`);
+                            const vA = (voltages[nA] || 0) - vGND;
+                            const vClamped = Math.max(0, vA);
+                            const code = Math.min(4095, Math.max(0, Math.round((vClamped / 3.3) * 4095)));
+                            comp.espAdc[ch] = { v: vClamped, code };
+                        }
+                        comp.adcVN = comp.espAdc.VN.code;
+                        comp.vVN   = comp.espAdc.VN.v;
+                        comp.d2Active = comp.sketchControlled ? !!(comp.pinState && comp.pinState['D2']) : ((comp.d2Mode === 'high') || (comp.d2Mode === 'blink' && (Math.floor(time * 3) % 2 === 0)));
                     } else if (comp.type === 'ldr') {
                         const r = comp.calculatedResistance || 10000;
                         current = (v0 - v1) / r;
@@ -2393,6 +2765,15 @@ Generated by ElectroSim Pro Engineering CAD Engine
                     }
                     closeDatasheetViewer();
                     closeCustomComponentModal();
+                    closeEmbeddedIDE();
+                } else if (e.key === 'F7') {
+                    e.preventDefault();
+                    const modal = document.getElementById('embedded-ide-modal');
+                    if (modal && modal.classList.contains('hidden')) {
+                        openEmbeddedIDE();
+                    } else {
+                        closeEmbeddedIDE();
+                    }
                 } else if (e.ctrlKey || e.metaKey) {
                     if (e.key === 'z' || e.key === 'Z') {
                         e.preventDefault();
@@ -2476,8 +2857,10 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 const r = rotatePoint(wx - c.x, wy - c.y, -(c.rotation || 0));
                 let hw = 35;
                 let hh = 25;
-                if (c.type === 'arduino_uno' || c.type === 'esp32') {
-                    hw = 65; hh = 45;
+                if (c.type === 'arduino_uno') {
+                    hw = 115; hh = 70;
+                } else if (c.type === 'esp32') {
+                    hw = 75; hh = 125;
                 } else if (c.type === 'relay') {
                     hw = 45; hh = 35;
                 } else if (c.type === 'hc_sr04') {
@@ -2503,23 +2886,75 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 base = [{ x: 0, y: -20, nx: 0, ny: -1 }];
             } else if (comp.type === 'arduino_uno') {
                 base = [
-                    { x: -60, y: -20, nx: -1, ny: 0 },  // 0: 5V
-                    { x: -60, y: 0,   nx: -1, ny: 0 },  // 1: 3V3
-                    { x: -60, y: 20,  nx: -1, ny: 0 },  // 2: GND
-                    { x: -20, y: 40,  nx: 0,  ny: 1 },  // 3: A0 (ADC Input)
-                    { x: 60,  y: -20, nx: 1,  ny: 0 },  // 4: D13 (Built-in LED)
-                    { x: 60,  y: 0,   nx: 1,  ny: 0 },  // 5: D9 (PWM)
-                    { x: 60,  y: 20,  nx: 1,  ny: 0 }   // 6: D2 (Interrupt)
+                    // Power & Critical GPIO (0-6) - PRESERVES BACKWARD COMPATIBILITY
+                    { x: -52, y: 65,  nx: 0,  ny: 1,  name: '5V',    desc: 'Regulated +5.0V Output' },
+                    { x: -63, y: 65,  nx: 0,  ny: 1,  name: '3V3',   desc: 'Regulated +3.3V Output' },
+                    { x: -41, y: 65,  nx: 0,  ny: 1,  name: 'GND',   desc: 'System Ground (Power 1)' },
+                    { x: 30,  y: 65,  nx: 0,  ny: 1,  name: 'A0',    desc: 'Analog In 0 (10-bit ADC)' },
+                    { x: -63, y: -65, nx: 0,  ny: -1, name: 'D13',   desc: 'Digital 13 (SCK / "L" LED)' },
+                    { x: -19, y: -65, nx: 0,  ny: -1, name: 'D9',    desc: 'Digital 9 (PWM ~)' },
+                    { x: 63,  y: -65, nx: 0,  ny: -1, name: 'D2',    desc: 'Digital 2 (INT0 Interrupt)' },
+                    // Power Rails (7-10)
+                    { x: -19, y: 65,  nx: 0,  ny: 1,  name: 'VIN',   desc: 'Raw DC Input (7-12V)' },
+                    { x: -30, y: 65,  nx: 0,  ny: 1,  name: 'GND2',  desc: 'System Ground (Power 2)' },
+                    { x: -74, y: 65,  nx: 0,  ny: 1,  name: 'RESET', desc: 'Master Reset (Active LOW)' },
+                    { x: -85, y: 65,  nx: 0,  ny: 1,  name: 'IOREF', desc: 'I/O Reference Voltage (5V)' },
+                    // Analog Inputs A1-A5 (11-15)
+                    { x: 41,  y: 65,  nx: 0,  ny: 1,  name: 'A1',    desc: 'Analog In 1 (10-bit ADC)' },
+                    { x: 52,  y: 65,  nx: 0,  ny: 1,  name: 'A2',    desc: 'Analog In 2 (10-bit ADC)' },
+                    { x: 63,  y: 65,  nx: 0,  ny: 1,  name: 'A3',    desc: 'Analog In 3 (10-bit ADC)' },
+                    { x: 74,  y: 65,  nx: 0,  ny: 1,  name: 'A4',    desc: 'Analog In 4 / I2C SDA' },
+                    { x: 85,  y: 65,  nx: 0,  ny: 1,  name: 'A5',    desc: 'Analog In 5 / I2C SCL' },
+                    // Digital I/O Pins D0-D12 & AREF (16-28)
+                    { x: 85,  y: -65, nx: 0,  ny: -1, name: 'D0',    desc: 'Digital 0 / USART RX' },
+                    { x: 74,  y: -65, nx: 0,  ny: -1, name: 'D1',    desc: 'Digital 1 / USART TX' },
+                    { x: 52,  y: -65, nx: 0,  ny: -1, name: 'D3',    desc: 'Digital 3 (PWM ~ / INT1)' },
+                    { x: 41,  y: -65, nx: 0,  ny: -1, name: 'D4',    desc: 'Digital 4 (GPIO)' },
+                    { x: 30,  y: -65, nx: 0,  ny: -1, name: 'D5',    desc: 'Digital 5 (PWM ~)' },
+                    { x: 19,  y: -65, nx: 0,  ny: -1, name: 'D6',    desc: 'Digital 6 (PWM ~)' },
+                    { x: 8,   y: -65, nx: 0,  ny: -1, name: 'D7',    desc: 'Digital 7 (GPIO)' },
+                    { x: -8,  y: -65, nx: 0,  ny: -1, name: 'D8',    desc: 'Digital 8 (GPIO)' },
+                    { x: -30, y: -65, nx: 0,  ny: -1, name: 'D10',   desc: 'Digital 10 (PWM ~ / SPI SS)' },
+                    { x: -41, y: -65, nx: 0,  ny: -1, name: 'D11',   desc: 'Digital 11 (PWM ~ / SPI MOSI)' },
+                    { x: -52, y: -65, nx: 0,  ny: -1, name: 'D12',   desc: 'Digital 12 (SPI MISO)' },
+                    { x: -85, y: -65, nx: 0,  ny: -1, name: 'AREF',  desc: 'Analog ADC Reference' },
+                    { x: -74, y: -65, nx: 0,  ny: -1, name: 'GND3',  desc: 'Digital Ground' }
                 ];
             } else if (comp.type === 'esp32') {
                 base = [
-                    { x: -60, y: -20, nx: -1, ny: 0 },  // 0: 3V3
-                    { x: -60, y: 0,   nx: -1, ny: 0 },  // 1: GND
-                    { x: -60, y: 20,  nx: -1, ny: 0 },  // 2: VN (ADC1_CH0)
-                    { x: 60,  y: -20, nx: 1,  ny: 0 },  // 3: D2 (Blue LED)
-                    { x: 60,  y: 0,   nx: 1,  ny: 0 },  // 4: D4 (GPIO4)
-                    { x: 60,  y: 20,  nx: 1,  ny: 0 },  // 5: D18 (GPIO18 / SPI)
-                    { x: 20,  y: 40,  nx: 0,  ny: 1 }   // 6: D21 (GPIO21 / I2C)
+                    // Critical Pins (0-6) - PRESERVES BACKWARD COMPATIBILITY
+                    { x: -70, y: -98, nx: -1, ny: 0, name: '3V3',   desc: 'Regulated +3.3V Output' },
+                    { x: -70, y: 84,  nx: -1, ny: 0, name: 'GND',   desc: 'System Ground' },
+                    { x: -70, y: -56, nx: -1, ny: 0, name: 'VN',    desc: 'GPIO39 / ADC1_CH3 (Sensor VN)' },
+                    { x: 70,  y: 56,  nx: 1,  ny: 0, name: 'D2',    desc: 'GPIO2 / Blue Status LED / ADC2_2' },
+                    { x: 70,  y: 42,  nx: 1,  ny: 0, name: 'D4',    desc: 'GPIO4 / ADC2_CH0' },
+                    { x: 70,  y: -14, nx: 1,  ny: 0, name: 'D18',   desc: 'GPIO18 / VSPI CLK' },
+                    { x: 70,  y: -42, nx: 1,  ny: 0, name: 'D21',   desc: 'GPIO21 / I2C SDA' },
+                    // Left Header Remaining Pins (7-18)
+                    { x: -70, y: -84, nx: -1, ny: 0, name: 'EN',    desc: 'Chip Enable / Reset (Pull-up)' },
+                    { x: -70, y: -70, nx: -1, ny: 0, name: 'VP',    desc: 'GPIO36 / ADC1_CH0 (Sensor VP)' },
+                    { x: -70, y: -42, nx: -1, ny: 0, name: 'D34',   desc: 'GPIO34 / ADC1_CH6 (Input Only)' },
+                    { x: -70, y: -28, nx: -1, ny: 0, name: 'D35',   desc: 'GPIO35 / ADC1_CH7 (Input Only)' },
+                    { x: -70, y: -14, nx: -1, ny: 0, name: 'D32',   desc: 'GPIO32 / ADC1_CH4 / Touch 9' },
+                    { x: -70, y: 0,   nx: -1, ny: 0, name: 'D33',   desc: 'GPIO33 / ADC1_CH5 / Touch 8' },
+                    { x: -70, y: 14,  nx: -1, ny: 0, name: 'D25',   desc: 'GPIO25 / DAC1 / ADC2_CH8' },
+                    { x: -70, y: 28,  nx: -1, ny: 0, name: 'D26',   desc: 'GPIO26 / DAC2 / ADC2_CH9' },
+                    { x: -70, y: 42,  nx: -1, ny: 0, name: 'D27',   desc: 'GPIO27 / ADC2_CH7 / Touch 7' },
+                    { x: -70, y: 56,  nx: -1, ny: 0, name: 'D14',   desc: 'GPIO14 / ADC2_CH6 / HSPI CLK' },
+                    { x: -70, y: 70,  nx: -1, ny: 0, name: 'D12',   desc: 'GPIO12 / ADC2_CH5 / HSPI MISO' },
+                    { x: -70, y: 98,  nx: -1, ny: 0, name: 'VIN',   desc: '5V Power Input / USB VBUS' },
+                    // Right Header Remaining Pins (19-29)
+                    { x: 70,  y: -98, nx: 1,  ny: 0, name: 'D23',   desc: 'GPIO23 / VSPI MOSI' },
+                    { x: 70,  y: -84, nx: 1,  ny: 0, name: 'D22',   desc: 'GPIO22 / I2C SCL' },
+                    { x: 70,  y: -70, nx: 1,  ny: 0, name: 'TX0',   desc: 'GPIO1 / U0TXD (Debug UART)' },
+                    { x: 70,  y: -56, nx: 1,  ny: 0, name: 'RX0',   desc: 'GPIO3 / U0RXD (Debug UART)' },
+                    { x: 70,  y: -28, nx: 1,  ny: 0, name: 'D19',   desc: 'GPIO19 / VSPI MISO' },
+                    { x: 70,  y: 0,   nx: 1,  ny: 0, name: 'D5',    desc: 'GPIO5 / VSPI CS' },
+                    { x: 70,  y: 14,  nx: 1,  ny: 0, name: 'TX2',   desc: 'GPIO17 / U2TXD' },
+                    { x: 70,  y: 28,  nx: 1,  ny: 0, name: 'RX2',   desc: 'GPIO16 / U2RXD' },
+                    { x: 70,  y: 70,  nx: 1,  ny: 0, name: 'D15',   desc: 'GPIO15 / ADC2_CH3 / HSPI CS' },
+                    { x: 70,  y: 84,  nx: 1,  ny: 0, name: 'GND2',  desc: 'System Ground (Right 2)' },
+                    { x: 70,  y: 98,  nx: 1,  ny: 0, name: '3V3_2', desc: 'Regulated +3.3V Output 2' }
                 ];
             } else if (comp.type === 'dht11') {
                 base = [
@@ -2575,17 +3010,17 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 ];
             }
 
-            return base.map(p => {
+            return base.map((p, idx) => {
                 const rPos = rotatePoint(p.x, p.y, rot);
                 const rNorm = rotatePoint(p.nx, p.ny, rot);
                 return {
                     x: comp.x + rPos.x,
                     y: comp.y + rPos.y,
                     nx: Math.sign(rNorm.x),
-                    ny: Math.sign(rNorm.y)
+                    ny: Math.sign(rNorm.y),
+                    name: p.name || `Pin ${idx}`,
+                    desc: p.desc || ''
                 };
-
-        
             });
         }
 
@@ -2595,8 +3030,10 @@ Generated by ElectroSim Pro Engineering CAD Engine
             const isRot = (rot === 90 || rot === 270);
             let baseHw = 30;
             let baseHh = 20;
-            if (comp.type === 'arduino_uno' || comp.type === 'esp32') {
-                baseHw = 60; baseHh = 40;
+            if (comp.type === 'arduino_uno') {
+                baseHw = 110; baseHh = 65;
+            } else if (comp.type === 'esp32') {
+                baseHw = 70; baseHh = 120;
             } else if (comp.type === 'relay') {
                 baseHw = 40; baseHh = 30;
             } else if (comp.type === 'hc_sr04') {
@@ -2872,7 +3309,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
 
         // --- TERMINAL DETECTION & WIRE CONNECTION ---
         function findTerminalAt(wx, wy) {
-            const hitRadius = Math.max(18, 22 / (state.zoom || 1));
+            const hitRadius = Math.max(9, 12 / (state.zoom || 1));
             let best = null;
             let minDist = hitRadius;
             for (let comp of state.components) {
@@ -2882,7 +3319,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
                     const dist = Math.hypot(t.x - wx, t.y - wy);
                     if (dist < minDist) {
                         minDist = dist;
-                        best = { compId: comp.id, termIndex: i, x: t.x, y: t.y, nx: t.nx, ny: t.ny };
+                        best = { compId: comp.id, termIndex: i, x: t.x, y: t.y, nx: t.nx, ny: t.ny, name: t.name, desc: t.desc };
                     }
                 }
             }
@@ -3211,6 +3648,11 @@ Generated by ElectroSim Pro Engineering CAD Engine
 
         function clearCanvas() {
             if (confirm('Clear entire circuit?')) {
+                for (let c of state.components) {
+                    if (c.sketchRunning && typeof stopIdeSketchForBoard === 'function') {
+                        stopIdeSketchForBoard(c.id);
+                    }
+                }
                 state.components = [];
                 state.wires = [];
                 state.selectedId = null;
@@ -3416,6 +3858,9 @@ Generated by ElectroSim Pro Engineering CAD Engine
             for (let c of state.components) {
                 c.prevV = 0;
                 c.prevI = 0;
+                if (c.sketchRunning && typeof stopIdeSketchForBoard === 'function') {
+                    stopIdeSketchForBoard(c.id);
+                }
             }
             showToast('Simulation reset', 'info');
         }
@@ -3477,6 +3922,11 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 drawComponent(comp);
             }
 
+            // Draw interactive terminal hover tooltip badge
+            if (state.hoveredTerminal && state.hoveredTerminal.name) {
+                drawTerminalTooltip(state.hoveredTerminal);
+            }
+
             ctx.restore();
 
             // Canvas Empty Guidance Watermark
@@ -3492,6 +3942,40 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 ctx.fillText('Select a circuit preset above or drag components from the palette to begin schematic design', canvas.width / 2, canvas.height / 2 + 12);
                 ctx.restore();
             }
+        }
+
+        function drawTerminalTooltip(t) {
+            ctx.save();
+            ctx.font = 'bold 9px JetBrains Mono';
+            const nameText = t.name || 'Pin';
+            const descText = t.desc || '';
+            const textWidth = Math.max(ctx.measureText(nameText).width, ctx.measureText(descText).width);
+            const boxW = Math.max(70, textWidth + 14);
+            const boxH = descText ? 26 : 16;
+            let bx = t.x + 10;
+            let by = t.y - 14;
+            if (t.nx === -1) bx = t.x - boxW - 10;
+            if (t.ny === 1) by = t.y + 10;
+            if (t.ny === -1) by = t.y - boxH - 10;
+
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(bx, by, boxW, boxH, 4);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#38bdf8';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(nameText, bx + 6, by + 4);
+            if (descText) {
+                ctx.font = '7.5px JetBrains Mono';
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillText(descText.slice(0, 32), bx + 6, by + 14);
+            }
+            ctx.restore();
         }
 
         function drawGrid() {
@@ -3949,152 +4433,298 @@ Generated by ElectroSim Pro Engineering CAD Engine
                 ctx.moveTo(-4, 10); ctx.lineTo(4, 10);
                 ctx.stroke();
             } else if (comp.type === 'arduino_uno') {
-                // Arduino Uno Board Graphic
+                // Arduino Uno R3 Authentic Board Graphic (220 x 130)
                 ctx.fillStyle = '#005f6b';
                 ctx.beginPath();
-                ctx.roundRect(-58, -38, 116, 76, 6);
+                ctx.roundRect(-108, -63, 216, 126, 8);
                 ctx.fill();
 
-                // Gold edge traces
+                // Gold ground edge border
                 ctx.strokeStyle = '#eab308';
                 ctx.lineWidth = 1;
-                ctx.strokeRect(-56, -36, 112, 72);
+                ctx.strokeRect(-105, -60, 210, 120);
 
                 // Silver USB-B connector on left edge
                 ctx.fillStyle = '#94a3b8';
-                ctx.fillRect(-58, -14, 12, 28);
+                ctx.fillRect(-110, -28, 20, 26);
                 ctx.fillStyle = '#334155';
-                ctx.fillRect(-54, -8, 6, 16);
+                ctx.fillRect(-106, -23, 12, 16);
 
-                // Black DC power jack
+                // Black DC power barrel jack (bottom-left)
                 ctx.fillStyle = '#0f172a';
-                ctx.fillRect(-58, 16, 14, 18);
+                ctx.fillRect(-110, 12, 22, 28);
+                ctx.fillStyle = '#475569';
+                ctx.fillRect(-96, 20, 8, 12);
 
-                // ATmega328P DIP IC Chip
+                // ATmega328P DIP-28 IC Chip
                 ctx.fillStyle = '#1e293b';
-                ctx.fillRect(-12, -26, 44, 22);
+                ctx.fillRect(-45, -16, 90, 28);
                 ctx.strokeStyle = '#475569';
-                ctx.strokeRect(-12, -26, 44, 22);
-                // IC notch
+                ctx.strokeRect(-45, -16, 90, 28);
+                // IC notch on left
                 ctx.beginPath();
-                ctx.arc(-12, -15, 3, -Math.PI / 2, Math.PI / 2);
+                ctx.arc(-45, -2, 4, -Math.PI / 2, Math.PI / 2);
                 ctx.fillStyle = '#0f172a';
                 ctx.fill();
 
                 // IC pin legs
                 ctx.fillStyle = '#cbd5e1';
-                for (let px = -8; px <= 26; px += 6) {
-                    ctx.fillRect(px, -29, 3, 3);
-                    ctx.fillRect(px, -4, 3, 3);
+                for (let px = -38; px <= 38; px += 6) {
+                    ctx.fillRect(px, -20, 3, 4);
+                    ctx.fillRect(px, 12, 3, 4);
                 }
 
-                // Silk text
-                ctx.fillStyle = '#ffffff';
+                // IC Silkscreen
+                ctx.fillStyle = '#e2e8f0';
                 ctx.font = 'bold 8px JetBrains Mono';
                 ctx.textAlign = 'center';
-                ctx.fillText('ARDUINO', 10, -12);
-                ctx.fillStyle = '#38bdf8';
+                ctx.fillText('ATmega328P-PU', 0, -1);
                 ctx.font = '6px JetBrains Mono';
-                ctx.fillText('UNO R3', 10, 4);
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillText('MICROCHIP / AVR', 0, 8);
 
-                // Power ON LED (green)
-                ctx.fillStyle = '#22c55e';
+                // Board Silkscreen Text
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText('ARDUINO', 0, -32);
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = 'bold 8px JetBrains Mono';
+                ctx.fillText('UNO R3', 0, -22);
+
+                // 16MHz Crystal Resonator
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillRect(-70, -4, 14, 8);
+                ctx.strokeStyle = '#64748b';
+                ctx.strokeRect(-70, -4, 14, 8);
+
+                // Reset tactile button
+                ctx.fillStyle = '#ef4444';
                 ctx.beginPath();
-                ctx.arc(-24, -18, 2.5, 0, Math.PI * 2);
+                ctx.arc(-80, -40, 4, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '5px JetBrains Mono';
+                ctx.fillText('RESET', -80, -47);
 
-                // Built-in 'L' LED (amber) tied to D13
+                // Status LEDs
+                // ON LED (green)
+                ctx.fillStyle = '#22c55e';
+                ctx.shadowColor = '#22c55e';
+                ctx.shadowBlur = 6;
+                ctx.beginPath(); ctx.arc(-55, -34, 2.5, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#86efac';
+                ctx.font = '5px JetBrains Mono';
+                ctx.fillText('ON', -55, -28);
+
+                // 'L' LED (amber) tied to D13
                 const lLit = comp.d13Active;
                 ctx.fillStyle = lLit ? '#fbbf24' : '#78350f';
                 if (lLit) {
                     ctx.shadowColor = '#fbbf24';
                     ctx.shadowBlur = 8;
                 }
-                ctx.beginPath();
-                ctx.arc(-24, 0, 3, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(-63, -48, 3, 0, Math.PI * 2); ctx.fill();
                 ctx.shadowBlur = 0;
+                ctx.fillStyle = '#fde68a';
+                ctx.fillText('L', -63, -40);
 
-                // Pin text markings next to pins
-                ctx.font = 'bold 7px JetBrains Mono';
-                ctx.fillStyle = '#e2e8f0';
-                ctx.textAlign = 'left';
-                ctx.fillText('5V', -54, -18);
-                ctx.fillText('3V3', -54, 2);
-                ctx.fillText('GND', -54, 22);
+                // TX/RX LEDs (yellow)
+                ctx.fillStyle = '#ca8a04';
+                ctx.beginPath(); ctx.arc(-45, -48, 2, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(-35, -48, 2, 0, Math.PI * 2); ctx.fill();
+                ctx.font = '5px JetBrains Mono';
+                ctx.fillText('TX', -45, -40);
+                ctx.fillText('RX', -35, -40);
+
+                // --- TOP DIGITAL HEADER (16 Pins) ---
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-92, -64, 184, 10);
+                ctx.strokeStyle = '#334155';
+                ctx.strokeRect(-92, -64, 184, 10);
+
+                // Top Header Silkscreen Labels
+                ctx.font = 'bold 5.5px JetBrains Mono';
+                ctx.fillStyle = '#f1f5f9';
                 ctx.textAlign = 'center';
-                ctx.fillText('A0', -20, 34);
+                const topLabels = [
+                    { name: 'REF', x: -85 }, { name: 'GND', x: -74 }, { name: '13', x: -63 },
+                    { name: '12', x: -52 }, { name: '~11', x: -41 }, { name: '~10', x: -30 },
+                    { name: '~9', x: -19 }, { name: '8', x: -8 },
+                    { name: '7', x: 8 }, { name: '~6', x: 19 }, { name: '~5', x: 30 },
+                    { name: '4', x: 41 }, { name: '~3', x: 52 }, { name: '2', x: 63 },
+                    { name: 'TX', x: 74 }, { name: 'RX', x: 85 }
+                ];
+                topLabels.forEach(l => {
+                    ctx.fillText(l.name, l.x, -49);
+                });
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillText('DIGITAL (PWM~)', 20, -38);
 
-                ctx.textAlign = 'right';
-                ctx.fillText('D13', 54, -18);
-                ctx.fillText('D9', 54, 2);
-                ctx.fillText('D2', 54, 22);
+                // --- BOTTOM POWER & ANALOG HEADERS ---
+                // Power Header (left)
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-92, 54, 80, 10);
+                ctx.strokeStyle = '#334155';
+                ctx.strokeRect(-92, 54, 80, 10);
+                const pwrLabels = [
+                    { name: 'IO', x: -85 }, { name: 'RST', x: -74 }, { name: '3V3', x: -63 },
+                    { name: '5V', x: -52 }, { name: 'GND', x: -41 }, { name: 'GND', x: -30 },
+                    { name: 'VIN', x: -19 }
+                ];
+                ctx.font = 'bold 5.5px JetBrains Mono';
+                ctx.fillStyle = '#f1f5f9';
+                pwrLabels.forEach(l => {
+                    ctx.fillText(l.name, l.x, 50);
+                });
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillStyle = '#eab308';
+                ctx.fillText('POWER', -52, 38);
+
+                // Analog In Header (right)
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(24, 54, 68, 10);
+                ctx.strokeStyle = '#334155';
+                ctx.strokeRect(24, 54, 68, 10);
+                const anaLabels = [
+                    { name: 'A0', x: 30 }, { name: 'A1', x: 41 }, { name: 'A2', x: 52 },
+                    { name: 'A3', x: 63 }, { name: 'A4', x: 74 }, { name: 'A5', x: 85 }
+                ];
+                ctx.font = 'bold 5.5px JetBrains Mono';
+                ctx.fillStyle = '#f1f5f9';
+                anaLabels.forEach(l => {
+                    ctx.fillText(l.name, l.x, 50);
+                });
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillStyle = '#34d399';
+                ctx.fillText('ANALOG IN', 57, 38);
 
             } else if (comp.type === 'esp32') {
-                // ESP32 NodeMCU Board Graphic
+                // ESP32 NodeMCU Authentic 30-Pin Board Graphic (140 x 240)
                 ctx.fillStyle = '#0f172a';
                 ctx.beginPath();
-                ctx.roundRect(-58, -38, 116, 76, 6);
+                ctx.roundRect(-68, -118, 136, 236, 8);
                 ctx.fill();
 
-                // Gold mounting holes
+                // Gold mounting holes at 4 corners
                 ctx.fillStyle = '#eab308';
-                ctx.beginPath(); ctx.arc(-50, -30, 2.5, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.arc(50, -30, 2.5, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.arc(-50, 30, 2.5, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.arc(50, 30, 2.5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(-58, -108, 3, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(58, -108, 3, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(-58, 108, 3, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(58, 108, 3, 0, Math.PI * 2); ctx.fill();
 
-                // Meander PCB antenna at top
+                // Meander PCB Antenna at top
                 ctx.strokeStyle = '#d97706';
-                ctx.lineWidth = 1.2;
+                ctx.lineWidth = 1.5;
                 ctx.beginPath();
-                ctx.moveTo(-16, -34); ctx.lineTo(-16, -26); ctx.lineTo(-8, -26); ctx.lineTo(-8, -34);
-                ctx.lineTo(0, -34); ctx.lineTo(0, -26); ctx.lineTo(8, -26); ctx.lineTo(8, -34);
-                ctx.lineTo(16, -34);
+                ctx.moveTo(-28, -112);
+                ctx.lineTo(-28, -100); ctx.lineTo(-18, -100); ctx.lineTo(-18, -112);
+                ctx.lineTo(-8, -112); ctx.lineTo(-8, -100); ctx.lineTo(2, -100); ctx.lineTo(2, -112);
+                ctx.lineTo(12, -112); ctx.lineTo(12, -100); ctx.lineTo(22, -100); ctx.lineTo(22, -112);
+                ctx.lineTo(28, -112);
                 ctx.stroke();
 
-                // ESP-WROOM-32 metal shield
+                // ESP-WROOM-32 Metal RF Shield
                 ctx.fillStyle = '#334155';
-                ctx.fillRect(-24, -20, 48, 36);
+                ctx.fillRect(-38, -85, 76, 68);
                 ctx.strokeStyle = '#64748b';
                 ctx.lineWidth = 1;
-                ctx.strokeRect(-24, -20, 48, 36);
+                ctx.strokeRect(-38, -85, 76, 68);
 
-                // Silkscreen on shield
+                // Silkscreen on Shield
                 ctx.fillStyle = '#f8fafc';
-                ctx.font = 'bold 8px JetBrains Mono';
+                ctx.font = 'bold 9px JetBrains Mono';
                 ctx.textAlign = 'center';
-                ctx.fillText('ESP-WROOM-32', 0, -6);
+                ctx.fillText('ESP-WROOM-32', 0, -60);
                 ctx.fillStyle = '#38bdf8';
-                ctx.font = '6px JetBrains Mono';
-                ctx.fillText('Wi-Fi + BLE', 0, 4);
+                ctx.font = 'bold 7px JetBrains Mono';
+                ctx.fillText('Wi-Fi + BLE SoC', 0, -48);
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '5.5px JetBrains Mono';
+                ctx.fillText('FCC ID: 2AC7Z-ESPWROOM32', 0, -36);
+                ctx.fillText('Tensilica 240MHz Dual-Core', 0, -25);
 
-                // Blue status LED on D2
+                // MicroUSB Connector at bottom
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillRect(-14, 106, 28, 14);
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(-10, 112, 20, 8);
+
+                // EN and BOOT buttons
+                ctx.fillStyle = '#475569';
+                ctx.fillRect(-45, 95, 12, 10);
+                ctx.fillRect(33, 95, 12, 10);
+                ctx.fillStyle = '#cbd5e1';
+                ctx.font = '5px JetBrains Mono';
+                ctx.fillText('EN', -39, 92);
+                ctx.fillText('BOOT', 39, 92);
+
+                // Status LEDs
+                // Red Power LED
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath(); ctx.arc(-20, 80, 2.5, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#fca5a5';
+                ctx.fillText('PWR', -20, 74);
+
+                // Blue Status LED on D2
                 const d2Lit = comp.d2Active;
                 ctx.fillStyle = d2Lit ? '#38bdf8' : '#1e3a8a';
                 if (d2Lit) {
                     ctx.shadowColor = '#38bdf8';
                     ctx.shadowBlur = 8;
                 }
-                ctx.beginPath();
-                ctx.arc(-34, 4, 3, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(20, 80, 2.5, 0, Math.PI * 2); ctx.fill();
                 ctx.shadowBlur = 0;
+                ctx.fillStyle = '#bae6fd';
+                ctx.fillText('D2', 20, 74);
 
-                // Pin labels
-                ctx.font = 'bold 7px JetBrains Mono';
-                ctx.fillStyle = '#cbd5e1';
+                // Silkscreen center title
+                ctx.fillStyle = '#e2e8f0';
+                ctx.font = 'bold 9px JetBrains Mono';
+                ctx.fillText('NodeMCU-32S', 0, 15);
+                ctx.font = '6px JetBrains Mono';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText('38-PIN ESP32 DEVKIT', 0, 26);
+
+                // --- LEFT HEADER PINS & SILK LABELS (15 pins) ---
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-69, -104, 10, 208);
+                ctx.strokeStyle = '#334155';
+                ctx.strokeRect(-69, -104, 10, 208);
+
+                ctx.font = 'bold 5.5px JetBrains Mono';
+                ctx.fillStyle = '#e2e8f0';
                 ctx.textAlign = 'left';
-                ctx.fillText('3V3', -54, -18);
-                ctx.fillText('GND', -54, 2);
-                ctx.fillText('VN', -54, 22);
+                const espLeftLabels = [
+                    { name: '3V3', y: -98 }, { name: 'EN',  y: -84 }, { name: 'VP',  y: -70 },
+                    { name: 'VN',  y: -56 }, { name: '34',  y: -42 }, { name: '35',  y: -28 },
+                    { name: '32',  y: -14 }, { name: '33',  y: 0 },   { name: '25',  y: 14 },
+                    { name: '26',  y: 28 },  { name: '27',  y: 42 },  { name: '14',  y: 56 },
+                    { name: '12',  y: 70 },  { name: 'GND', y: 84 },  { name: 'VIN', y: 98 }
+                ];
+                espLeftLabels.forEach(l => {
+                    ctx.fillText(l.name, -56, l.y + 2);
+                });
+
+                // --- RIGHT HEADER PINS & SILK LABELS (15 pins) ---
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(59, -104, 10, 208);
+                ctx.strokeStyle = '#334155';
+                ctx.strokeRect(59, -104, 10, 208);
 
                 ctx.textAlign = 'right';
-                ctx.fillText('D2', 54, -18);
-                ctx.fillText('D4', 54, 2);
-                ctx.fillText('D18', 54, 22);
-                ctx.textAlign = 'center';
-                ctx.fillText('D21', 20, 34);
+                const espRightLabels = [
+                    { name: '23',  y: -98 }, { name: '22',  y: -84 }, { name: 'TX0', y: -70 },
+                    { name: 'RX0', y: -56 }, { name: '21',  y: -42 }, { name: '19',  y: -28 },
+                    { name: '18',  y: -14 }, { name: '5',   y: 0 },   { name: 'TX2', y: 14 },
+                    { name: 'RX2', y: 28 },  { name: '4',   y: 42 },  { name: '2',   y: 56 },
+                    { name: '15',  y: 70 },  { name: 'GND', y: 84 },  { name: '3V3', y: 98 }
+                ];
+                espRightLabels.forEach(l => {
+                    ctx.fillText(l.name, 56, l.y + 2);
+                });
 
             } else if (comp.type === 'dht11') {
                 // DHT11 Sensor
@@ -5313,14 +5943,44 @@ Generated by ElectroSim Pro Engineering CAD Engine
             const vA0 = (comp.vA0 || 0).toFixed(2);
             const a0Pct = Math.min(100, (adcA0 / 1023) * 100);
 
+            // ADC Channels A0..A5
+            const adc = comp.adc || {
+                A0: { v: comp.vA0 || 0, code: comp.adcA0 || 0 },
+                A1: { v: 0, code: 0 }, A2: { v: 0, code: 0 },
+                A3: { v: 0, code: 0 }, A4: { v: 0, code: 0 }, A5: { v: 0, code: 0 }
+            };
+
             return `
                 <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
                             <i class="fa-solid fa-microchip text-teal-400"></i>
-                            <span>Arduino Uno R3 (ATmega328P)</span>
+                            <span>Arduino Uno R3 (29 Pins)</span>
                         </span>
                         <span class="bg-teal-950/70 text-teal-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-teal-800/60">16 MHz AVR</span>
+                    </div>
+
+                    <!-- Code IDE Quick Launcher & Firmware State -->
+                    <div class="bg-gradient-to-r from-indigo-950/60 to-slate-900/90 rounded-xl p-2.5 border border-indigo-800/50 space-y-2">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-indigo-300 font-semibold flex items-center space-x-1.5">
+                                <i class="fa-solid fa-code text-indigo-400"></i>
+                                <span>Virtual Firmware</span>
+                            </span>
+                            <span class="text-[9.5px] font-mono px-2 py-0.5 rounded-full ${comp.sketchRunning ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/80 animate-pulse font-bold' : 'bg-slate-800 text-slate-400'}">
+                                ${comp.sketchRunning ? '● RUNNING' : '○ NO SKETCH'}
+                            </span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <button onclick="openEmbeddedIDE('${comp.id}')" class="flex-1 py-1.5 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-medium text-xs transition-all flex items-center justify-center space-x-1.5 shadow-sm">
+                                <i class="fa-solid fa-laptop-code text-indigo-200"></i>
+                                <span>${comp.sketchRunning ? 'Edit / View Code' : 'Open Code IDE'}</span>
+                            </button>
+                            ${comp.sketchRunning ? `
+                            <button onclick="stopIdeSketchForBoard('${comp.id}')" class="py-1.5 px-2.5 rounded-lg bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 text-xs transition-all" title="Stop Virtual Firmware">
+                                <i class="fa-solid fa-stop"></i>
+                            </button>` : ''}
+                        </div>
                     </div>
 
                     <!-- D13 Built-in LED & Output Control -->
@@ -5328,7 +5988,7 @@ Generated by ElectroSim Pro Engineering CAD Engine
                         <div class="flex items-center justify-between text-[11px]">
                             <span class="text-slate-300 font-medium flex items-center space-x-1.5">
                                 <span class="w-2 h-2 rounded-full ${comp.d13Active ? 'bg-amber-400 animate-pulse' : 'bg-slate-600'}"></span>
-                                <span>Digital Pin 13 ('L' LED)</span>
+                                <span>Digital Pin 13 ('L' LED / SCK)</span>
                             </span>
                             <span class="text-amber-400 font-mono font-bold">${comp.d13Active ? 'HIGH (+5V)' : 'LOW (0V)'}</span>
                         </div>
@@ -5348,29 +6008,104 @@ Generated by ElectroSim Pro Engineering CAD Engine
                         <input type="range" min="0" max="100" value="${d9Duty}" oninput="setArduinoD9Duty(this.value)" class="w-full accent-cyan-500 cursor-pointer">
                     </div>
 
-                    <!-- 10-bit Analog ADC Input (A0) -->
-                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-1.5">
-                        <div class="flex items-center justify-between text-[11px]">
-                            <span class="text-slate-300 font-medium">Analog A0 ADC (0 - 5V)</span>
-                            <span class="text-emerald-400 font-mono font-bold">${vA0} V • [ ${adcA0} / 1023 ]</span>
+                    <!-- 6-Channel 10-bit Analog ADC Table -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-2 text-[10px] font-mono">
+                        <div class="flex items-center justify-between font-bold text-slate-300">
+                            <span><i class="fa-solid fa-chart-simple text-emerald-400 mr-1"></i> Analog In ADCs (0 - 5V)</span>
+                            <span class="text-slate-500">10-bit [0-1023]</span>
                         </div>
-                        <div class="h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-                            <div class="h-full bg-emerald-500 transition-all duration-150" style="width: ${a0Pct}%"></div>
+                        <div class="space-y-1.5">
+                            ${['A0', 'A1', 'A2', 'A3', 'A4', 'A5'].map(ch => {
+                                const c = (adc && adc[ch]) ? adc[ch] : { v: 0, code: 0 };
+                                const pct = Math.min(100, (c.code / 1023) * 100);
+                                const extra = ch === 'A4' ? ' (SDA)' : (ch === 'A5' ? ' (SCL)' : '');
+                                return `
+                                    <div class="space-y-0.5">
+                                        <div class="flex justify-between text-[9px]">
+                                            <span class="text-slate-400">${ch}${extra}</span>
+                                            <span class="text-emerald-400 font-semibold">${c.v.toFixed(2)}V • ${c.code}</span>
+                                        </div>
+                                        <div class="h-1 bg-slate-950 rounded-full overflow-hidden border border-slate-800/80">
+                                            <div class="h-full bg-emerald-500 transition-all duration-100" style="width: ${pct}%"></div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
-                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
-                            <span class="text-slate-500 block">5V Rail Limit</span>
-                            <span class="text-slate-200 font-bold">500 mA (LDO)</span>
+                    <!-- Digital GPIO Header Overview -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-2 text-[10px]">
+                        <div class="flex items-center justify-between font-bold text-slate-300">
+                            <span><i class="fa-solid fa-terminal text-sky-400 mr-1"></i> Digital Pins (D0 - D12)</span>
+                            <span class="text-slate-500 font-mono">5V Logic</span>
                         </div>
-                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
-                            <span class="text-slate-500 block">3.3V Rail Limit</span>
-                            <span class="text-slate-200 font-bold">150 mA (LP2985)</span>
+                        <div class="grid grid-cols-4 gap-1 text-[9px] font-mono text-center">
+                            ${[
+                                { p: 'D0', f: 'RX' }, { p: 'D1', f: 'TX' }, { p: 'D2', f: 'INT0' },
+                                { p: 'D3', f: 'PWM' }, { p: 'D4', f: 'GPIO' }, { p: 'D5', f: 'PWM' },
+                                { p: 'D6', f: 'PWM' }, { p: 'D7', f: 'GPIO' }, { p: 'D8', f: 'ICP1' },
+                                { p: 'D10', f: 'SS' }, { p: 'D11', f: 'MOSI' }, { p: 'D12', f: 'MISO' }
+                            ].map(item => {
+                                const active = comp.pinState && comp.pinState[item.p];
+                                return `
+                                    <button onclick="toggleArduinoPin('${comp.id}', '${item.p}')" class="p-1 rounded border transition-all ${active ? 'bg-sky-950/80 border-sky-700 text-sky-300 font-bold' : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'}">
+                                        <div>${item.p}</div>
+                                        <div class="text-[7.5px] opacity-70">${item.f}</div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Power Rails Status -->
+                    <div class="grid grid-cols-3 gap-1.5 text-[9px] font-mono text-center">
+                        <div class="bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">5V Rail</span>
+                            <span class="text-emerald-400 font-bold">5.00 V (500mA)</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">3.3V Rail</span>
+                            <span class="text-sky-400 font-bold">3.30 V (150mA)</span>
+                        </div>
+                        <div class="bg-slate-900/80 p-1.5 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 block">VIN (7-12V)</span>
+                            <span class="text-amber-400 font-bold">${comp.vinSupply ? '9.00 V' : 'Ready'}</span>
                         </div>
                     </div>
                 </div>
             `;
+        }
+
+        function setArduinoD13Mode(mode) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.d13Mode = mode;
+                recordHistory();
+                updateInspector();
+            }
+        }
+
+        function setArduinoD9Duty(val) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.d9Duty = parseInt(val, 10);
+                const lbl = document.getElementById('d9-duty-label');
+                if (lbl) lbl.textContent = `${comp.d9Duty}% (${(5 * comp.d9Duty / 100).toFixed(2)}V avg)`;
+            }
+        }
+
+        function toggleArduinoPin(compId, pinName) {
+            const comp = state.components.find(c => c.id === compId);
+            if (comp) {
+                if (!comp.pinState) comp.pinState = {};
+                comp.pinState[pinName] = !comp.pinState[pinName];
+                recordHistory();
+                updateInspector();
+                if (typeof showToast === 'function') {
+                    showToast(`Arduino ${comp.id} ${pinName} set to ${comp.pinState[pinName] ? 'HIGH (+5V)' : 'LOW (0V)'}`, 'info');
+                }
+            }
         }
 
         function renderEsp32DetailsHtml(comp) {
@@ -5379,28 +6114,46 @@ Generated by ElectroSim Pro Engineering CAD Engine
             const vnPct = Math.min(100, (adcVN / 4095) * 100);
             const d2Mode = comp.d2Mode || 'blink';
 
+            const espAdc = comp.espAdc || {
+                VN: { v: comp.vVN || 0, code: comp.adcVN || 0 },
+                VP: { v: 0, code: 0 }, D34: { v: 0, code: 0 },
+                D35: { v: 0, code: 0 }, D32: { v: 0, code: 0 }, D33: { v: 0, code: 0 }
+            };
+
             return `
                 <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-semibold tracking-wider text-slate-400 uppercase flex items-center space-x-1.5">
                             <i class="fa-solid fa-wifi text-sky-400"></i>
-                            <span>ESP32 NodeMCU (Xtensa LX6)</span>
+                            <span>ESP32 NodeMCU (30 Pins)</span>
                         </span>
                         <span class="bg-sky-950/70 text-sky-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-sky-800/60">240 MHz SoC</span>
                     </div>
 
-                    <!-- 12-bit ADC VN Input -->
-                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-1.5">
+                    <!-- Code IDE Quick Launcher & Firmware State -->
+                    <div class="bg-gradient-to-r from-indigo-950/60 to-slate-900/90 rounded-xl p-2.5 border border-indigo-800/50 space-y-2">
                         <div class="flex items-center justify-between text-[11px]">
-                            <span class="text-slate-300 font-medium">ADC VN (GPIO36 / 12-bit)</span>
-                            <span class="text-sky-400 font-mono font-bold">${vVN} V • [ ${adcVN} / 4095 ]</span>
+                            <span class="text-indigo-300 font-semibold flex items-center space-x-1.5">
+                                <i class="fa-solid fa-code text-indigo-400"></i>
+                                <span>Virtual Firmware</span>
+                            </span>
+                            <span class="text-[9.5px] font-mono px-2 py-0.5 rounded-full ${comp.sketchRunning ? 'bg-emerald-950 text-emerald-400 border border-emerald-800/80 animate-pulse font-bold' : 'bg-slate-800 text-slate-400'}">
+                                ${comp.sketchRunning ? '● RUNNING' : '○ NO SKETCH'}
+                            </span>
                         </div>
-                        <div class="h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-                            <div class="h-full bg-sky-500 transition-all duration-150" style="width: ${vnPct}%"></div>
+                        <div class="flex items-center space-x-1.5">
+                            <button onclick="openEmbeddedIDE('${comp.id}')" class="flex-1 py-1.5 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-medium text-xs transition-all flex items-center justify-center space-x-1.5 shadow-sm">
+                                <i class="fa-solid fa-laptop-code text-indigo-200"></i>
+                                <span>${comp.sketchRunning ? 'Edit / View Code' : 'Open Code IDE'}</span>
+                            </button>
+                            ${comp.sketchRunning ? `
+                            <button onclick="stopIdeSketchForBoard('${comp.id}')" class="py-1.5 px-2.5 rounded-lg bg-red-950/60 hover:bg-red-900 border border-red-800/60 text-red-300 text-xs transition-all" title="Stop Virtual Firmware">
+                                <i class="fa-solid fa-stop"></i>
+                            </button>` : ''}
                         </div>
                     </div>
 
-                    <!-- D2 Blue LED Mode -->
+                    <!-- D2 Blue Status LED Mode -->
                     <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-2">
                         <div class="flex items-center justify-between text-[11px]">
                             <span class="text-slate-300 font-medium flex items-center space-x-1.5">
@@ -5416,6 +6169,61 @@ Generated by ElectroSim Pro Engineering CAD Engine
                         </div>
                     </div>
 
+                    <!-- 6-Channel 12-bit SAR ADC Table -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-2 text-[10px] font-mono">
+                        <div class="flex items-center justify-between font-bold text-slate-300">
+                            <span><i class="fa-solid fa-chart-line text-sky-400 mr-1"></i> 12-bit SAR ADCs (0 - 3.3V)</span>
+                            <span class="text-slate-500">[0 - 4095]</span>
+                        </div>
+                        <div class="space-y-1.5">
+                            ${[
+                                { ch: 'VN', pin: 'GPIO39' }, { ch: 'VP', pin: 'GPIO36' },
+                                { ch: 'D34', pin: 'GPIO34' }, { ch: 'D35', pin: 'GPIO35' },
+                                { ch: 'D32', pin: 'GPIO32' }, { ch: 'D33', pin: 'GPIO33' }
+                            ].map(item => {
+                                const c = (espAdc && espAdc[item.ch]) ? espAdc[item.ch] : { v: 0, code: 0 };
+                                const pct = Math.min(100, (c.code / 4095) * 100);
+                                return `
+                                    <div class="space-y-0.5">
+                                        <div class="flex justify-between text-[9px]">
+                                            <span class="text-slate-400">${item.ch} (${item.pin})</span>
+                                            <span class="text-sky-400 font-semibold">${c.v.toFixed(2)}V • ${c.code}</span>
+                                        </div>
+                                        <div class="h-1 bg-slate-950 rounded-full overflow-hidden border border-slate-800/80">
+                                            <div class="h-full bg-sky-500 transition-all duration-100" style="width: ${pct}%"></div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Hardware Bus & GPIO Grid -->
+                    <div class="bg-slate-900/80 rounded-xl p-2.5 border border-slate-800 space-y-2 text-[10px]">
+                        <div class="flex items-center justify-between font-bold text-slate-300">
+                            <span><i class="fa-solid fa-microchip text-indigo-400 mr-1"></i> Fast Bus & GPIO Matrix</span>
+                            <span class="text-slate-500 font-mono">3.3V Only</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-1 text-[9px] font-mono text-center">
+                            ${[
+                                { p: 'D21', f: 'I2C SDA' }, { p: 'D22', f: 'I2C SCL' },
+                                { p: 'D18', f: 'VSPI CLK' }, { p: 'D19', f: 'VSPI MISO' },
+                                { p: 'D23', f: 'VSPI MOSI' }, { p: 'D5', f: 'VSPI CS' },
+                                { p: 'TX0', f: 'U0TXD' }, { p: 'RX0', f: 'U0RXD' },
+                                { p: 'D25', f: 'DAC1' }, { p: 'D26', f: 'DAC2' },
+                                { p: 'D14', f: 'HSPI CLK' }, { p: 'D4', f: 'Touch 0' }
+                            ].map(item => {
+                                const active = comp.pinState && comp.pinState[item.p];
+                                return `
+                                    <button onclick="toggleEsp32Pin('${comp.id}', '${item.p}')" class="p-1 rounded border transition-all ${active ? 'bg-sky-950/80 border-sky-700 text-sky-300 font-bold' : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'}">
+                                        <div>${item.p}</div>
+                                        <div class="text-[7.5px] opacity-70">${item.f}</div>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
                     <!-- Simulated Wi-Fi & MQTT Telemetry Stream -->
                     <div class="bg-slate-900/90 rounded-xl p-2.5 border border-slate-800 space-y-1.5 text-[10px] font-mono">
                         <div class="flex items-center justify-between text-slate-400">
@@ -5424,11 +6232,33 @@ Generated by ElectroSim Pro Engineering CAD Engine
                         </div>
                         <div class="text-slate-400 truncate">SSID: <span class="text-slate-200">ElectroNet-IoT</span> | RSSI: <span class="text-slate-200">-62 dBm</span></div>
                         <div class="bg-slate-950 p-1.5 rounded border border-slate-800/80 text-[9px] text-cyan-300 truncate">
-                            MQTT: tele/esp32/sensors {"adc":${adcVN},"v":"${vVN}"}
+                            MQTT: tele/esp32/sensors {"adc_vn":${adcVN},"adc_vp":${(espAdc.VP?espAdc.VP.code:0)},"v_vn":"${vVN}"}
                         </div>
                     </div>
                 </div>
             `;
+        }
+
+        function setEsp32D2Mode(mode) {
+            const comp = state.components.find(c => c.id === state.selectedId);
+            if (comp) {
+                comp.d2Mode = mode;
+                recordHistory();
+                updateInspector();
+            }
+        }
+
+        function toggleEsp32Pin(compId, pinName) {
+            const comp = state.components.find(c => c.id === compId);
+            if (comp) {
+                if (!comp.pinState) comp.pinState = {};
+                comp.pinState[pinName] = !comp.pinState[pinName];
+                recordHistory();
+                updateInspector();
+                if (typeof showToast === 'function') {
+                    showToast(`ESP32 ${comp.id} ${pinName} set to ${comp.pinState[pinName] ? 'HIGH (+3.3V)' : 'LOW (0V)'}`, 'info');
+                }
+            }
         }
 
         function renderDht11DetailsHtml(comp) {
@@ -6589,6 +7419,847 @@ Generated by ElectroSim Pro Engineering CAD Engine
             toastTimeout = setTimeout(() => {
                 toast.classList.add('translate-y-20', 'opacity-0');
             }, 3000);
+        }
+
+        // ============================================================================
+        // --- EMBEDDED MICROCONTROLLER CODE IDE & VIRTUAL FIRMWARE RUNTIME ---
+        // ============================================================================
+
+        const UNO_PIN_TO_TERM_IDX = {
+            'D0': 16, 'D1': 17, 'D2': 6, 'D3': 18, 'D4': 19, 'D5': 20, 'D6': 21, 'D7': 22,
+            'D8': 23, 'D9': 5, 'D10': 24, 'D11': 25, 'D12': 26, 'D13': 4,
+            '0': 16, '1': 17, '2': 6, '3': 18, '4': 19, '5': 20, '6': 21, '7': 22,
+            '8': 23, '9': 5, '10': 24, '11': 25, '12': 26, '13': 4,
+            'A0': 3, 'A1': 11, 'A2': 12, 'A3': 13, 'A4': 14, 'A5': 15
+        };
+
+        const ESP32_PIN_TO_TERM_IDX = {
+            'D2': 3, 'D4': 4, 'D18': 5, 'D21': 6, 'D25': 13, 'D26': 14, 'D27': 15,
+            'D14': 16, 'D12': 17, 'D23': 19, 'D22': 20, 'TX0': 21, 'RX0': 22,
+            'D19': 23, 'D5': 24, 'TX2': 25, 'RX2': 26, 'D15': 27,
+            '2': 3, '4': 4, '18': 5, '21': 6, '25': 13, '26': 14, '27': 15,
+            '14': 16, '12': 17, '23': 19, '22': 20, '19': 23, '5': 24, '15': 27,
+            'VN': 2, 'VP': 8, 'D34': 9, 'D35': 10, 'D32': 11, 'D33': 12,
+            '34': 9, '35': 10, '32': 11, '33': 12
+        };
+
+        const IDE_EXAMPLES = {
+            blink: `// 1. Blink Built-in LED on Pin 13
+const int ledPin = 13;
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("Arduino Initialized. Blinking LED on D13...");
+}
+
+void loop() {
+  digitalWrite(ledPin, HIGH);
+  Serial.println("LED: HIGH (ON)");
+  delay(500);
+  digitalWrite(ledPin, LOW);
+  Serial.println("LED: LOW (OFF)");
+  delay(500);
+}`,
+
+            analog_sensor: `// 2. Analog Light Sensor Reader (A0 LDR / Potentiometer)
+const int sensorPin = A0;
+const int alertLed = 13;
+
+void setup() {
+  pinMode(alertLed, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("Light Sensor Monitoring online...");
+}
+
+void loop() {
+  int rawADC = analogRead(sensorPin);
+  float voltage = rawADC * (5.0 / 1023.0);
+  
+  Serial.print("Raw ADC: ");
+  Serial.print(rawADC);
+  Serial.print(" | Voltage: ");
+  Serial.print(voltage);
+  Serial.println(" V");
+
+  if (rawADC > 512) {
+    digitalWrite(alertLed, HIGH);
+  } else {
+    digitalWrite(alertLed, LOW);
+  }
+  delay(250);
+}`,
+
+            pwm_sweep: `// 3. PWM Brightness Sweep (Pin 9)
+const int pwmPin = 9;
+
+void setup() {
+  pinMode(pwmPin, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("Starting PWM Brightness Sweep on D9...");
+}
+
+void loop() {
+  for (int b = 0; b <= 255; b += 15) {
+    analogWrite(pwmPin, b);
+    Serial.print("PWM Duty: ");
+    Serial.println(b);
+    delay(40);
+  }
+  for (int b = 255; b >= 0; b -= 15) {
+    analogWrite(pwmPin, b);
+    Serial.print("PWM Duty: ");
+    Serial.println(b);
+    delay(40);
+  }
+}`,
+
+            pir_alarm: `// 4. PIR Motion Security Alarm (D2 Input -> D8 Buzzer & D13)
+const int pirPin = 2;
+const int buzzerPin = 8;
+const int alertLed = 13;
+
+void setup() {
+  pinMode(pirPin, INPUT);
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(alertLed, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("Security Radar Armed. Monitoring motion on D2...");
+}
+
+void loop() {
+  int motion = digitalRead(pirPin);
+  if (motion == HIGH) {
+    digitalWrite(alertLed, HIGH);
+    digitalWrite(buzzerPin, HIGH);
+    Serial.println("🚨 INTRUSION DETECTED! Alarm sounding!");
+  } else {
+    digitalWrite(alertLed, LOW);
+    digitalWrite(buzzerPin, LOW);
+  }
+  delay(100);
+}`,
+
+            radar_scanner: `// 5. Ultrasonic Radar Ping (HC-SR04 & SG90 Servo D10)
+const int triggerPin = 11;
+const int echoPin = 12;
+const int servoPin = 10;
+
+void setup() {
+  pinMode(triggerPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(servoPin, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("Ultrasonic Radar Active. Scanning sector...");
+}
+
+void loop() {
+  for (int angle = 0; angle <= 180; angle += 30) {
+    analogWrite(servoPin, map(angle, 0, 180, 0, 255));
+    Serial.print("Azimuth: ");
+    Serial.print(angle);
+    Serial.println(" deg | Ping Return: OK");
+    delay(200);
+  }
+}`,
+
+            relay_switch: `// 6. 5V Relay Threshold Controller (D7 Relay Module)
+const int relayPin = 7;
+const int sensorPin = A0;
+
+void setup() {
+  pinMode(relayPin, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("Relay Controller Armed.");
+}
+
+void loop() {
+  int sensorVal = analogRead(sensorPin);
+  Serial.print("Sensor: ");
+  Serial.print(sensorVal);
+
+  if (sensorVal > 550) {
+    digitalWrite(relayPin, HIGH);
+    Serial.println(" -> Relay ENERGIZED (Load ON)");
+  } else {
+    digitalWrite(relayPin, LOW);
+    Serial.println(" -> Relay DE-ENERGIZED (Load OFF)");
+  }
+  delay(400);
+}`,
+
+            esp32_mqtt: `// 7. ESP32 Wi-Fi & MQTT IoT Telemetry (D2 Blue LED & VN ADC)
+const int ledPin = 2; // Onboard Blue LED
+const int adcPin = 36; // VN SAR ADC Channel
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(115200);
+  Serial.println("[ESP32] Connecting to Wi-Fi SSID 'ElectroSim-Net'...");
+  delay(400);
+  Serial.println("[ESP32] Connected! Local IP: 192.168.1.108");
+  Serial.println("[ESP32] MQTT Broker Connected: mqtt://broker.hivemq.com:1883");
+}
+
+void loop() {
+  digitalWrite(ledPin, HIGH);
+  int rawADC = analogRead(adcPin);
+  float voltage = rawADC * (3.3 / 4095.0);
+  
+  Serial.print("PUBLISH tele/esp32/sensors: {\\"adc\\": ");
+  Serial.print(rawADC);
+  Serial.print(", \\"voltage\\": ");
+  Serial.print(voltage);
+  Serial.println("}");
+  
+  delay(150);
+  digitalWrite(ledPin, LOW);
+  delay(850);
+}`
+        };
+
+        const ideState = {
+            activeBoardId: null,
+            activeTab: 'compiler',
+            isMaximized: false,
+            baudRate: 9600,
+            autoscroll: true,
+            activeRunner: null
+        };
+
+        function normalizePin(p) {
+            if (typeof p === 'number') {
+                if (p >= 0 && p <= 13) return 'D' + p;
+                if (p === 36) return 'VN';
+                if (p === 39) return 'VP';
+                return 'D' + p;
+            }
+            const str = String(p).trim().toUpperCase();
+            if (/^[0-9]+$/.test(str)) {
+                const num = parseInt(str, 10);
+                if (num >= 0 && num <= 13) return 'D' + num;
+                if (num === 36) return 'VN';
+                if (num === 39) return 'VP';
+            }
+            return str;
+        }
+
+        function transpileArduinoC(code) {
+            let js = code;
+
+            // Directives
+            js = js.replace(/#include\s+[<"][^>"]+[>"]/g, '// [imported library]');
+            js = js.replace(/#define\s+([A-Za-z0-9_]+)\s+([^\r\n]+)/g, 'const $1 = $2;');
+
+            // C types
+            const types = ['unsigned long', 'long', 'unsigned int', 'int', 'float', 'double', 'char', 'bool', 'boolean', 'byte', 'uint8_t', 'uint16_t', 'uint32_t', 'int8_t', 'int16_t', 'int32_t', 'String', 'size_t'];
+            
+            types.forEach(t => {
+                const regexConst = new RegExp(`\\bconst\\s+${t}\\s+`, 'g');
+                js = js.replace(regexConst, 'const ');
+                const regexVar = new RegExp(`\\b${t}\\s+([A-Za-z_][A-Za-z0-9_]*\\s*[=;,\\[])`, 'g');
+                js = js.replace(regexVar, 'let $1');
+            });
+
+            // Function definitions
+            js = js.replace(/\bvoid\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)\s*\{/g, 'async function $1($2) {');
+            types.forEach(t => {
+                const regexFunc = new RegExp(`\\b${t}\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*\\(([^)]*)\\)\\s*\\{`, 'g');
+                js = js.replace(regexFunc, 'async function $1($2) {');
+            });
+
+            // Delays
+            js = js.replace(/(?<!await\s+)\bdelay\s*\(/g, 'await delay(');
+            js = js.replace(/(?<!await\s+)\bdelayMicroseconds\s*\(/g, 'await delayMicroseconds(');
+
+            return js;
+        }
+
+        function openEmbeddedIDE(boardId) {
+            const modal = document.getElementById('embedded-ide-modal');
+            if (!modal) return;
+
+            populateIdeBoardSelector(boardId);
+
+            modal.classList.remove('hidden');
+            const editor = document.getElementById('ide-code-editor');
+            if (editor) {
+                editor.focus();
+                onIdeCodeInput();
+                updateIdeCursorPos();
+            }
+        }
+
+        function closeEmbeddedIDE() {
+            const modal = document.getElementById('embedded-ide-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function toggleIdeMaximize() {
+            const win = document.getElementById('ide-window');
+            const icon = document.getElementById('ide-maximize-icon');
+            if (!win) return;
+
+            ideState.isMaximized = !ideState.isMaximized;
+            if (ideState.isMaximized) {
+                win.className = 'bg-slate-900 border border-slate-700/80 w-full h-full rounded-none shadow-2xl relative flex flex-col overflow-hidden transition-all duration-200';
+                if (icon) icon.className = 'fa-solid fa-compress';
+            } else {
+                win.className = 'bg-slate-900 border border-slate-700/80 w-full max-w-5xl rounded-2xl shadow-2xl relative flex flex-col h-[88vh] overflow-hidden transition-all duration-200';
+                if (icon) icon.className = 'fa-solid fa-expand';
+            }
+        }
+
+        function minimizeIdeConsole() {
+            const drawer = document.getElementById('ide-console-drawer');
+            if (!drawer) return;
+            if (drawer.classList.contains('h-48')) {
+                drawer.classList.remove('h-48');
+                drawer.classList.add('h-10');
+            } else {
+                drawer.classList.remove('h-10');
+                drawer.classList.add('h-48');
+            }
+        }
+
+        function populateIdeBoardSelector(targetId) {
+            const selector = document.getElementById('ide-target-board');
+            if (!selector) return;
+
+            selector.innerHTML = '';
+            const mcus = state.components.filter(c => c.type === 'arduino_uno' || c.type === 'esp32');
+
+            if (mcus.length === 0) {
+                // Auto-create Arduino Uno if canvas has none
+                const newUno = {
+                    id: 'uno_' + (state.components.length + 1),
+                    type: 'arduino_uno',
+                    x: 350,
+                    y: 280,
+                    rotation: 0,
+                    value: 5,
+                    d13Mode: 'blink',
+                    d9Duty: 100,
+                    adcA0: 0,
+                    sketchCode: IDE_EXAMPLES.blink
+                };
+                state.components.push(newUno);
+                recordHistory();
+                renderCanvas();
+                mcus.push(newUno);
+                showToast('Added Arduino Uno R3 to canvas for Code IDE', 'info');
+            }
+
+            let activeId = targetId || ideState.activeBoardId;
+            if (!activeId || !mcus.find(m => m.id === activeId)) {
+                activeId = mcus[0].id;
+            }
+            ideState.activeBoardId = activeId;
+
+            mcus.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id;
+                opt.textContent = m.type === 'arduino_uno' ? `Arduino Uno R3 (${m.id})` : `ESP32 NodeMCU (${m.id})`;
+                if (m.id === activeId) opt.selected = true;
+                selector.appendChild(opt);
+            });
+
+            loadBoardCodeIntoIde(activeId);
+        }
+
+        function onIdeTargetBoardChanged(boardId) {
+            // Save current code to previous board
+            if (ideState.activeBoardId) {
+                const prev = state.components.find(c => c.id === ideState.activeBoardId);
+                const editor = document.getElementById('ide-code-editor');
+                if (prev && editor) prev.sketchCode = editor.value;
+            }
+
+            ideState.activeBoardId = boardId;
+            loadBoardCodeIntoIde(boardId);
+        }
+
+        function loadBoardCodeIntoIde(boardId) {
+            const comp = state.components.find(c => c.id === boardId);
+            const editor = document.getElementById('ide-code-editor');
+            const specInfo = document.getElementById('ide-spec-info');
+            const filename = document.getElementById('ide-filename');
+            if (!comp || !editor) return;
+
+            if (!comp.sketchCode) {
+                comp.sketchCode = comp.type === 'esp32' ? IDE_EXAMPLES.esp32_mqtt : IDE_EXAMPLES.blink;
+            }
+
+            editor.value = comp.sketchCode;
+            if (filename) filename.textContent = comp.type === 'esp32' ? 'main.ino' : 'sketch.ino';
+            if (specInfo) specInfo.textContent = comp.type === 'esp32' ? 'ESP-WROOM-32 • 240MHz • 3.3V' : 'ATmega328P • 16MHz • 5V';
+
+            updateIdeRunningBadge(comp);
+            onIdeCodeInput();
+        }
+
+        function updateIdeRunningBadge(comp) {
+            const dot = document.getElementById('ide-status-dot');
+            const text = document.getElementById('ide-status-text');
+            if (!dot || !text) return;
+
+            if (comp && comp.sketchRunning) {
+                dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping';
+                text.textContent = 'RUNNING';
+                text.className = 'text-emerald-400 font-bold';
+            } else {
+                dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
+                text.textContent = 'IDLE';
+                text.className = 'text-slate-400 font-medium';
+            }
+        }
+
+        function loadIdeExample(key) {
+            const code = IDE_EXAMPLES[key];
+            if (!code) return;
+            const editor = document.getElementById('ide-code-editor');
+            if (editor) {
+                editor.value = code;
+                onIdeCodeInput();
+                appendIdeConsole(`[IDE] Loaded example sketch: "${key}"`, 'info');
+                showToast(`Loaded "${key}" example sketch`, 'info');
+            }
+        }
+
+        function resetIdeEditorToDefault() {
+            const comp = state.components.find(c => c.id === ideState.activeBoardId);
+            const defaultCode = (comp && comp.type === 'esp32') ? IDE_EXAMPLES.esp32_mqtt : IDE_EXAMPLES.blink;
+            const editor = document.getElementById('ide-code-editor');
+            if (editor) {
+                editor.value = defaultCode;
+                onIdeCodeInput();
+                showToast('Reset sketch to default template', 'info');
+            }
+        }
+
+        function onIdeCodeInput() {
+            const editor = document.getElementById('ide-code-editor');
+            const gutter = document.getElementById('ide-gutter');
+            const dot = document.getElementById('ide-modified-dot');
+            if (!editor || !gutter) return;
+
+            const lines = editor.value.split('\n').length;
+            let lineNums = '';
+            for (let i = 1; i <= lines; i++) lineNums += i + '<br>';
+            gutter.innerHTML = lineNums;
+
+            if (dot) dot.classList.remove('hidden');
+
+            const comp = state.components.find(c => c.id === ideState.activeBoardId);
+            if (comp) comp.sketchCode = editor.value;
+        }
+
+        function syncIdeScroll() {
+            const editor = document.getElementById('ide-code-editor');
+            const gutter = document.getElementById('ide-gutter');
+            if (editor && gutter) gutter.scrollTop = editor.scrollTop;
+        }
+
+        function updateIdeCursorPos() {
+            const editor = document.getElementById('ide-code-editor');
+            const posLabel = document.getElementById('ide-cursor-pos');
+            if (!editor || !posLabel) return;
+
+            const val = editor.value.substring(0, editor.selectionStart);
+            const lines = val.split('\n');
+            const ln = lines.length;
+            const col = lines[lines.length - 1].length + 1;
+            posLabel.textContent = `Ln ${ln}, Col ${col}`;
+        }
+
+        function handleIdeKeyDown(e) {
+            const editor = document.getElementById('ide-code-editor');
+            if (!editor) return;
+
+            // Tab key -> 2 spaces
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = editor.selectionStart;
+                const end = editor.selectionEnd;
+                editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+                editor.selectionStart = editor.selectionEnd = start + 2;
+                onIdeCodeInput();
+                updateIdeCursorPos();
+            } else if (e.key === 'Enter') {
+                // Auto-indent
+                e.preventDefault();
+                const start = editor.selectionStart;
+                const val = editor.value;
+                const lineStart = val.lastIndexOf('\n', start - 1) + 1;
+                const currentLine = val.substring(lineStart, start);
+                const indentMatch = currentLine.match(/^\s*/);
+                let indent = indentMatch ? indentMatch[0] : '';
+                if (currentLine.trim().endsWith('{')) indent += '  ';
+
+                editor.value = val.substring(0, start) + '\n' + indent + val.substring(start);
+                editor.selectionStart = editor.selectionEnd = start + 1 + indent.length;
+                onIdeCodeInput();
+                updateIdeCursorPos();
+            } else if ((e.ctrlKey || e.metaKey) && (e.key === 'Enter' || e.key === 'u' || e.key === 'U')) {
+                e.preventDefault();
+                uploadAndRunSketch();
+            } else if ((e.ctrlKey || e.metaKey) && (e.key === 'r' || e.key === 'R')) {
+                e.preventDefault();
+                compileIdeSketch();
+            }
+        }
+
+        function toggleIdeConsoleTab(tab) {
+            ideState.activeTab = tab;
+            const btnCompiler = document.getElementById('ide-tab-btn-compiler');
+            const btnSerial = document.getElementById('ide-tab-btn-serial');
+            const baudCont = document.getElementById('ide-baud-selector-container');
+            const serialBar = document.getElementById('ide-serial-input-bar');
+            const badge = document.getElementById('ide-serial-badge');
+
+            if (tab === 'serial') {
+                if (btnCompiler) btnCompiler.className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-all flex items-center space-x-1.5';
+                if (btnSerial) btnSerial.className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-white bg-slate-800 transition-all flex items-center space-x-1.5';
+                if (baudCont) {
+                    baudCont.classList.remove('hidden');
+                    baudCont.classList.add('flex');
+                }
+                if (serialBar) {
+                    serialBar.classList.remove('hidden');
+                    serialBar.classList.add('flex');
+                }
+                if (badge) badge.classList.add('hidden');
+            } else {
+                if (btnCompiler) btnCompiler.className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-white bg-slate-800 transition-all flex items-center space-x-1.5';
+                if (btnSerial) btnSerial.className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-all flex items-center space-x-1.5';
+                if (baudCont) {
+                    baudCont.classList.add('hidden');
+                    baudCont.classList.remove('flex');
+                }
+                if (serialBar) {
+                    serialBar.classList.add('hidden');
+                    serialBar.classList.remove('flex');
+                }
+            }
+        }
+
+        function clearIdeConsole() {
+            const out = document.getElementById('ide-console-output');
+            if (out) out.innerHTML = '<div class="text-slate-500">// Console cleared.</div>';
+        }
+
+        function appendIdeConsole(msg, type = 'info') {
+            const out = document.getElementById('ide-console-output');
+            if (!out) return;
+
+            const div = document.createElement('div');
+            let color = 'text-slate-300';
+            if (type === 'success') color = 'text-emerald-400 font-semibold';
+            else if (type === 'error') color = 'text-rose-400 font-mono font-bold';
+            else if (type === 'serial') color = 'text-cyan-300 font-mono';
+            else if (type === 'warning') color = 'text-amber-400 font-mono';
+
+            div.className = `${color} text-[11px] leading-relaxed`;
+            div.textContent = msg;
+            out.appendChild(div);
+
+            const autoscroll = document.getElementById('ide-autoscroll');
+            if (!autoscroll || autoscroll.checked) out.scrollTop = out.scrollHeight;
+        }
+
+        function appendIdeSerialText(text, isNewline = false) {
+            const out = document.getElementById('ide-console-output');
+            if (!out) return;
+
+            // Flash badge if user is on compiler tab
+            if (ideState.activeTab !== 'serial') {
+                const badge = document.getElementById('ide-serial-badge');
+                if (badge) badge.classList.remove('hidden');
+            }
+
+            const div = document.createElement('div');
+            div.className = 'text-cyan-300 font-mono text-[11px] leading-snug';
+            const now = new Date();
+            const timeStr = `[${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(now.getMilliseconds()).padStart(3, '0')}]`;
+            div.textContent = `${timeStr} ${text}`;
+            out.appendChild(div);
+
+            const autoscroll = document.getElementById('ide-autoscroll');
+            if (!autoscroll || autoscroll.checked) out.scrollTop = out.scrollHeight;
+        }
+
+        function sendSerialInput() {
+            const input = document.getElementById('ide-serial-input');
+            if (!input || !input.value) return;
+
+            const text = input.value;
+            input.value = '';
+
+            const comp = state.components.find(c => c.id === ideState.activeBoardId);
+            if (comp) {
+                comp.serialBuffer = (comp.serialBuffer || '') + text + '\n';
+                appendIdeConsole(`> ${text}`, 'info');
+            }
+        }
+
+        function handleSerialInputKeyDown(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendSerialInput();
+            }
+        }
+
+        function compileIdeSketch() {
+            const editor = document.getElementById('ide-code-editor');
+            const comp = state.components.find(c => c.id === ideState.activeBoardId);
+            if (!editor || !comp) return null;
+
+            toggleIdeConsoleTab('compiler');
+            appendIdeConsole(`[BUILD] Compiling sketch for ${comp.type === 'esp32' ? 'ESP32 NodeMCU' : 'Arduino Uno R3'}...`, 'info');
+
+            const source = editor.value;
+            const transpiled = transpileArduinoC(source);
+
+            try {
+                const fn = new Function('pinMode', 'digitalWrite', 'digitalRead', 'analogRead', 'analogWrite', 'delay', 'delayMicroseconds', 'Serial', 'HIGH', 'LOW', 'OUTPUT', 'INPUT', 'INPUT_PULLUP', 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'millis', 'micros', 'map', 'constrain', `
+                    ${transpiled}
+                    return {
+                        setup: typeof setup === 'function' ? setup : null,
+                        loop: typeof loop === 'function' ? loop : null
+                    };
+                `);
+
+                const testRuntime = fn(
+                    () => {}, () => {}, () => 0, () => 0, () => {},
+                    () => Promise.resolve(), () => Promise.resolve(),
+                    { begin: () => {}, print: () => {}, println: () => {}, available: () => 0, read: () => -1 },
+                    1, 0, 'OUTPUT', 'INPUT', 'INPUT_PULLUP',
+                    'A0', 'A1', 'A2', 'A3', 'A4', 'A5',
+                    () => 0, () => 0, (x, in_m, in_M, o_m, o_M) => x, (x, a, b) => x
+                );
+
+                if (!testRuntime.setup || !testRuntime.loop) {
+                    appendIdeConsole(`[WARNING] Sketch is missing standard setup() or loop() functions.`, 'warning');
+                }
+
+                // Estimated binary sizes
+                const flashSize = Math.round(900 + source.length * 1.8);
+                const sramSize = Math.round(140 + (source.match(/const|let|int|float|char/g) || []).length * 8);
+                const maxFlash = comp.type === 'esp32' ? 1310720 : 32256;
+                const maxSRAM  = comp.type === 'esp32' ? 327680 : 2048;
+
+                appendIdeConsole(`Binary sketch size: ${flashSize.toLocaleString()} bytes (${Math.max(1, Math.round((flashSize / maxFlash) * 100))}% of ${maxFlash.toLocaleString()} byte maximum).`, 'info');
+                appendIdeConsole(`Estimated SRAM usage: ${sramSize.toLocaleString()} bytes (${Math.max(1, Math.round((sramSize / maxSRAM) * 100))}% of ${maxSRAM.toLocaleString()} byte maximum).`, 'info');
+                appendIdeConsole(`✓ Compilation successful! Ready to flash.`, 'success');
+                showToast('Code compiled successfully!', 'success');
+
+                return { transpiled, fn };
+            } catch (err) {
+                appendIdeConsole(`[ERROR] Compilation failed: ${err.message}`, 'error');
+                showToast(`Compilation error: ${err.message}`, 'error');
+                return null;
+            }
+        }
+
+        async function uploadAndRunSketch() {
+            const compiled = compileIdeSketch();
+            if (!compiled) return;
+
+            const comp = state.components.find(c => c.id === ideState.activeBoardId);
+            if (!comp) return;
+
+            // Stop existing sketch on this board if running
+            stopIdeSketchForBoard(comp.id);
+
+            appendIdeConsole(`[FLASH] Writing virtual flash memory to ${comp.id}...`, 'info');
+            appendIdeConsole(`[FLASH] Flashing 100% | Verified successfully.`, 'info');
+            appendIdeConsole(`[BOOT] Target microcontroller CPU running firmware @ ${comp.type === 'esp32' ? '240 MHz' : '16.0 MHz'}...`, 'success');
+
+            comp.sketchRunning = true;
+            comp.sketchControlled = true;
+            comp.pinState = comp.pinState || {};
+            comp.pinModes = comp.pinModes || {};
+            comp.pinPwm = comp.pinPwm || {};
+
+            updateIdeRunningBadge(comp);
+            updateInspector();
+
+            // Auto-start circuit simulation if paused
+            if (!state.isRunning) {
+                toggleSimulation();
+            }
+
+            // Create and execute virtual runtime environment
+            const runtime = createVirtualBoardRuntime(comp, compiled.transpiled);
+            if (!runtime) return;
+
+            try {
+                if (runtime.setup) {
+                    await runtime.setup();
+                }
+                while (comp.sketchRunning) {
+                    if (state.isRunning && runtime.loop) {
+                        await runtime.loop();
+                    }
+                    // Cooperative yield to keep 60fps canvas buttery smooth
+                    await new Promise(r => setTimeout(r, 15));
+                }
+            } catch (err) {
+                if (comp.sketchRunning) {
+                    appendIdeConsole(`[RUNTIME EXCEPTION] ${err.message}`, 'error');
+                    stopIdeSketchForBoard(comp.id);
+                }
+            }
+        }
+
+        function createVirtualBoardRuntime(comp, transpiledCode) {
+            function pinMode(pin, mode) {
+                const p = normalizePin(pin);
+                comp.pinModes = comp.pinModes || {};
+                comp.pinModes[p] = mode;
+            }
+
+            function digitalWrite(pin, val) {
+                const p = normalizePin(pin);
+                const isHigh = (val === 1 || val === true || val === 'HIGH');
+                comp.pinState = comp.pinState || {};
+                comp.pinState[p] = isHigh;
+
+                if (p === 'D13') {
+                    comp.d13Active = isHigh;
+                    comp.d13Level = isHigh ? 1 : 0;
+                }
+                if (p === 'D2' && comp.type === 'esp32') {
+                    comp.d2Active = isHigh;
+                }
+            }
+
+            function digitalRead(pin) {
+                const p = normalizePin(pin);
+                const termIdx = comp.type === 'esp32' ? ESP32_PIN_TO_TERM_IDX[p] : UNO_PIN_TO_TERM_IDX[p];
+                if (termIdx === undefined) return 0;
+                if (!state.lastSolveResult || !state.lastSolveResult.termToNet) return 0;
+                const net = state.lastSolveResult.termToNet.get(`${comp.id}_${termIdx}`);
+                if (net === undefined) return 0;
+
+                const nGND1 = state.lastSolveResult.termToNet.get(`${comp.id}_${comp.type === 'esp32' ? 1 : 2}`);
+                const vGND = (nGND1 !== undefined && state.lastSolveResult.nodeVoltages) ? (state.lastSolveResult.nodeVoltages[nGND1] || 0) : 0;
+                const vPin = (state.lastSolveResult.nodeVoltages[net] || 0) - vGND;
+                const threshold = comp.type === 'esp32' ? 1.65 : 2.5;
+                return vPin >= threshold ? 1 : 0;
+            }
+
+            function analogRead(pin) {
+                const p = normalizePin(pin);
+                if (comp.type === 'esp32') {
+                    const sarMap = { 'VN': 'VN', '36': 'VN', 'VP': 'VP', '39': 'VP', 'D34': 'D34', '34': 'D34', 'D35': 'D35', '35': 'D35', 'D32': 'D32', '32': 'D32', 'D33': 'D33', '33': 'D33' };
+                    const ch = sarMap[p] || 'VN';
+                    return (comp.espAdc && comp.espAdc[ch]) ? comp.espAdc[ch].code : 0;
+                } else {
+                    const adcMap = { 'A0': 'A0', '0': 'A0', 'A1': 'A1', '1': 'A1', 'A2': 'A2', '2': 'A2', 'A3': 'A3', '3': 'A3', 'A4': 'A4', '4': 'A4', 'A5': 'A5', '5': 'A5' };
+                    const ch = adcMap[p] || 'A0';
+                    return (comp.adc && comp.adc[ch]) ? comp.adc[ch].code : 0;
+                }
+            }
+
+            function analogWrite(pin, val) {
+                const p = normalizePin(pin);
+                const duty = Math.min(100, Math.max(0, Math.round((val / 255) * 100)));
+                if (p === 'D9') comp.d9Duty = duty;
+                comp.pinPwm = comp.pinPwm || {};
+                comp.pinPwm[p] = duty;
+                comp.pinState = comp.pinState || {};
+                comp.pinState[p] = duty > 0;
+            }
+
+            function delay(ms) {
+                return new Promise(resolve => {
+                    if (!comp.sketchRunning) return resolve();
+                    const scaled = Math.max(1, Math.round(ms / (state.simSpeed || 1)));
+                    setTimeout(() => {
+                        if (!comp.sketchRunning) return resolve();
+                        resolve();
+                    }, scaled);
+                });
+            }
+
+            function delayMicroseconds(us) {
+                return delay(Math.max(1, Math.round(us / 1000)));
+            }
+
+            function millis() {
+                return Math.round(state.time * 1000);
+            }
+
+            function micros() {
+                return Math.round(state.time * 1000000);
+            }
+
+            function map(x, in_min, in_max, out_min, out_max) {
+                return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+            }
+
+            function constrain(x, a, b) {
+                return Math.min(b, Math.max(a, x));
+            }
+
+            const Serial = {
+                _baud: 9600,
+                begin: (b) => {
+                    Serial._baud = b || 9600;
+                    appendIdeConsole(`[SERIAL] Serial connection active at ${Serial._baud} baud.`, 'info');
+                },
+                print: (...args) => {
+                    const text = args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ');
+                    appendIdeSerialText(text, false);
+                },
+                println: (...args) => {
+                    const text = args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ');
+                    appendIdeSerialText(text, true);
+                },
+                available: () => (comp.serialBuffer && comp.serialBuffer.length > 0) ? comp.serialBuffer.length : 0,
+                read: () => {
+                    if (!comp.serialBuffer || comp.serialBuffer.length === 0) return -1;
+                    const ch = comp.serialBuffer.charCodeAt(0);
+                    comp.serialBuffer = comp.serialBuffer.slice(1);
+                    return ch;
+                }
+            };
+
+            const fn = new Function('pinMode', 'digitalWrite', 'digitalRead', 'analogRead', 'analogWrite', 'delay', 'delayMicroseconds', 'Serial', 'HIGH', 'LOW', 'OUTPUT', 'INPUT', 'INPUT_PULLUP', 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'millis', 'micros', 'map', 'constrain', `
+                ${transpiledCode}
+                return {
+                    setup: typeof setup === 'function' ? setup : null,
+                    loop: typeof loop === 'function' ? loop : null
+                };
+            `);
+
+            return fn(
+                pinMode, digitalWrite, digitalRead, analogRead, analogWrite,
+                delay, delayMicroseconds, Serial,
+                1, 0, 'OUTPUT', 'INPUT', 'INPUT_PULLUP',
+                'A0', 'A1', 'A2', 'A3', 'A4', 'A5',
+                millis, micros, map, constrain
+            );
+        }
+
+        function stopIdeSketch() {
+            if (ideState.activeBoardId) {
+                stopIdeSketchForBoard(ideState.activeBoardId);
+            }
+        }
+
+        function stopIdeSketchForBoard(boardId) {
+            const comp = state.components.find(c => c.id === boardId);
+            if (!comp) return;
+
+            comp.sketchRunning = false;
+            comp.sketchControlled = false;
+
+            updateIdeRunningBadge(comp);
+            updateInspector();
+            appendIdeConsole(`[STOP] Firmware execution stopped on ${comp.id}.`, 'info');
+            showToast(`Stopped firmware on ${comp.id}`, 'info');
         }
     </script>
 </body>

@@ -115,6 +115,19 @@ Embedded boards (Arduino Uno R3 and ESP32 NodeMCU) and IoT peripherals interface
 1. **Acoustic Piezo Buzzer:** Uses the browser's native `AudioContext` to construct a real hardware tone generator. An `OscillatorNode` at $2.4\text{ kHz}$ connected to a soft `GainNode` ($0.035$) fires when the solved voltage drop satisfies $V_{drop} \ge 2.5\text{ V}$. An expanding ripple arc is rendered on canvas.
 2. **SG90 Micro Servo Motor:** Computes 50Hz control pulse widths ($1.0\text{ ms} - 2.0\text{ ms}$) corresponding to $0^\circ - 180^\circ$ angular horn rotation. Canvas transforms dynamically rotate the white servo horn arm in real time.
 
+### 4.7 Embedded Microcontroller Code IDE & Virtual Firmware Engine
+1. **Source Transpiler (`transpileArduinoC`):** Transpiles C/C++ sketch syntax into asynchronous JavaScript generators/coroutines:
+   - Replaces `#define` and preprocessor macros with JavaScript constants.
+   - Converts typed variable declarations (`int`, `float`, `char`, `unsigned long`, `bool`) to `let`/`const`.
+   - Wraps functions (`void setup()`, `void loop()`) into asynchronous functions (`async function setup()`, `async function loop()`).
+   - Replaces blocking calls `delay(ms)` with cooperative asynchronous yields (`await delay(ms)`) scaled by `state.simSpeed`.
+2. **Virtual Hardware Abstraction Layer (HAL):**
+   - `digitalWrite(pin, val)`: Sets virtual pin output level, synchronizing with the MNA voltage source stamps in `circuitSolver.solve` and updating canvas indicator LEDs.
+   - `digitalRead(pin)`: Interrogates the latest MNA solution vector for the pin terminal net potential ($V > 2.5\text{V} \implies \text{HIGH}$).
+   - `analogRead(pin)`: Samples quantized ADC codes ($0-1023$ for Arduino A0-A5, $0-4095$ for ESP32 SAR ADCs).
+   - `analogWrite(pin, val)`: Sets PWM duty cycle ($0-100\%$).
+   - `Serial`: Provides a bidirectional serial stream interfaced with the IDE Serial Monitor console.
+
 ## 5. State Management & Data Flow
 
 State is managed through a centralized store (`state`):

@@ -51,10 +51,17 @@
 - [x] **3-Card Live Telemetry Grid:** Inspector cards for Voltage (cyan), Current (emerald), and Power (purple).
 - [x] **Floating Canvas Viewport Dock:** Direct canvas access to Rotate and Delete buttons paired alongside navigation tools.
 
-### 4.3 Phase 3: Embedded Microcontrollers & IoT Ecosystem (Completed)
-- [x] **Microcontroller Simulation Models:**
-  - **Arduino Uno R3:** ATmega328P with regulated 5V and 3.3V rails, 10-bit quantized ADC ($0-1023$ on A0), D13 synchronized LED, and D9 PWM duty control.
-  - **ESP32 NodeMCU:** Dual-core 240MHz SoC with regulated 3.3V rail, 12-bit SAR ADC on VN/GPIO36 ($0-4095$), GPIO2 blue status LED, and Wi-Fi/MQTT telemetry streams.
+### 4.3 Phase 3: Embedded Microcontrollers, IoT Ecosystem & Code IDE (Completed)
+- [x] **Microcontroller Simulation Models (Real Datasheet Pinouts):**
+  - **Arduino Uno R3:** ATmega328P with full **29 authentic header pins** (14 digital I/O D0-D13 with PWM/SPI, 6 analog ADC channels A0-A5 with 10-bit quantization, 5V, 3.3V, VIN, IOREF, AREF, 3 GNDs), synchronized D13 'L' LED indicator, and interactive GPIO matrix.
+  - **ESP32 NodeMCU:** Dual-core 240MHz SoC with full **30 authentic DIP pins** (18 digital GPIOs, 6 SAR ADC channels VP/VN/D34/D35/D32/D33 with 12-bit quantization, 2 DACs D25/D26, SPI, I2C, UART, dual 3.3V rails, dual GNDs, VIN), blue GPIO2 status LED, and Wi-Fi/MQTT telemetry streams.
+  - **Pinout Hover HUD Tooltips:** High-contrast glassmorphic badges displaying pin names and alternate hardware functions on mouse hover.
+- [x] **Embedded Microcontroller Code IDE & Virtual Firmware Runtime:**
+  - Integrated in-browser C++ sketch editor (`F7` or toolbar button) featuring line numbering, tab indentation, and auto-indent.
+  - Arduino C++ to asynchronous JavaScript transpiler supporting `pinMode()`, `digitalWrite()`, `digitalRead()`, `analogRead()`, `analogWrite()`, non-blocking `delay()`, `millis()`, and `Serial.println()`.
+  - Flash ROM and SRAM memory footprint estimation.
+  - Virtual Serial Monitor console with baud rate selector ($9600 - 115200$), autoscroll, and command input transmitter.
+  - Pre-loaded library of 7 functional engineering example sketches.
 - [x] **Smart Sensors & Environmental Triggers:**
   - **DHT11:** Temperature ($-20^\circ\text{C}$ to $+60^\circ\text{C}$) & Relative Humidity ($20\%$ to $90\%$) with dew point calculation.
   - **HC-SR04 Sonar:** Ultrasonic distance sensor ($2\text{ cm} - 400\text{ cm}$) with echo pulse duration and canvas radar emission waves.

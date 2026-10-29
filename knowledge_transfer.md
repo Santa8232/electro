@@ -417,9 +417,9 @@ ElectroSim Pro v3.0 expands the discrete analog simulation engine into an intera
 ### 16.1 Supported Hardware Modules & Pinouts
 
 | Component | Type Key | Category | Pins | Functionality & Simulation Companion Model |
-| :--- | :--- | :--- | :--- | :--- |
-| **Arduino Uno R3** | `arduino_uno` | `iot` | 7 | ATmega328P 16MHz AVR board. Regulated 5V & 3.3V power rails, 10-bit Successive Approximation ADC on A0 ($0-1023$, $5\text{V}$ scale), D13 digital pin with synchronized blinking 'L' LED, D9 PWM output, D2 interrupt. |
-| **ESP32 NodeMCU** | `esp32` | `iot` | 7 | Tensilica Xtensa dual-core 240MHz SoC. Regulated 3.3V rail, 12-bit SAR ADC on VN/GPIO36 ($0-4095$, $3.3\text{V}$ scale), GPIO2 blue status LED, GPIO4/18/21 digital I/O, simulated Wi-Fi telemetry & MQTT packet broadcast. |
+| :--- | :--- | :--- | :---: | :--- |
+| **Arduino Uno R3** | `arduino_uno` | `iot` | **29** | ATmega328P 16MHz AVR board. Full authentic pinout: 14 Digital I/O (D0-D13, with PWM on D3, D5, D6, D9, D10, D11 and SPI on D10-D13), 6 Analog ADC channels (A0-A5, 10-bit $0-1023$ quantization), power rails (5V, 3.3V, VIN, IOREF, AREF, 3 GNDs). Synchronized 'L' LED indicator on D13. In-browser C++ Code IDE execution engine. |
+| **ESP32 NodeMCU** | `esp32` | `iot` | **30** | Tensilica Xtensa dual-core 240MHz SoC. Full authentic 30-pin DIP layout: 18 Digital GPIOs, 6 SAR ADC channels (VN, VP, D34, D35, D32, D33, 12-bit $0-4095$ quantization), 2 DACs (D25, D26), SPI, I2C, UART, dual 3.3V rails, dual GNDs, VIN. Blue GPIO2 status LED. In-browser Code IDE execution engine with simulated MQTT packet broadcast. |
 | **DHT11 Sensor** | `dht11` | `iot` | 3 | Digital temperature ($-20^\circ\text{C}$ to $+60^\circ\text{C}$) and relative humidity ($20\%$ to $90\%$) sensor. Interactive sliders, dew point calculation, single-wire serial framing. |
 | **HC-SR04 Sonar** | `hc_sr04` | `iot` | 4 | Ultrasonic distance sensor ($2\text{ cm} - 400\text{ cm}$). Dual piezoelectric transducers (T & R), echo pulse calculation ($t = d \times 58.3\ \mu\text{s}$), forward radar emission wave on canvas. |
 | **HC-SR501 PIR** | `pir_sensor` | `iot` | 3 | Pyroelectric passive infrared human motion sensor with BISS0001 IC. Interactive human motion trigger button, 3.3V TTL active output pulse, radar arcs. |
@@ -433,9 +433,9 @@ ElectroSim Pro v3.0 expands the discrete analog simulation engine into an intera
 1. **Regulated Microcontroller Power Rails**:
    $$\mathbf{A} \text{ row/col stamps for } V_{5V} - V_{GND} = 5.0\text{ V}, \quad R_{int} = 0.1\ \Omega$$
    $$\mathbf{A} \text{ row/col stamps for } V_{3V3} - V_{GND} = 3.3\text{ V}, \quad R_{int} = 0.1\ \Omega$$
-2. **Quantized ADC Sensing**:
-   $$\text{ADC}_{10\text{-bit Uno}} = \text{round}\left(\frac{\max(0, V_{A0} - V_{GND})}{5.0} \times 1023\right)$$
-   $$\text{ADC}_{12\text{-bit ESP32}} = \text{round}\left(\frac{\max(0, V_{VN} - V_{GND})}{3.3} \times 4095\right)$$
+2. **Quantized Multi-Channel ADC Sensing**:
+   $$\text{ADC}_{10\text{-bit Uno}}(ch) = \text{round}\left(\frac{\max(0, V_{ch} - V_{GND})}{5.0} \times 1023\right), \quad ch \in \{A0, A1, A2, A3, A4, A5\}$$
+   $$\text{ADC}_{12\text{-bit ESP32}}(ch) = \text{round}\left(\frac{\max(0, V_{ch} - V_{GND})}{3.3} \times 4095\right), \quad ch \in \{VN, VP, D34, D35, D32, D33\}$$
 3. **Logarithmic CdS Photoconductive Resistance**:
    $$R(lux) = 500 + 499500 \times \left(1 - \frac{\log_{10}(1 + lux)}{\log_{10}(1001)}\right)^{2} \quad [\Omega]$$
 4. **Ultrasonic Flight-Time Pulse Calculation**:
@@ -454,5 +454,30 @@ ElectroSim Pro v3.0 expands the discrete analog simulation engine into an intera
 - **`relay_mains_driver`**: Arduino Uno + 5V Relay + Isolated 12V High-Power Load Lamp.
 
 ---
-*Document Version: 3.0 — Prepared by Senior Electronics Engineer, Embedded Systems Architect & UI/UX Designer*
+
+## 17. Embedded Microcontroller Code IDE & Virtual Firmware Subsystem
+
+ElectroSim Pro integrates an in-browser embedded code editor and compilation environment specifically designed for virtual microcontrollers.
+
+### 17.1 IDE Architecture & Ergonomics
+- **Modal Window (`#embedded-ide-modal`)**: Resizable and maximizable engineering code editor accessible via the top toolbar button, component inspector launcher, or `F7` hotkey.
+- **Target Selection**: Dynamically detects and binds to any Arduino Uno R3 or ESP32 board in the active schematic.
+- **Transpiler Engine (`transpileArduinoC`)**: Converts Arduino C++ source code into clean asynchronous JavaScript coroutines, transpiling types (`int`, `float`, `char`, `unsigned long`, `bool`), `#define` macros, function headers (`void setup()`, `void loop()`), and mapping `delay()` to non-blocking microtask yields.
+- **Memory Consumption Estimation**: Calculates estimated Flash ROM and dynamic SRAM footprint against ATmega328P ($32\text{ KB}$ Flash / $2\text{ KB}$ SRAM) and ESP32 ($1.3\text{ MB}$ Flash / $320\text{ KB}$ SRAM) constraints.
+- **Serial Monitor**: Integrated terminal console with baud rate selector ($9600 - 115200$), timestamped log output, and bi-directional text transmission into the virtual MCU's serial buffer.
+
+### 17.2 Virtual Hardware Runtime API
+| Function | Target Hardware Action & Physics Mapping |
+| :--- | :--- |
+| `pinMode(pin, mode)` | Sets pin direction (`OUTPUT`, `INPUT`, `INPUT_PULLUP`). |
+| `digitalWrite(pin, val)` | Drives pin voltage source ($5\text{V}$ / $3.3\text{V}$ on `HIGH`, $0\text{V}$ on `LOW`) in the MNA matrix solver. Synchronizes with onboard LEDs ('L' on D13, Blue on ESP32 D2). |
+| `digitalRead(pin)` | Queries live circuit node potential from latest MNA solve ($V > 2.5\text{V} \implies 1$). |
+| `analogRead(pin)` | Samples physical ADC channel code ($0-1023$ for Uno A0-A5, $0-4095$ for ESP32 SAR ADCs). |
+| `analogWrite(pin, val)` | Calculates and drives PWM duty cycle ($0-255 \implies 0-100\%$). |
+| `delay(ms)` | Cooperative asynchronous delay scaled dynamically with simulation speed. |
+| `Serial.print(...)` / `Serial.println(...)` | Streams formatted text output to the IDE Serial Monitor. |
+| `Serial.available()` / `Serial.read()` | Retrieves characters sent from the Serial Monitor input bar. |
+
+---
+*Document Version: 3.1 — Prepared by Senior Electronics Engineer, Embedded Systems Architect & UI/UX Designer*
 

@@ -15,9 +15,11 @@ Version 3.0 expands the simulator beyond discrete analog/digital components into
 ## ⚡ Key Highlights
 
 - **Mathematical Modified Nodal Analysis (MNA):** Computes exact node voltages and branch currents via Gaussian elimination with partial row pivoting ($A \cdot x = z$).
-- **Embedded Microcontroller Cores:**
-  - **Arduino Uno R3:** ATmega328P 16MHz AVR board with regulated 5.0V and 3.3V rails, 10-bit quantized ADC ($0-1023$ on A0), synchronized 'L' LED indicator on D13 (Blink / HIGH / LOW), and D9 PWM duty control ($0-100\%$).
-  - **ESP32 NodeMCU:** Dual-core 240MHz Wi-Fi/BLE SoC with regulated 3.3V rail, 12-bit SAR ADC on VN/GPIO36 ($0-4095$), onboard GPIO2 blue status LED, and simulated Wi-Fi/MQTT telemetry streams.
+- **Embedded Microcontroller Cores & In-Browser Code IDE:**
+  - **Arduino Uno R3:** ATmega328P 16MHz AVR board with full **29 authentic datasheet terminals** (14 Digital I/O D0-D13 with PWM on D3/D5/D6/D9/D10/D11 and SPI, 6 Analog 10-bit ADC channels A0-A5, 5V, 3.3V, VIN, IOREF, AREF, 3 GNDs), synchronized 'L' LED indicator on D13, D9 PWM duty control, and interactive GPIO matrix.
+  - **ESP32 NodeMCU:** Dual-core 240MHz Wi-Fi/BLE SoC with full **30 authentic DIP terminals** (18 Digital GPIOs with capacitive touch/interrupts, 6 12-bit SAR ADC channels VP/VN/D34/D35/D32/D33, 2 DACs D25/D26, SPI, I2C, UART, dual 3.3V rails, dual GNDs, VIN), onboard GPIO2 blue status LED, and simulated Wi-Fi/MQTT telemetry streams.
+  - **Embedded Microcontroller Code IDE:** In-browser code editor IDE (`F7` or Top Toolbar) featuring full Arduino C++ sketch transpilation (`setup()`, `loop()`, `pinMode()`, `digitalWrite()`, `digitalRead()`, `analogRead()`, `analogWrite()`, non-blocking `delay()`, `millis()`, `Serial.println()`), integrated **Serial Monitor** terminal with baud rate selection, live sketch compilation with memory usage estimation (Flash ROM & SRAM), and a library of 7 pre-loaded example sketches.
+  - **Live Terminal Hover HUD Tooltip:** Hovering any microcontroller or IC pin renders an instant glassmorphic badge showing the pin name, primary role, and alternate hardware functions (PWM, ADC, SPI MOSI/MISO/SCK, I2C SDA/SCL, UART TX/RX).
 - **Smart Sensors & Environmental Triggers:**
   - **DHT11:** Temperature ($-20^\circ\text{C}$ to $+60^\circ\text{C}$) and relative humidity ($20\%$ to $90\%$) with real-time dew point calculations.
   - **HC-SR04 Sonar:** Ultrasonic distance sensor ($2\text{ cm} - 400\text{ cm}$) with echo pulse duration calculation ($t = d \times 58.3\ \mu\text{s}$) and canvas radar emission waves.
@@ -102,8 +104,8 @@ ElectroSim Pro integrates complete manufacturer specifications for all **21 comp
 ### Microcontrollers & IoT Modules (`IoT & MCU`)
 | Component | Symbol | Model / Part Number | Manufacturer | Pins | Key Specifications |
 | :--- | :---: | :--- | :--- | :---: | :--- |
-| **Arduino Uno R3** | `UNO` | ATmega328P-PU | Microchip / Arduino | 7 | $5\text{V} / 3.3\text{V}$ Regulated rails, 10-bit ADC ($0-1023$), D13 LED, D9 PWM |
-| **ESP32 NodeMCU** | `ESP32` | ESP-WROOM-32 | Espressif Systems | 7 | $3.3\text{V}$ Regulated, 12-bit SAR ADC ($0-4095$), GPIO2 LED, Wi-Fi/MQTT |
+| **Arduino Uno R3** | `UNO` | ATmega328P-PU | Microchip / Arduino | 29 | 14 Digital I/O (PWM/SPI), 6 ADC channels ($0-1023$), 5V/3.3V rails, D13 LED, In-Browser C++ Code IDE |
+| **ESP32 NodeMCU** | `ESP32` | ESP-WROOM-32 | Espressif Systems | 30 | 18 GPIOs, 6 SAR ADC channels ($0-4095$), 2 DACs, Wi-Fi/MQTT streams, In-Browser Code IDE |
 | **DHT11 Sensor** | `DHT11` | DHT11 Digital Module | Aosong Electronics | 3 | $-20^\circ\text{C} - +60^\circ\text{C}$, $20\% - 90\%\text{ RH}$, 1-wire serial protocol |
 | **HC-SR04 Sonar** | `SONAR` | HC-SR04 Ultrasonic | Cytron / Osepp | 4 | $2 - 400\text{ cm}$ range, $40\text{ kHz}$ transducer, $58.3\ \mu\text{s/cm}$ echo |
 | **HC-SR501 PIR** | `PIR` | HC-SR501 Module | Nisheng / BISS0001 | 3 | Passive infrared detector, $7\text{ m}$ range, $3.3\text{V}$ active TTL output |
@@ -168,7 +170,10 @@ Select any pre-configured circuit from the top toolbar dropdown:
 | `Home` | **Reset View / Fit Schematic** (100% Zoom, origin pan) | Viewport |
 | `Ctrl + Z` | **Undo Last Action** | History |
 | `Ctrl + Y` / `Ctrl + Shift + Z` | **Redo Last Action** | History |
-| `Escape` | **Cancel Current Wiring / Deselect** | Global |
+| `Escape` | **Cancel Current Wiring / Deselect / Close Modals** | Global |
+| `F7` | **Toggle Embedded Microcontroller Code IDE** | Global |
+| `Ctrl + Enter` / `Ctrl + U` | **Compile & Upload Sketch to Virtual Board** | Code IDE |
+| `Ctrl + R` | **Verify & Compile Sketch** | Code IDE |
 
 ---
 
